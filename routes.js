@@ -49,8 +49,8 @@ app.get('/login/confirm', function(req, res){
     app.BodegaManager.loginconfirm(req, res);
 });
 
-app.get('/stats', function(req, res){
-    app.BodegaManager.stats(req, res);
+app.get('/stats/assets', function(req, res){
+    app.BodegaManager.assetStats(req, res);
 });
 
 app.get('/logout', function(req, res) {
