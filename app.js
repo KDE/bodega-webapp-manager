@@ -26,52 +26,44 @@ GLOBAL.app = module.exports = express();
 
 app.config = JSON.parse(fs.readFileSync(('./config.json'), 'utf8'));
 
-app.configure(function() {
-    app.set('port', app.config.client.port);
-    app.set('hostname', app.config.client.hostname);
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'jade');
-    app.use(express.favicon());
-    app.use(express.logger('dev'));
-    app.use(express.bodyParser());
 
-    //app.use(express.methodOverride());
-    app.use('/css', express.static(__dirname + '/public/css'));
-    app.use('/js', express.static(__dirname + '/public/js'));
-    app.use('/js/validator', express.static(__dirname + '/node_modules/validator/'));
+app.set('port', app.config.client.port);
+app.set('hostname', app.config.client.hostname);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
 
-    app.use(express.cookieParser());
-    app.use(express.session({ secret: "love cookies",
-                              store: new RedisStore(app.config.redis) }));
+//app.use(express.methodOverride());
+app.use('/css', express.static(__dirname + '/public/css'));
+app.use('/js', express.static(__dirname + '/public/js'));
+app.use('/js/validator', express.static(__dirname + '/node_modules/validator/'));
 
-    app.use(app.router);
-    app.use(function(req, res, next) {
-        res.render('404.jade', {});
-    });
+app.use(express.cookieParser());
+app.use(express.session({ secret: "love cookies",
+                            store: new RedisStore(app.config.redis) }));
 
+app.use(app.router);
+app.use(function(req, res, next) {
+    res.render('404.jade', {});
 });
+
 
 // We don't want an exception to kill our app, but we don't want
 //   to intercept exception in tests or during dev testing
-if (app.settings.env === 'production') {
+if ('production' == app.get('env')) {
+    app.use(express.errorHandler());
     process.on('uncaughtException', function(err) {
         console.log("Uncaught exception: ");
         console.log(err);
         console.log(err.stack);
     });
+} else {
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 }
 
-app.configure('development', function() {
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
 
-app.configure('test', function() {
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
-app.configure('production', function() {
-    app.use(express.errorHandler());
-});
 
 //app.server must be initialized before BodegaManager!!
 app.server = http.createServer(app);

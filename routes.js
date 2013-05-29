@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+var express = require('express');
+
 function isAuthorized(req, res, next)
 {
     if (req.session.authorized) {
@@ -59,4 +61,8 @@ app.get('/logout', function(req, res) {
 
     res.redirect('/');
 });
+
+// app.get('/static/*', function(req, res) {
+//     res.sendfile(__dirname + '/public' + req.url);
+// });
 
