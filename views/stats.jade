@@ -1,0 +1,11 @@
+extends layout
+block head
+  Sale statistics for your #{network} Account
+block body
+  .title
+    h1(align="center") Statistics  #{network}
+    include navigator
+    .container-fluid
+      .row-fluid
+        #{message}
+

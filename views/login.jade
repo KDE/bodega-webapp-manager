@@ -1,0 +1,20 @@
+extends layout
+block head
+  title Login With Your #{network} Account
+block body
+  .title
+    .container
+      .span6.offset3
+        form.well(method='POST', id='login', onsubmit='return validateForm();')
+          fieldset.control-group(id='field-control', align='center')
+            .input
+              h4 Login with your #{network} Account
+            .input
+              input.xlarge(type='text', placeholder='Enter your Username', name='username', required)
+            .input
+              input.xlarge(type='password', placeholder='Enter your Password', name='password', required)
+            .action
+              input.btn.btn-primary(type='submit',id='loginButton', value='Connect!')
+            .input
+                a.pull-left(href='/register') Create a new account for me!
+                a.offset1(href='/account/resetPassword') Forgot Your password?

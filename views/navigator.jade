@@ -1,0 +1,26 @@
+style
+  body {
+    padding: 40px;
+  }
+//based on the twitter documentation we must change the padding
+//of your body. Otherwise our navigator will hide some elements from the page
+//http://twitter.github.com/bootstrap/javascript.html#affix
+
+.navbar.navbar-inverse.navbar-fixed-top(id='navigator')
+  .navbar-inner
+    ul.nav.pull-right
+      li
+        a.btn.btn-inverse(href='/index')
+          i.icon-home.icon-white
+          | Home
+      li.divider-vertical
+      li
+        a.btn.btn-inverse(href='/stats')
+          i.icon-chart.icon-white
+          | Statistics
+      li.divider-vertical
+      li
+        a.btn.btn-inverse(href='/logout')
+          i.icon-off.icon-white
+          | Logout
+

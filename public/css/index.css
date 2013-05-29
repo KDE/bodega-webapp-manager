@@ -1,0 +1,19 @@
+.accordion-inner
+{
+    height: 400px;
+    overflow: auto;
+}
+
+.jspVerticalBar
+{
+    width: 40px;
+}
+
+.jspDrag {
+    border-radius: 2px;
+}
+
+.jspTrack {
+    background: rgb(255, 255, 255); //white
+}
+
