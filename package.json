@@ -1,0 +1,15 @@
+{
+    "name": "BodegaParticipant",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "express": "> 2.4.6",
+        "connect-redis" : "latest",
+        "sockjs" : "latest"
+    },
+    "devDependencies": {
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    }
+}
