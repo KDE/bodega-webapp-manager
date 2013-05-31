@@ -3,7 +3,7 @@ block head
   link(rel="stylesheet", href="/css/nv.d3.css")
 
   Sale statistics for your #{network} Account
-  script(src='/js/nvd3/d3.v3.js')
+  script(src='/js/nvd3/d3.v2.min.js')
   script(src='/js/nvd3/nv.d3.min.js')
   script(src='/js/nvd3/utils.js')
   script(src='/js/nvd3/models/axis.js')
@@ -59,8 +59,9 @@ block head
     }
 
     redrawGraph = function(url) {
-        d3.json(url, function(error, data) {
-            if (error) return console.warn(error);
+        d3.json(url, function( data) {
+            // if (error) return console.warn(error);
+            //FIXME: d3.v2 doesn't have error, v3 seems to have mouse input broken
             graphData = convertData(data.stats);
             generateGraph();
         });
@@ -68,6 +69,13 @@ block head
     
     function refresh() {
         redrawGraph("/json/stats/assets?" + $.param({"assets": assets, "granularity": granularity, "metric": metric}, true))
+    }
+    
+    function reset() {
+        assets = new Array();
+        granularity = "month"
+        metric = "points";
+        refresh();
     }
 
     function toggleAsset(asset) {
@@ -101,7 +109,7 @@ block body
         <div id="chart">
         <svg style="height:500px"></svg>
         </div>
-        <a onclick='redrawGraph("/json/stats/assets")'>Total</p>
+        <a onclick='reset()'>Total</p>
         <a onclick='toggleAsset(2)'>Asset 2</p>
         <a onclick='toggleAsset(3)'>Asset 3</p>
         <a onclick='toggleAsset(4)'>Asset 4</p>
