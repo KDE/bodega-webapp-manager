@@ -15,24 +15,11 @@ block head
   script(src='/js/nvd3/models/stackedAreaChart.js')
   script
   
-    data = !{data};
-
-    var stats = !{stats};
-
-    var data2 = new Array();
-
-    function fetchData() {
-        for (var property in stats[0]) {
-            if (property == 'dateof') {
-                continue;
-            }
-            var row = {key: property, values: []};
-            for (var i = 0; i < stats.length; ++i) {
-                row.values.push([new Date(stats[i].dateof).getTime(), stats[i][property]])
-            }
-            data2.push(row);
-        }
-    }
+    var graphData = new Array();
+    var assets = new Array();
+    var chart;
+    var granularity = "month"
+    var metric = "points";
 
     function convertData(data) {
         var converted = new Array();
@@ -63,30 +50,46 @@ block head
             .tickFormat(d3.format(',.2f'));
 
         d3.select('#chart svg')
-            .datum(data2)
+            .datum(graphData)
             .transition().duration(500).call(chart);
 
         nv.utils.windowResize(chart.update);
 
         return chart;
     }
- 
-    var chart;
-    fetchData()
-    nv.addGraph(generateGraph);
 
-   
     redrawGraph = function(url) {
         d3.json(url, function(error, data) {
             if (error) return console.warn(error);
-            data2 = convertData(data.stats);
+            graphData = convertData(data.stats);
             generateGraph();
         });
     };
     
-    function addAsset(asset) {
-        
+    function refresh() {
+        redrawGraph("/json/stats/assets?" + $.param({"assets": assets, "granularity": granularity, "metric": metric}, true))
     }
+
+    function toggleAsset(asset) {
+        if (assets.indexOf(asset) === -1) {
+            assets.push(asset);
+        } else {
+            assets.splice(assets.indexOf(asset), 1);
+        }
+        refresh();
+    }
+
+    function setGranularity(gran) {
+        granularity = gran
+        refresh();
+    }
+
+    function setMetric(m) {
+        metric = m
+        refresh();
+    }
+
+    redrawGraph("/json/stats/assets");
 
 
 block body
@@ -98,5 +101,14 @@ block body
         <div id="chart">
         <svg style="height:500px"></svg>
         </div>
-        <a onclick='redrawGraph("http://localhost:3002/json/stats/assets?assets=2&assets=3&assets=4")'>refresh</p>
-        <a onclick='redraw()'>refresh</p>
+        <a onclick='redrawGraph("/json/stats/assets")'>Total</p>
+        <a onclick='toggleAsset(2)'>Asset 2</p>
+        <a onclick='toggleAsset(3)'>Asset 3</p>
+        <a onclick='toggleAsset(4)'>Asset 4</p>
+        <a onclick='toggleAsset(5)'>Asset 5</p>
+        <a onclick='setGranularity("month")'>Month</p>
+        <a onclick='setGranularity("year")'>Year</p>
+        <a onclick='setGranularity("day")'>Day</p>
+        <a onclick='setMetric("points")'>Points</p>
+        <a onclick='setMetric("count")'>Count</p>
+        <a onclick='setMetric("downloads")'>Downloads</p>
