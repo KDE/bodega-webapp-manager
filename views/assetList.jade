@@ -85,15 +85,7 @@ block head
             columnWidth: 1
         });
         
-        var loadURL = function(url) {
-            var oRequest = new XMLHttpRequest();
-            oRequest.open('GET', url, false);
-            oRequest.setRequestHeader("User-Agent", navigator.userAgent);
-            oRequest.send(null)
-            
-            return oRequest.responseText;
-        };
-        
+
         var layout = Ext.create('Ext.panel.Panel', {
             width: '100%',
             layout:'column',
