@@ -59,14 +59,47 @@ block head
                 },
                 {
                     xtype: 'button',
-                    text: 'Show statistics'
+                    text: 'Show statistics',
+                    handler: function() {
+                        var stats = Ext.create('Ext.panel.Panel', {
+                            html: "loadUrl('stats/assets')",
+                            columnWidth: .50
+                        });
+                        Ext.Ajax.request({
+                            url: '/stats/assets',
+                            success: function(response){
+                                stats.update(response, response.responseText);
+                            }
+                        });
+                        while (layout.items.getCount() > 1) {
+                            layout.remove(layout.items.getCount()-1, true);
+                        }
+                        view.columnWidth = 0.50
+                        layout.add(stats);
+                        layout.doLayout();
+                    }
                 }]
             }],
-            width: '100%',
-            renderTo: Ext.getBody()
+            //width: '100%',
+           // renderTo: Ext.getBody()
+            columnWidth: 1
         });
         
-
+        var loadURL = function(url) {
+            var oRequest = new XMLHttpRequest();
+            oRequest.open('GET', url, false);
+            oRequest.setRequestHeader("User-Agent", navigator.userAgent);
+            oRequest.send(null)
+            
+            return oRequest.responseText;
+        };
+        
+        var layout = Ext.create('Ext.panel.Panel', {
+            width: '100%',
+            layout:'column',
+            items: [view],
+            renderTo: Ext.getBody()
+        });
     });
 
 
