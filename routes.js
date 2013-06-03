@@ -43,7 +43,7 @@ app.get('/index', isAuthorized, function(req, res) {
     app.BodegaManager.index(req, res);
 });
 
-app.get('/login/info',isAuthorized,  function(req, res) {
+app.get('/login/info', isAuthorized,  function(req, res) {
     app.BodegaManager.loginInfo(req, res);
 });
 
@@ -51,7 +51,11 @@ app.get('/login/confirm', function(req, res){
     app.BodegaManager.loginconfirm(req, res);
 });
 
-app.get('/stats/assets', function(req, res){
+app.get('/assets/list', function(req, res){
+    app.BodegaManager.listassets(req, res);
+});
+
+app.get('/stats/assets', isAuthorized, function(req, res){
     app.BodegaManager.assetStats(req, res);
 });
 

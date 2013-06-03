@@ -1,0 +1,79 @@
+extends layout
+block head
+
+  title Your assets
+  link(rel="stylesheet", href="/css/ext-all.css")
+  script(src='/js/ext-all.js')
+
+  script
+    Ext.onReady(function() {
+        var store = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId:'bodegaStore',
+            fields:['name', 'description', 'baseprice'],
+            proxy: {
+                type: 'ajax',
+                // load remote data using HTTP
+                url: '/json/listassets',
+                // specify a XmlReader (coincides with the XML format of the returned data)
+                reader: {
+                    type: 'json',
+                    root: 'assets'
+                }
+            }
+        });
+
+        var view = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('bodegaStore'),
+            selType: 'checkboxmodel',
+            columns: [
+                { header: 'Name',  dataIndex: 'name' },
+                { header: 'Description', dataIndex: 'description', flex: 1 },
+                { header: 'Base price', dataIndex: 'baseprice' }
+            ],
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: ['Search', {
+                    xtype: 'textfield',
+                    name: 'searchField',
+                    hideLabel: true,
+                    width: 200,
+                    listeners: {
+                        change: {
+                            fn: function(){
+                                store.clearFilter();
+
+                                var search = view.down('textfield[name=searchField]').getValue();
+                                store.filterBy(function (record) {
+                                    //name containing the textfield value
+                                    var name = record.get('name').toLowerCase();
+                                    var desc = record.get('description').toLowerCase();
+                                    return name.indexOf(search) !== -1 || desc.indexOf(search) !== -1;
+                               });
+                            },
+                            scope: this,
+                            buffer: 100
+                        }
+                    }
+                },
+                {
+                    xtype: 'button',
+                    text: 'Show statistics'
+                }]
+            }],
+            width: '100%',
+            renderTo: Ext.getBody()
+        });
+        
+
+    });
+
+
+block body
+  .title
+    h1(align="center") Assets #{network}
+    include navigator
+    .container-fluid
+      .row-fluid
+        
