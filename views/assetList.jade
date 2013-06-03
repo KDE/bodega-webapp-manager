@@ -61,16 +61,24 @@ block head
                     xtype: 'button',
                     text: 'Show statistics',
                     handler: function() {
+                        // get selected items
+                        var selected = new Array();
+                        var s = view.getSelectionModel().getSelection();
+                        // And then you can iterate over the selected items, e.g.: 
+                        selected = [];
+                        Ext.each(s, function (item) {
+                            selected.push(item.data.id);
+                        });
                         var stats = Ext.create('Ext.panel.Panel', {
-                            html: "loadUrl('stats/assets')",
-                            columnWidth: .50
+                            loader: {
+                                url: '/stats/assets?' + $.param({"assets": selected}, true),
+                                autoLoad: true,
+                                scripts: true,
+                            },
+                            columnWidth: .50,
+                            border: 0
                         });
-                        Ext.Ajax.request({
-                            url: '/stats/assets',
-                            success: function(response){
-                                stats.update(response, response.responseText);
-                            }
-                        });
+                        console.log('/stats/assets?' + $.param({"assets": selected}, true));
                         while (layout.items.getCount() > 1) {
                             layout.remove(layout.items.getCount()-1, true);
                         }
@@ -80,9 +88,8 @@ block head
                     }
                 }]
             }],
-            //width: '100%',
-           // renderTo: Ext.getBody()
-            columnWidth: 1
+            columnWidth: 1,
+            border: 0
         });
         
 
@@ -90,14 +97,15 @@ block head
             width: '100%',
             layout:'column',
             items: [view],
-            renderTo: Ext.getBody()
+            renderTo: Ext.getBody(),
+            border: 0
         });
     });
 
 
 block body
   .title
-    h1(align="center") Assets #{network}
+    <br/>
     include navigator
     .container-fluid
       .row-fluid

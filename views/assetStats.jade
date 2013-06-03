@@ -1,22 +1,7 @@
-extends layout
-block head
-  link(rel="stylesheet", href="/css/nv.d3.css")
-
-  Sale statistics for your #{network} Account
-  script(src='/js/nvd3/d3.v2.min.js')
-  script(src='/js/nvd3/nv.d3.min.js')
-  script(src='/js/nvd3/utils.js')
-  script(src='/js/nvd3/models/axis.js')
-  script(src='/js/nvd3/tooltip.js')
-  script(src='/js/nvd3/models/legend.js')
-  script(src='/js/nvd3/models/axis.js')
-  script(src='/js/nvd3/models/scatter.js')
-  script(src='/js/nvd3/models/stackedArea.js')
-  script(src='/js/nvd3/models/stackedAreaChart.js')
-  script
+script
   
     var graphData = new Array();
-    var assets = new Array();
+    var assets = [#{assets}]
     var chart;
     var granularity = "month"
     var metric = "points";
@@ -72,7 +57,6 @@ block head
     }
     
     function reset() {
-        assets = new Array();
         granularity = "month"
         metric = "points";
         refresh();
@@ -97,26 +81,17 @@ block head
         refresh();
     }
 
-    redrawGraph("/json/stats/assets");
+    refresh();
 
 
-block body
-  .title
-    h1(align="center") Statistics  #{network}
-    include navigator
-    .container-fluid
-      .row-fluid
-        <div id="chart">
-        <svg style="height:500px"></svg>
-        </div>
-        <a onclick='reset()'>Total</p>
-        <a onclick='toggleAsset(2)'>Asset 2</p>
-        <a onclick='toggleAsset(3)'>Asset 3</p>
-        <a onclick='toggleAsset(4)'>Asset 4</p>
-        <a onclick='toggleAsset(5)'>Asset 5</p>
-        <a onclick='setGranularity("month")'>Month</p>
-        <a onclick='setGranularity("year")'>Year</p>
-        <a onclick='setGranularity("day")'>Day</p>
-        <a onclick='setMetric("points")'>Points</p>
-        <a onclick='setMetric("count")'>Count</p>
-        <a onclick='setMetric("downloads")'>Downloads</p>
+
+<div id="chart">
+<svg style="height:500px"></svg>
+</div>
+<a onclick='reset()'>Total</p>
+<a onclick='setGranularity("month")'>Month</p>
+<a onclick='setGranularity("year")'>Year</p>
+<a onclick='setGranularity("day")'>Day</p>
+<a onclick='setMetric("points")'>Points</p>
+<a onclick='setMetric("count")'>Count</p>
+<a onclick='setMetric("downloads")'>Downloads</p>
