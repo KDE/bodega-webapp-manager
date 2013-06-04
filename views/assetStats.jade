@@ -149,6 +149,18 @@ block head
                     width: 100,
                     height: 22
                 }]
+            },{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                items: ['From:', {
+                    xtype: 'datepicker',
+                    value: (new Date(new Date().getFullYear()-1, new Date().getMonth(), new Date().getDay())),
+                    handler: function(picker, date) {
+                        console.log(date)
+                    }
+                }, 'To:', {
+                    xtype: 'datepicker'
+                }]
             }]
         });
 
