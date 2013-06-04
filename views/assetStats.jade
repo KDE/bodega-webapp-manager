@@ -104,7 +104,52 @@ block head
     var graphArea = Ext.create('Ext.panel.Panel', {
             html: '<div id="chart"><svg style="height:500px"></svg></div>',
             columnWidth: 0.8,
-            border: 0
+            border: 0,
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: ['Granularity:', {
+                    xtype: 'combobox',
+                    emptyText: 'Month',
+                    editable: false,
+                    store: Ext.create('Ext.data.Store', {
+                        fields: ['name', 'value'],
+                        data: [{'name': 'Month', 'value': 'month'},
+                            {'name': 'Year', 'value': 'year'},
+                            {'name': 'Day', 'value': 'day'}]
+                    }),
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'value',
+                    listeners:{
+                        'select': function(combo, record, index) {
+                            setGranularity(combo.getValue());
+                        }
+                    },
+                    width: 100,
+                    height: 22
+                }, 'Metric:', {
+                    xtype: 'combobox',
+                    emptyText: 'Points',
+                    editable: false,
+                    store: Ext.create('Ext.data.Store', {
+                        fields: ['name', 'value'],
+                        data: [{'name': 'Points', 'value': 'points'},
+                            {'name': 'Units sold', 'value': 'count'},
+                            {'name': 'Downloads', 'value': 'downloads'}]
+                    }),
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'value',
+                    listeners:{
+                        'select': function(combo, record, index) {
+                            setMetric(combo.getValue());
+                        }
+                    },
+                    width: 100,
+                    height: 22
+                }]
+            }]
         });
 
     refresh();
@@ -193,10 +238,3 @@ block body
     .container-fluid
       .row-fluid
 
-        <a onclick='reset()'>Total</p>
-        <a onclick='setGranularity("month")'>Month</p>
-        <a onclick='setGranularity("year")'>Year</p>
-        <a onclick='setGranularity("day")'>Day</p>
-        <a onclick='setMetric("points")'>Points</p>
-        <a onclick='setMetric("count")'>Count</p>
-        <a onclick='setMetric("downloads")'>Downloads</p>
