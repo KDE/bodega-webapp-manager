@@ -1,7 +1,26 @@
-script
+extends layout
+block head
+  link(rel="stylesheet", href="/css/nv.d3.css")
+
+  title Sale statistics for your #{network} Account
+
+  link(rel="stylesheet", href="/css/ext-all.css")
+  script(src='/js/ext-all.js')
+
+  script(src='/js/nvd3/d3.v2.min.js')
+  script(src='/js/nvd3/nv.d3.min.js')
+  script(src='/js/nvd3/utils.js')
+  script(src='/js/nvd3/models/axis.js')
+  script(src='/js/nvd3/tooltip.js')
+  script(src='/js/nvd3/models/legend.js')
+  script(src='/js/nvd3/models/axis.js')
+  script(src='/js/nvd3/models/scatter.js')
+  script(src='/js/nvd3/models/stackedArea.js')
+  script(src='/js/nvd3/models/stackedAreaChart.js')
+  script
   
     var graphData = new Array();
-    var assets = [#{assets}]
+    var assets = [!{assets}];
     var chart;
     var granularity = "month"
     var metric = "points";
@@ -57,6 +76,7 @@ script
     }
     
     function reset() {
+        assets = new Array();
         granularity = "month"
         metric = "points";
         refresh();
@@ -81,17 +101,102 @@ script
         refresh();
     }
 
+    var graphArea = Ext.create('Ext.panel.Panel', {
+            html: '<div id="chart"><svg style="height:500px"></svg></div>',
+            columnWidth: 0.8,
+            border: 0
+        });
+
     refresh();
 
+    //Assets list
+    Ext.onReady(function() {
+        var store = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId:'bodegaStore',
+            fields:['name', 'description', 'baseprice'],
+            proxy: {
+                type: 'ajax',
+                // load remote data using HTTP
+                url: '/json/listassets',
+                // specify a XmlReader (coincides with the XML format of the returned data)
+                reader: {
+                    type: 'json',
+                    root: 'assets'
+                }
+            }
+        });
 
+        var view = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('bodegaStore'),
+            selType: 'checkboxmodel',
+            columns: [
+                { header: 'Name',  dataIndex: 'name', flex: 1 },
+            ],
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: [{
+                    xtype: 'textfield',
+                    name: 'searchField',
+                    hideLabel: true,
+                    width: 200,
+                    listeners: {
+                        change: {
+                            fn: function(){
+                                store.clearFilter();
 
-<div id="chart">
-<svg style="height:500px"></svg>
-</div>
-<a onclick='reset()'>Total</p>
-<a onclick='setGranularity("month")'>Month</p>
-<a onclick='setGranularity("year")'>Year</p>
-<a onclick='setGranularity("day")'>Day</p>
-<a onclick='setMetric("points")'>Points</p>
-<a onclick='setMetric("count")'>Count</p>
-<a onclick='setMetric("downloads")'>Downloads</p>
+                                var search = view.down('textfield[name=searchField]').getValue();
+                                store.filterBy(function (record) {
+                                    //name containing the textfield value
+                                    var name = record.get('name').toLowerCase();
+                                    var desc = record.get('description').toLowerCase();
+                                    return name.indexOf(search) !== -1 || desc.indexOf(search) !== -1;
+                               });
+                            },
+                            scope: this,
+                            buffer: 100
+                        }
+                    }
+                }]
+            }],
+            listeners: {
+                selectionchange: function()
+                {
+                    assets = new Array();
+                    var s = view.getSelectionModel().getSelection();
+                    selected = [];
+                    Ext.each(s, function (item) {
+                        assets.push(item.data.id);
+                    });
+                    refresh();
+                }
+            },
+            columnWidth: 0.2,
+            border: 0
+        });
+        
+
+        var layout = Ext.create('Ext.panel.Panel', {
+            width: '100%',
+            layout:'column',
+            items: [graphArea, view],
+            renderTo: Ext.getBody(),
+            border: 0
+        });
+    });
+
+block body
+  .title
+    h1(align="center") Statistics  #{network}
+    include navigator
+    .container-fluid
+      .row-fluid
+
+        <a onclick='reset()'>Total</p>
+        <a onclick='setGranularity("month")'>Month</p>
+        <a onclick='setGranularity("year")'>Year</p>
+        <a onclick='setGranularity("day")'>Day</p>
+        <a onclick='setMetric("points")'>Points</p>
+        <a onclick='setMetric("count")'>Count</p>
+        <a onclick='setMetric("downloads")'>Downloads</p>
