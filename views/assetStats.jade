@@ -24,6 +24,8 @@ block head
     var chart;
     var granularity = "month"
     var metric = "points";
+    var from = (new Date(new Date().getFullYear()-1, new Date().getMonth(), new Date().getDay()));
+    var to = new Date();
 
     function convertData(data) {
         var converted = new Array();
@@ -72,7 +74,7 @@ block head
     };
     
     function refresh() {
-        redrawGraph("/json/stats/assets?" + $.param({"assets": assets, "granularity": granularity, "metric": metric}, true))
+        redrawGraph("/json/stats/assets?" + $.param({"assets": assets, "granularity": granularity, "metric": metric, "from": from, "to": to}, true))
     }
     
     function reset() {
@@ -156,10 +158,17 @@ block head
                     xtype: 'datepicker',
                     value: (new Date(new Date().getFullYear()-1, new Date().getMonth(), new Date().getDay())),
                     handler: function(picker, date) {
-                        console.log(date)
+                        graphArea.dockedItems.get(1).items.get(3).setMinDate(date);
+                        from = date;
+                        refresh();
                     }
                 }, 'To:', {
-                    xtype: 'datepicker'
+                    xtype: 'datepicker',
+                    handler: function(picker, date) {
+                        graphArea.dockedItems.get(1).items.get(1).setMaxDate(date);
+                        to = date;
+                        refresh();
+                    }
                 }]
             }]
         });
