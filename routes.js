@@ -51,7 +51,7 @@ app.get('/login/confirm', function(req, res){
     app.BodegaManager.loginconfirm(req, res);
 });
 
-app.get('/assets/list', function(req, res){
+app.get('/assets/list', isAuthorized, function(req, res){
     app.BodegaManager.listassets(req, res);
 });
 
