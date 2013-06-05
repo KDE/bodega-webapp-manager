@@ -3,8 +3,8 @@
         "hostname": "localhost",
         "port": 3000,
         "api": "/bodega/v1/json/",
-        "network": "MakePlayLive",
-        "store": "VIVALDI-1"
+        "store": "null",
+        "network": "Make Play Live"
     },
     "client": {
         "port": 3002,
