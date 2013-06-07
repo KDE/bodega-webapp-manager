@@ -70,6 +70,10 @@ app.get('/json/*', function(req, res){
     app.BodegaManager.jsonProxy(req, res);
 });
 
+app.post('/json/*', function(req, res){
+    app.BodegaManager.jsonProxy(req, res);
+});
+
 // app.get('/static/*', function(req, res) {
 //     res.sendfile(__dirname + '/public' + req.url);
 // });
