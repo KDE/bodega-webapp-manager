@@ -59,6 +59,10 @@ app.get('/asset/create', isAuthorized, function(req, res){
     app.BodegaManager.createasset(req, res);
 });
 
+app.post('/asset/create', isAuthorized, function(req, res){
+    app.BodegaManager.createasset(req, res);
+});
+
 app.get('/stats/assets', isAuthorized, function(req, res){
     app.BodegaManager.assetStats(req, res);
 });

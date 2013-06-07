@@ -3,13 +3,28 @@ block head
 
   title Your assets
   link(rel="stylesheet", href="/css/ext-all.css")
-  script(src='/js/ext-all.js')
 
-  script
-    Ext.onReady(function() {
-        
-    });
-
+  style
+    #upload, #messages {
+        width: 50%;
+        margin: auto;
+    }
+    #filedrag {
+        width: 100%;
+        border: 1px solid #aaa;
+        text-align: center;
+        padding-top: 2em;
+        padding-bottom: 2em;
+        margin-top: 1ex;
+        margin-bottom: 1ex;
+    }
+    #filedrag.hover {
+        background: #aaa;
+    }
+    #submitbutton {
+        width: 100%;
+        text-align: right;
+    }
 
 block body
   .title
@@ -17,5 +32,22 @@ block body
     include navigator
     .container-fluid
       .row-fluid
-        h1 Asset creation page
-        
+          <form id="upload" action="/asset/create" method="POST" enctype="multipart/form-data">
+          <fieldset>
+          <legend>Upload the files of your assets</legend>
+          <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="300000" />
+          <div>
+          <label for="fileselect">Files to upload:</label>
+          <input type="file" id="fileselect" name="fileselect[]" multiple="multiple" />
+          <div id="filedrag">or drop files here</div>
+          </div>
+          <div id="submitbutton">
+          <button type="submit">Upload Files &gt;&gt;</button>
+          </div>
+          
+          </fieldset>
+          </form>
+          <div id="messages">
+          <p></p>
+          </div>
+          script(src='/js/filedrag.js')

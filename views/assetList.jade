@@ -112,12 +112,6 @@ block head
                     }
                 }, {
                     xtype: 'button',
-                    text: 'Create assets',
-                    handler: function() {
-                        window.location.href = '/asset/create';
-                    }
-                }, {
-                    xtype: 'button',
                     text: 'Delete assets',
                     hidden: true,
                     handler: function() {
@@ -143,9 +137,9 @@ block head
                 {
                     var s = view.getSelectionModel().getSelection();
                     if (s.length > 0) {
-                        view.dockedItems.get(1).items.get(4).show();
+                        view.dockedItems.get(1).items.get(3).show();
                     } else {
-                        view.dockedItems.get(1).items.get(4).hide();
+                        view.dockedItems.get(1).items.get(3).hide();
                     }
                 }
             },
