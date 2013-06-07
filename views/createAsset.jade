@@ -1,0 +1,21 @@
+extends layout
+block head
+
+  title Your assets
+  link(rel="stylesheet", href="/css/ext-all.css")
+  script(src='/js/ext-all.js')
+
+  script
+    Ext.onReady(function() {
+        
+    });
+
+
+block body
+  .title
+    <br/>
+    include navigator
+    .container-fluid
+      .row-fluid
+        h1 Asset creation page
+        
