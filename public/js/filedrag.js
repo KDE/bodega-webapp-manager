@@ -34,6 +34,7 @@ Developed by Craig Buckler (@craigbuckler) of OptimalWorks.net
 
 		// fetch FileList object
 		var files = e.target.files || e.dataTransfer.files;
+                e.target.files = files;
 
 		// process all File objects
 		for (var i = 0, f; f = files[i]; i++) {
@@ -48,8 +49,8 @@ Developed by Craig Buckler (@craigbuckler) of OptimalWorks.net
 	function ParseFile(file) {
 
 		Output(
-			"<p>File information: <strong>" + file.name +
-			"</strong> type: <strong>" + file.type +
+                        "<p>Name:<input type='text' id='assetName-" + file.name +"' name='assetName-" + file.name + "' size='12' />&nbsp;&nbsp;" +
+			"File: <strong>" + file.name +
 			"</strong> size: <strong>" + file.size +
 			"</strong> bytes</p>"
 		);
