@@ -14,7 +14,7 @@ block head
             proxy: {
                 type: 'ajax',
                 // load remote data using HTTP
-                url: '/json/asset/list/all',
+                url: '/json/asset/list/#{listType}',
                 // specify a XmlReader (coincides with the XML format of the returned data)
                 reader: {
                     type: 'json',
