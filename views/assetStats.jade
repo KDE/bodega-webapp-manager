@@ -74,7 +74,7 @@ block head
     };
     
     function refresh() {
-        redrawGraph("/json/stats/assets?" + $.param({"assets": assets, "granularity": granularity, "metric": metric, "from": from, "to": to}, true))
+        redrawGraph("/json/stats/assets/" + metric + "?" + $.param({"assets": assets, "granularity": granularity, "from": from, "to": to}, true))
     }
     
     function reset() {
