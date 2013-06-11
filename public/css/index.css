@@ -17,3 +17,84 @@
     background: rgb(255, 255, 255); //white
 }
 
+#upload {
+    width: 50%;
+    margin: auto;
+    background: #ddd;
+    text-align: center;
+}
+#drop{
+    background-color: #eee;
+    padding: 40px 50px;
+    margin-left: 3ex;
+    margin-right: 3ex;
+    margin-bottom: 0;
+    border: 5px solid #eee;
+    border-radius: 5px;
+    text-align: center;
+    text-transform: uppercase;
+}
+#drop a{
+    background-color:#007a96;
+    padding:12px 26px;
+    color:#fff;
+    font-size:14px;
+    border-radius:2px;
+    cursor:pointer;
+    display:inline-block;
+    margin-top:12px;
+    line-height:1;
+}
+#drop a:hover{
+    background-color: #888;
+}
+#drop input{
+    display:none;
+}
+#upload ul{
+    list-style:none;
+    margin:0;
+    padding: 0;
+}
+#upload ul li {
+    background-color: #ddd;
+    border-top:1px solid #aaa;
+    border-bottom:1px solid #eee;
+    padding: 2ex;
+    height: 5ex;
+    position: relative;
+}
+#upload ul li input{
+    display: none;
+}
+
+#upload ul li p{
+    overflow: hidden;
+    white-space: nowrap;
+    font-weight: bold;
+    position: absolute;
+    top: 20px;
+    left: 100px;
+}
+
+#upload ul li i{
+    font-weight: normal;
+    font-style:normal;
+    display:block;
+}
+
+#upload ul li canvas{
+    top: 15px;
+    left: 32px;
+    position: absolute;
+}
+
+#upload ul li span{
+    width: 15px;
+    height: 12px;
+    background: url('upload-icons.png') no-repeat;
+    position: absolute;
+    top: 34px;
+    right: 33px;
+    cursor:pointer;
+}
