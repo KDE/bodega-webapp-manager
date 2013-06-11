@@ -10,7 +10,7 @@ block head
         var store = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId:'bodegaStore',
-            fields:['name', 'description', 'baseprice'],
+            fields:['name', 'description', 'file', 'baseprice'],
             proxy: {
                 type: 'ajax',
                 // load remote data using HTTP
@@ -63,6 +63,7 @@ block head
             columns: [
                 { header: 'Name',  dataIndex: 'name', field: {allowBlank: false}},
                 { header: 'Description', dataIndex: 'description', flex: 1, field: {allowBlank: false}},
+                { header: 'File name', dataIndex: 'file', field: {allowBlank: false}},
                 { header: 'Base price', dataIndex: 'baseprice', field: {xtype: 'numberfield', allowBlank: false}}
             ],
             dockedItems: [{
@@ -92,11 +93,11 @@ block head
                     }
                 }, {
                     xtype: 'combobox',
-                    emptyText: 'All assets',
                     editable: false,
                     queryMode: 'local',
                     displayField: 'name',
                     valueField: 'value',
+                    value: '#{listType}',
                     store: Ext.create('Ext.data.Store', {
                         fields: ['name', 'value'],
                         data: [{'name': 'All assets', 'value': 'all'},
