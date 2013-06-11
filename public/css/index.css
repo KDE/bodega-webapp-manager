@@ -34,7 +34,7 @@
     text-align: center;
     text-transform: uppercase;
 }
-#drop a{
+#drop a, #button a {
     background-color:#007a96;
     padding:12px 26px;
     color:#fff;
@@ -45,7 +45,7 @@
     margin-top:12px;
     line-height:1;
 }
-#drop a:hover{
+#drop a:hover, #button a:hover {
     background-color: #888;
 }
 #drop input{

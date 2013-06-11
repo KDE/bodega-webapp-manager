@@ -65,6 +65,10 @@ $(function(){
         fail:function(e, data){
             // Something has gone wrong!
             data.context.addClass('error');
+        },
+
+        done: function (e, data) {
+            $("#button").css('display','block');
         }
 
     });
