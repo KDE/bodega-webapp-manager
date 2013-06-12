@@ -56,8 +56,6 @@
                         });
                     },
                     add: function(store, records, index, eOpts) {
-                        console.log(records)
-                        return;
                         var record;
                         for (var i in records) {
                             record = records[i];
@@ -65,6 +63,7 @@
                             record.raw.channel.name = record.data.name;
                             record.raw.channel.desc = record.data.desc;
                             record.raw.channel.image = record.data.image;
+                            record.raw.channel.parent = record.data.parentId;
                             record.raw.channel.active = record.data.active;
 
                             Ext.Ajax.request({
@@ -90,11 +89,45 @@
                 columns: [
                     { xtype: 'treecolumn', header: 'Name',  dataIndex: 'name', field: {allowBlank: false}},
                     { header: 'Description',  dataIndex: 'description', flex: 1, field: {allowBlank: false}},
-                    { header: 'Active', dataIndex: 'active', xtype: 'checkcolumn'}
+                    { header: 'Active', dataIndex: 'active', xtype: 'checkcolumn'},
+                    {
+                        header: 'New subchannel',
+                        xtype: 'actioncolumn',
+                        width: 50,
+                        items: [{
+                            icon: '/css/edit.png',
+                            tooltip: 'Create Subchannel',
+                            handler: function(grid, rowIndex, colIndex) {
+                                var rec = {
+                                     name: 'Channel',
+                                     description: 'New Channel',
+                                     parent: channelStore.getAt(rowIndex).data.id
+                                };
+                                
+                                channelStore.insert(0, rec);
+                            }
+                        }]
+                    }
                     ],
                 rootVisible: false,
                 region: 'center',
-                plugins: [cellEditing]
+                plugins: [cellEditing],
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [{
+                        text: 'New Channel',
+                        scope: this,
+                        handler: function(){
+                            // Create a model instance
+                            var rec = {
+                                name: 'Channel',
+                                description: 'New Channel'
+                            };
+                            channelStore.insert(0, rec);
+                        }
+                    }]
+                }]
             });
             win = Ext.create('widget.window', {
                 title: 'Channels of Store ' + storeData.name,
