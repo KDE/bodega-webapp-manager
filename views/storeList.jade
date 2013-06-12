@@ -5,6 +5,7 @@ block head
   link(rel="stylesheet", href="/css/ext-all.css")
   script(src='/js/ext-all.js')
 
+  include channelList.js
   script
     Ext.onReady(function() {
         var store = Ext.create('Ext.data.Store', {
@@ -89,7 +90,18 @@ block head
                 { header: 'Min markup', dataIndex: 'markups.min', field: {allowBlank: false}},
                 { header: 'Max markup', dataIndex: 'markups.max', field: {xtype: 'numberfield', allowBlank: false}},
                 { header: 'Markup', dataIndex: 'markups.markup', field: {xtype: 'numberfield', allowBlank: false}},
-                { header: 'Flat', dataIndex: 'markups.flat', xtype: 'checkcolumn'}
+                { header: 'Flat', dataIndex: 'markups.flat', xtype: 'checkcolumn'},
+                {
+                    xtype: 'actioncolumn',
+                    width: 50,
+                    items: [{
+                        icon: '/css/edit.png',
+                        tooltip: 'Edit channels',
+                        handler: function(grid, rowIndex, colIndex) {
+                            channelList(store.getAt(rowIndex).data);
+                        }
+                    }]
+                }
             ],
             dockedItems: [{
                 xtype: 'toolbar',
