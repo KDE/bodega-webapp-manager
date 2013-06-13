@@ -177,8 +177,7 @@ block head
                 }]
             }],
             listeners: {
-                selectionchange: function()
-                {
+                selectionchange: function() {
                     var s = view.getSelectionModel().getSelection();
                     if (s.length > 0) {
                         view.dockedItems.get(1).items.get(3).show();

@@ -52,7 +52,7 @@
                             params: $.param(record.raw),
                             callback: function(response) {
                                 channelStore.getRootNode().removeAll();
-                                store.load();
+                                channelStore.load();
                             }
                         });
                     },
@@ -71,7 +71,7 @@
                             params: $.param(data),
                             callback: function(response) {
                                 channelStore.getRootNode().removeAll();
-                                store.load();
+                                channelStore.load();
                             }
                         });
                     }
@@ -109,7 +109,6 @@
                                         break;
                                     }
                                 }
-                                console.log(node)
                                 
                                 var rec = {
                                      name: 'Channel',
@@ -139,8 +138,39 @@
                             };
                             channelView.getRootNode().insertChild(0, rec);
                         }
+                    }, {
+                        xtype: 'button',
+                        text: 'Delete channels',
+                        hidden: true,
+                        handler: function() {
+                            Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected items?', function(btn){
+                                if(btn === 'yes') {
+                                    var s = channelView.getSelectionModel().getSelection();
+                                    selected = [];
+                                    Ext.each(s, function (item) {
+                                        Ext.Ajax.request({
+                                            url: '/json/store/channel/delete/' + storeId + '/' + item.data.id,
+                                            callback: function(response) {
+                                                channelStore.getRootNode().removeAll();
+                                                channelStore.load();
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        }
                     }]
-                }]
+                }],
+                listeners: {
+                    selectionchange: function() {
+                        var s = channelView.getSelectionModel().getSelection();
+                        if (s.length > 0) {
+                            channelView.dockedItems.get(1).items.get(1).show();
+                        } else {
+                            channelView.dockedItems.get(1).items.get(1).hide();
+                        }
+                    }
+                }
             });
             win = Ext.create('widget.window', {
                 title: 'Channels of Store ' + storeData.name,
