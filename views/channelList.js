@@ -41,7 +41,7 @@
                         var data = {};
                         record.raw.channel = {};
                         record.raw.channel.name = record.data.name;
-                        record.raw.channel.desc = record.data.desc;
+                        record.raw.channel.desc = record.data.description;
                         record.raw.channel.image = record.data.image;
                         record.raw.channel.parent = record.data.parentId;
                         record.raw.channel.active = record.data.active;
@@ -56,26 +56,24 @@
                             }
                         });
                     },
-                    add: function(store, records, index, eOpts) {
-                        var record;
-                        for (var i in records) {
-                            record = records[i];
-                            record.raw.channel = {};
-                            record.raw.channel.name = record.data.name;
-                            record.raw.channel.desc = record.data.desc;
-                            record.raw.channel.image = record.data.image;
-                            record.raw.channel.parent = record.data.parentId;
-                            record.raw.channel.active = record.data.active;
+                    insert: function( parent, node, refNode, eOpts ) {
+                        var data = {};
+                        data.channel = {};
+                        data.channel.name = node.data.name;
+                        data.channel.desc = node.data.description;
+                        data.channel.image = node.data.image;
+                        data.channel.parent = record.data.parentId;
+                        data.channel.active = false;
 
-                            Ext.Ajax.request({
-                                url: '/json/store/channel/create/' + storeId,
-                                method: 'POST',
-                                params: $.param(record.raw),
-                                callback: function(response) {
-                                    store.load();
-                                }
-                            });
-                        }
+                        Ext.Ajax.request({
+                            url: '/json/store/channel/create/' + storeId,
+                            method: 'POST',
+                            params: $.param(data),
+                            callback: function(response) {
+                                channelStore.getRootNode().removeAll();
+                                store.load();
+                            }
+                        });
                     }
                 }
                 
@@ -139,7 +137,7 @@
                                 name: 'Channel',
                                 description: 'New Channel'
                             };
-                            channelStore.insert(0, rec);
+                            channelView.getRootNode().insertChild(0, rec);
                         }
                     }]
                 }]
