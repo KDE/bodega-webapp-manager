@@ -34,7 +34,7 @@
                 listeners: {
                     update: function(store, record, operation, eOpts ) {
                         //only go forward if eOpts is the name of a column
-                        if (!record.data.name || eOpts.length === 0 ||
+                        if (!record.data.name || !eOpts || eOpts.length === 0 ||
                             ['id', 'name', 'description', 'image', 'active'].indexOf(eOpts[0]) === -1) {
                             return;
                         }
@@ -51,6 +51,7 @@
                             method: 'POST',
                             params: $.param(record.raw),
                             callback: function(response) {
+                                channelStore.getRootNode().removeAll();
                                 store.load();
                             }
                         });
@@ -83,6 +84,7 @@
                 clicksToEdit: 1
             });
             channelView = Ext.create('Ext.tree.Panel', {
+                id: 'channelView',
                 store: channelStore,
                 selType: 'checkboxmodel',
                 inline: true,
@@ -98,13 +100,26 @@
                             icon: '/css/edit.png',
                             tooltip: 'Create Subchannel',
                             handler: function(grid, rowIndex, colIndex) {
+                                //HACK to find the node from the row number
+                                var node = channelView.getRootNode();
+                                for (var i = 0; i <= rowIndex; ++i) {
+                                    if (node.firstChild !== null) {
+                                        node = node.firstChild;
+                                    } else if (node.nextSibling !== null) {
+                                        node = node.nextSibling
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                console.log(node)
+                                
                                 var rec = {
                                      name: 'Channel',
                                      description: 'New Channel',
-                                     parent: channelStore.getAt(rowIndex).data.id
+                                     parent: node.data.id
                                 };
                                 
-                                channelStore.insert(0, rec);
+                                node.insertChild(0, rec);
                             }
                         }]
                     }
