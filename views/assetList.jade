@@ -69,7 +69,13 @@ block head
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
-                items: ['Search', {
+                items: [{
+                    text: 'Create Assets',
+                    scope: this,
+                    handler: function() {
+                        window.location.href = "/asset/create";
+                    }
+                }, 'Search', {
                     xtype: 'textfield',
                     name: 'searchField',
                     hideLabel: true,
@@ -138,9 +144,9 @@ block head
                 {
                     var s = view.getSelectionModel().getSelection();
                     if (s.length > 0) {
-                        view.dockedItems.get(1).items.get(3).show();
+                        view.dockedItems.get(1).items.get(4).show();
                     } else {
-                        view.dockedItems.get(1).items.get(3).hide();
+                        view.dockedItems.get(1).items.get(4).hide();
                     }
                 }
             },
@@ -148,7 +154,7 @@ block head
             border: 0,
             plugins: [cellEditing]
         });
-        
+
 
         var layout = Ext.create('Ext.panel.Panel', {
             width: '100%',
