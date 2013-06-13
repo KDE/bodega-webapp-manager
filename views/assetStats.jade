@@ -23,9 +23,9 @@ block head
     var graphData = new Array();
     var assets = new Array();
     var chart;
-    var granularity = "month"
+    var granularity = "day"
     var metric = "points";
-    var from = (new Date(new Date().getFullYear()-1, new Date().getMonth(), new Date().getDay()));
+    var from = (new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() - 14));
     var to = new Date();
 
     function convertData(data) {
@@ -185,7 +185,7 @@ block head
                 dock: 'bottom',
                 items: ['From:', {
                     xtype: 'datepicker',
-                    value: (new Date(new Date().getFullYear()-1, new Date().getMonth(), new Date().getDay())),
+                    value: (new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() - 14)),
                     handler: function(picker, date) {
                         graphArea.dockedItems.get(1).items.get(3).setMinDate(date);
                         from = date;
