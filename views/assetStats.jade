@@ -72,11 +72,11 @@ block head
             generateGraph();
         });
     };
-    
+
     function refresh() {
         redrawGraph("/json/stats/assets/" + metric + "?" + $.param({"assets": assets, "granularity": granularity, "from": from, "to": to}, true))
     }
-    
+
     function reset() {
         assets = new Array();
         granularity = "month"
@@ -116,9 +116,11 @@ block head
                     editable: false,
                     store: Ext.create('Ext.data.Store', {
                         fields: ['name', 'value'],
-                        data: [{'name': 'Month', 'value': 'month'},
-                            {'name': 'Year', 'value': 'year'},
-                            {'name': 'Day', 'value': 'day'}]
+                        data: [
+                            {'name': 'Day', 'value': 'day'},
+                            {'name': 'Month', 'value': 'month'},
+                            {'name': 'Year', 'value': 'year'}
+                            ]
                     }),
                     queryMode: 'local',
                     displayField: 'name',
