@@ -41,7 +41,7 @@
                         var data = {};
                         record.raw.channel = {};
                         record.raw.channel.name = record.data.name;
-                        record.raw.channel.desc = record.data.description;
+                        record.raw.channel.description = record.data.description;
                         record.raw.channel.image = record.data.image;
                         record.raw.channel.parent = record.data.parentId;
                         record.raw.channel.active = record.data.active;
@@ -60,9 +60,9 @@
                         var data = {};
                         data.channel = {};
                         data.channel.name = node.data.name;
-                        data.channel.desc = node.data.description;
+                        data.channel.description = node.data.description;
                         data.channel.image = node.data.image;
-                        data.channel.parent = record.data.parentId;
+                        data.channel.parent = node.data.parentId;
                         data.channel.active = false;
 
                         Ext.Ajax.request({
@@ -76,7 +76,6 @@
                         });
                     }
                 }
-                
             });
             cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
                 clicksToEdit: 1
@@ -87,35 +86,44 @@
                 selType: 'checkboxmodel',
                 inline: true,
                 columns: [
-                    { xtype: 'treecolumn', header: 'Name',  dataIndex: 'name', field: {allowBlank: false}},
+                    { xtype: 'treecolumn', header: 'Name', width:'40%',  dataIndex: 'name', field: {allowBlank: false}},
                     { header: 'Description',  dataIndex: 'description', flex: 1, field: {allowBlank: false}},
                     { header: 'Active', dataIndex: 'active', xtype: 'checkcolumn'},
                     {
-                        header: 'New subchannel',
                         xtype: 'actioncolumn',
                         width: 50,
                         items: [{
-                            icon: '/css/edit.png',
+                            icon: '/css/images/tree/drop-append.png',
                             tooltip: 'Create Subchannel',
                             handler: function(grid, rowIndex, colIndex) {
                                 //HACK to find the node from the row number
                                 var node = channelView.getRootNode();
-                                for (var i = 0; i <= rowIndex; ++i) {
-                                    if (node.firstChild !== null) {
+                                var nodes = [node];
+                                var visited = {};
+                                var i = 0;
+                                while (i <= rowIndex) {
+                                    if (node.firstChild !== null && !visited[node.internalId]) {
+                                        visited[node.internalId] = true;
+                                        nodes.push(node);
                                         node = node.firstChild;
+                                        ++i;
                                     } else if (node.nextSibling !== null) {
-                                        node = node.nextSibling
+                                        node = node.nextSibling;
+                                        ++i;
                                     } else {
-                                        break;
+                                        while (nodes.length > 0 && nodes[nodes.length-1].nextSibling === null) {
+                                            nodes.pop();
+                                            node = nodes[nodes.length-1];
+                                        }
                                     }
                                 }
-                                
+
                                 var rec = {
                                      name: 'Channel',
                                      description: 'New Channel',
                                      parent: node.data.id
                                 };
-                                
+
                                 node.insertChild(0, rec);
                             }
                         }]
@@ -137,6 +145,13 @@
                                 description: 'New Channel'
                             };
                             channelView.getRootNode().insertChild(0, rec);
+                        }
+                    }, {
+                        text: 'Reload',
+                        scope: this,
+                        handler: function() {
+                            channelStore.getRootNode().removeAll();
+                            channelStore.load();
                         }
                     }, {
                         xtype: 'button',
@@ -165,9 +180,14 @@
                     selectionchange: function() {
                         var s = channelView.getSelectionModel().getSelection();
                         if (s.length > 0) {
-                            channelView.dockedItems.get(1).items.get(1).show();
+                            channelView.dockedItems.get(1).items.get(2).show();
                         } else {
-                            channelView.dockedItems.get(1).items.get(1).hide();
+                            channelView.dockedItems.get(1).items.get(2).hide();
+                        }
+                    },
+                    load: function( parent, node, records, successful, eOpts ) {
+                        if (successful) {
+                            channelView.expandAll();
                         }
                     }
                 }
@@ -188,6 +208,7 @@
                     width: 200,
                     split: true,
                     collapsible: true,
+                    collapsed: true,
                     floatable: false
                 }, channelView]
             });
