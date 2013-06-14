@@ -118,7 +118,23 @@ function createCollectionList() {
                     }
                 }
             },
-            plugins: [cellEditing],
+            enableDrop: true,
+            plugins: [cellEditing,
+                new Ext.ux.dd.AssetCellFieldDropZone({
+                    ddGroup: 'viewDDGroup',
+                    onCellDrop: function(target, dragData) {
+                        for (var i in dragData.records) {
+                            Ext.Ajax.request({
+                                url: '/json/collection/' + target.record.data.id + '/add/' + dragData.records[i].data.id,
+                                callback: function(response) {
+                                    //still nothing
+                                    collectionsStore.load();
+                                }
+                            });
+                        }
+                    }
+                })
+            ],
             border: 0
         });
     }

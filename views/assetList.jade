@@ -4,6 +4,7 @@ block head
   title Your assets
   link(rel="stylesheet", href="/css/ext-all.css")
   script(src='/js/ext-all.js')
+  script(src='/js/AssetCellFieldDropZone.js')
 
   include collectionList.js
 
@@ -148,6 +149,19 @@ block head
                         view.dockedItems.get(1).items.get(4).show();
                     } else {
                         view.dockedItems.get(1).items.get(4).hide();
+                    }
+                }
+            },
+            viewConfig: {
+                plugins: {
+                    ptype: 'gridviewdragdrop',
+                    dragGroup: 'viewDDGroup',
+                    dropGroup: 'collectionListDDGroup'
+                },
+                listeners: {
+                    drop: function(node, data, dropRec, dropPosition) {
+                        var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
+                        Ext.example.msg("Drag from right to left", 'Dropped ' + data.records[0].get('name') + dropOn);
                     }
                 }
             },
