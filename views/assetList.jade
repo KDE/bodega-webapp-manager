@@ -5,6 +5,8 @@ block head
   link(rel="stylesheet", href="/css/ext-all.css")
   script(src='/js/ext-all.js')
 
+  include collectionList.js
+
   script
     Ext.onReady(function() {
         var store = Ext.create('Ext.data.Store', {
@@ -49,7 +51,6 @@ block head
                     });
                 }
             }
-            
         });
 
         var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
@@ -156,11 +157,13 @@ block head
             plugins: [cellEditing]
         });
 
+        var collectionList = createCollectionList();
+
         var collectionsPanel = {
             region: 'east',
-            layout: 'fit',
+            items: [collectionList],
             title: 'Collections',
-            width: 200,
+            width: 300,
             split: true,
             collapsible: true,
             collapsed: true,
