@@ -152,17 +152,32 @@ block head
             },
             columnWidth: 1,
             border: 0,
+            region: 'center',
             plugins: [cellEditing]
         });
 
+        var collectionsPanel = {
+            region: 'east',
+            layout: 'fit',
+            title: 'Collections',
+            width: 200,
+            split: true,
+            collapsible: true,
+            collapsed: true,
+            floatable: false
+        }
 
-        var layout = Ext.create('Ext.panel.Panel', {
-            width: '100%',
-            layout:'column',
-            items: [view],
+        var layout = Ext.create('Ext.Viewport', {
+            layout:'border',
+            bodyBorder: false,
+            padding: '48 0 0 0',
+            bodyStyle: 'width:100%',
+            items: [view, collectionsPanel],
             renderTo: Ext.getBody(),
-            border: 0
+            border: 0,
         });
+
+
     });
 
 
@@ -171,5 +186,3 @@ block body
     <br/>
     include navigator
     .container-fluid
-      .row-fluid
-        

@@ -19,6 +19,7 @@ block head
   script(src='/js/nvd3/models/stackedAreaChart.js')
   script
   
+    var statsTarget = 'assets';
     var graphData = new Array();
     var assets = new Array();
     var chart;
@@ -74,7 +75,7 @@ block head
     };
 
     function refresh() {
-        redrawGraph("/json/stats/assets/" + metric + "?" + $.param({"assets": assets, "granularity": granularity, "from": from, "to": to}, true))
+        redrawGraph("/json/stats/" + statsTarget + "/" + metric + "?" + $.param({"assets": assets, "granularity": granularity, "from": from, "to": to}, true))
     }
 
     function reset() {
@@ -90,6 +91,11 @@ block head
         } else {
             assets.splice(assets.indexOf(asset), 1);
         }
+        refresh();
+    }
+
+    function setStatsTarget(target) {
+        statsTarget = target;
         refresh();
     }
 
@@ -110,7 +116,28 @@ block head
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
-                items: ['Granularity:', {
+                items: ['Stats:', {
+                    xtype: 'combobox',
+                    emptyText: 'Assets',
+                    editable: false,
+                    store: Ext.create('Ext.data.Store', {
+                        fields: ['name', 'value'],
+                        data: [
+                            {'name': 'Assets', 'value': 'assets'},
+                            {'name': 'Stores', 'value': 'stores'}
+                            ]
+                    }),
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'value',
+                    listeners:{
+                        'select': function(combo, record, index) {
+                            setStatsTarget(combo.getValue());
+                        }
+                    },
+                    width: 100,
+                    height: 22
+                }, 'Granularity:', {
                     xtype: 'combobox',
                     emptyText: 'Month',
                     editable: false,
@@ -172,7 +199,8 @@ block head
                         refresh();
                     }
                 }]
-            }]
+            }],
+            region: 'center'
         });
 
     refresh();
@@ -241,13 +269,20 @@ block head
                 }
             },
             columnWidth: 0.2,
-            border: 0
+            border: 0,
+            title: 'Assets',
+            width: 200,
+            region: 'east',
+            split: true,
+            collapsible: true,
+            collapsed: false,
+            floatable: false
         });
-        
 
-        var layout = Ext.create('Ext.panel.Panel', {
-            width: '100%',
-            layout:'column',
+
+        var layout = Ext.create('Ext.Viewport', {
+            layout:'border',
+            padding: '48 0 0 0',
             items: [graphArea, view],
             renderTo: Ext.getBody(),
             border: 0

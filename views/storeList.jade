@@ -192,9 +192,10 @@ block head
         });
         
 
-        var layout = Ext.create('Ext.panel.Panel', {
+        var layout = Ext.create('Ext.Viewport', {
             width: '100%',
             layout:'column',
+            padding: '48 0 0 0',
             items: [view],
             renderTo: Ext.getBody(),
             border: 0
