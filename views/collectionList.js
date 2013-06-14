@@ -85,12 +85,37 @@ function createCollectionList() {
                             column: 0
                         });
                     }
+                }, {
+                    xtype: 'button',
+                    text: 'Delete Collections',
+                    hidden: true,
+                    handler: function() {
+                        Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected items?', function(btn){
+                            if(btn === 'yes'){
+                                var s = collectionView.getSelectionModel().getSelection();
+                                selected = [];
+                                Ext.each(s, function (item) {
+                                    Ext.Ajax.request({
+                                        url: '/json/collection/delete/' + item.data.id,
+                                        callback: function(response) {
+                                            collectionsStore.load();
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    }
                 }]
             }],
             listeners: {
                 selectionchange: function()
                 {
-                    
+                    var s = collectionView.getSelectionModel().getSelection();
+                    if (s.length > 0) {
+                        collectionView.dockedItems.get(1).items.get(1).show();
+                    } else {
+                        collectionView.dockedItems.get(1).items.get(1).hide();
+                    }
                 }
             },
             plugins: [cellEditing],
