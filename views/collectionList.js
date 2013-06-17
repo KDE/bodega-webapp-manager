@@ -3,6 +3,86 @@ var collectionsStore;
 var collectionView;
 var cellEditing;
 
+var collectionDetailsStore;
+var collectionDetailsView;
+var collectionDetailsWindow;
+var currentCollection;
+
+function createCollectionDetails(collectionData) {
+    currentCollection = collectionData.id;
+    if (!collectionDetailsStore) {
+        collectionDetailsStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId:'collectionStore',
+            fields:['id', 'name'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/collection/list/' + collectionData.id,
+                reader: {
+                    type: 'json',
+                    root: 'collection.assets'
+                }
+            },
+        });
+
+        collectionDetailsView = Ext.create('Ext.grid.Panel', {
+            store: collectionDetailsStore,
+            columns: [
+                { header: 'Name',  width: 180, dataIndex: 'name', flex: 1 },
+                {
+                    header: 'Edit',
+                    xtype: 'actioncolumn',
+                    width: 50,
+                    items: [{
+                        icon: '/css/list-remove.png',
+                        tooltip: 'Remove Asset',
+                        handler: function(grid, rowIndex, colIndex) {
+                            console.log(collectionDetailsStore.getAt(rowIndex).data);
+                            Ext.Ajax.request({
+                                url: '/json/collection/' + currentCollection + '/remove/' + collectionDetailsStore.getAt(rowIndex).data.id,
+                                callback: function(response) {
+                                    collectionDetailsStore.removeAll()
+                                    collectionDetailsStore.load();
+                                }
+                            });
+                        }
+                    }]
+                }
+            ],
+            region: 'center',
+            border: 0
+        });
+
+        collectionDetailsWindow = Ext.create('widget.window', {
+            title: 'Assets of Collection ' + collectionData.name,
+            closable: true,
+            closeAction: 'hide',
+            modal: true,
+            width: '80%',
+            height: '80%',
+            layout: 'border',
+            bodyStyle: 'padding: 5px;',
+            items: [collectionDetailsView]
+        });
+    } else {
+        collectionDetailsStore.proxy.url = '/json/collection/list/' + collectionData.id;
+        collectionDetailsWindow.setTitle('Assets of Collection ' + collectionData.name);
+
+        collectionDetailsStore.removeAll();
+        collectionDetailsStore.load();
+    }
+
+    if (collectionDetailsWindow.isVisible()) {
+        collectionDetailsWindow.hide(this, function() {
+            button.dom.disabled = false;
+        });
+    } else {
+        collectionDetailsWindow.show(this, function() {
+            button.dom.disabled = false;
+        });
+    }
+}
+
 function createCollectionList() {
     if (!collectionsStore) {
         collectionsStore = Ext.create('Ext.data.Store', {
@@ -64,7 +144,19 @@ function createCollectionList() {
             columns: [
                 { header: 'Name',  width: 180, dataIndex: 'name', flex: 1, field: {allowBlank: false} },
                 { header: 'Public?', width: '20%', dataIndex: 'public', xtype: 'checkcolumn', field: {allowBlank: false}},
-                { header: 'Type', width: '20%',  dataIndex: 'type', field: {allowBlank: false}}
+                { header: 'Type', width: '20%',  dataIndex: 'type', field: {allowBlank: false}},
+                {
+                    header: 'Edit',
+                    xtype: 'actioncolumn',
+                    width: 50,
+                    items: [{
+                        icon: '/css/edit.png',
+                        tooltip: 'Edit channels',
+                        handler: function(grid, rowIndex, colIndex) {
+                            createCollectionDetails(collectionsStore.getAt(rowIndex).data);
+                        }
+                    }]
+                }
             ],
             dockedItems: [{
                 xtype: 'toolbar',

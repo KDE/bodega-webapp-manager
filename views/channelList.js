@@ -93,7 +93,7 @@
                         xtype: 'actioncolumn',
                         width: 50,
                         items: [{
-                            icon: '/css/images/tree/drop-append.png',
+                            icon: '/css/list-add.png',
                             tooltip: 'Create Subchannel',
                             handler: function(grid, rowIndex, colIndex) {
                                 //HACK to find the node from the row number
