@@ -1,10 +1,56 @@
 
     var win;
+    var channelStore;
     var channelView;
     var cellEditing;
     var storeId;
 
-    var channelStore;
+    var tagsStore;
+    var tagsView;
+    var currentChannel;
+
+    function loadTagsView(channelData) {
+        if (channelData) {
+            currentChannel = channelData.id;
+        }
+
+        if (!tagsView) {
+            tagsStore = Ext.create('Ext.data.Store', {
+                autoLoad: true,
+                storeId:'collectionStore',
+                fields:['id', 'title', 'type'],
+                data: channelData ? channelData.tags : null,
+                proxy: {
+                    type: 'memory',
+                    reader: {
+                        type: 'json'
+                    }
+                }
+            });
+
+            tagsView = Ext.create('Ext.grid.Panel', {
+                store: tagsStore,
+                columns: [
+                    { header: 'Title',  width: '80%', dataIndex: 'title', flex: 1 },
+                    { header: 'Type',  width: '20%', dataIndex: 'type' },
+                ],
+                border: 0,
+                region: 'west',
+                title: 'Tags',
+                width: 200,
+                split: true,
+                collapsible: true,
+                collapsed: true,
+                floatable: false
+            });
+        } else {
+            tagsStore.removeAll();
+            for (var i = 0; i < channelData.tags.length; ++i) {
+                tagsStore.insert(0, channelData.tags[i]);
+            }
+            return;
+        }
+    }
 
     function setStoreId(id) {
         storeId = id
@@ -19,7 +65,7 @@
             channelStore = Ext.create('Ext.data.TreeStore', {
                 autoLoad: true,
                 storeId:'channelStore',
-                fields:['id', 'name', 'description', 'image', 'active'],
+                fields:['id', 'name', 'description', 'image', 'active', 'tags'],
                 //folderSort: true,
                 root: 'channels',
                 clearOnLoad: true,
@@ -179,6 +225,13 @@
                 listeners: {
                     selectionchange: function() {
                         var s = channelView.getSelectionModel().getSelection();
+
+                        tagsStore.removeAll();
+                        if (s.length == 1) {
+                            console.log(s[0].data)
+                            loadTagsView(s[0].data);
+                        }
+
                         if (s.length > 0) {
                             channelView.dockedItems.get(1).items.get(2).show();
                         } else {
@@ -192,6 +245,9 @@
                     }
                 }
             });
+
+            loadTagsView();
+
             win = Ext.create('widget.window', {
                 title: 'Channels of Store ' + storeData.name,
                 closable: true,
@@ -202,15 +258,7 @@
                 height: '80%',
                 layout: 'border',
                 bodyStyle: 'padding: 5px;',
-                items: [{
-                    region: 'west',
-                    title: 'Tags',
-                    width: 200,
-                    split: true,
-                    collapsible: true,
-                    collapsed: true,
-                    floatable: false
-                }, {
+                items: [tagsView, {
                     region: 'east',
                     title: 'Collections',
                     width: 200,
