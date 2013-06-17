@@ -210,6 +210,14 @@
                     collapsible: true,
                     collapsed: true,
                     floatable: false
+                }, {
+                    region: 'east',
+                    title: 'Collections',
+                    width: 200,
+                    split: true,
+                    collapsible: true,
+                    collapsed: true,
+                    floatable: false
                 }, channelView]
             });
         }
