@@ -7,13 +7,14 @@ block head
   script(src='/js/AssetCellFieldDropZone.js')
 
   include collectionList.js
+  include assetDetails.js
 
   script
     Ext.onReady(function() {
         var store = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId:'bodegaStore',
-            fields:['name', 'description', 'file', 'baseprice'],
+            fields:['name', 'license', 'description', 'file', 'version', 'baseprice', 'active'],
             proxy: {
                 type: 'ajax',
                 // load remote data using HTTP
@@ -66,7 +67,18 @@ block head
                 { header: 'Name',  dataIndex: 'name', field: {allowBlank: false}},
                 { header: 'Description', dataIndex: 'description', flex: 1, field: {allowBlank: false}},
                 { header: 'File name', dataIndex: 'file', field: {allowBlank: false}},
-                { header: 'Base price', dataIndex: 'baseprice', field: {xtype: 'numberfield', allowBlank: false}}
+                { header: 'Base price', dataIndex: 'baseprice', field: {xtype: 'numberfield', allowBlank: false}},
+                {
+                    xtype: 'actioncolumn',
+                    width: 50,
+                    items: [{
+                        icon: '/css/edit.png',
+                        tooltip: 'Edit Asset',
+                        handler: function(grid, rowIndex, colIndex) {
+                            loadAssetDetails(store.getAt(rowIndex).data);
+                        }
+                    }]
+                }
             ],
             dockedItems: [{
                 xtype: 'toolbar',
