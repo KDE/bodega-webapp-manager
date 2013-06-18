@@ -60,7 +60,6 @@
     }
 
     function channelList(storeData) {
-        var win;
         if (!win) {
             channelStore = Ext.create('Ext.data.TreeStore', {
                 autoLoad: true,
