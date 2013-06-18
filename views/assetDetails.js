@@ -60,12 +60,27 @@ function loadAssetDetails(assetData) {
             buttons: [{
                 text: 'Save',
                 handler: function() {
-                    this.up('form').getForm().isValid();
+                    var data = {};
+                    data.name = assetDetailsForm.down('textfield[name=name]').getValue();
+                    data.license = assetDetailsForm.down('numberfield[name=license]').getValue();
+                    data.version = assetDetailsForm.down('textfield[name=version]').getValue();
+                    data.description = assetDetailsForm.down('textareafield[name=description]').getValue();
+                    data.baseprice = assetDetailsForm.down('numberfield[name=baseprice]').getValue();
+                    data.active = assetDetailsForm.down('checkboxfield[name=active]').getValue();
+
+                    Ext.Ajax.request({
+                        url: '/json/asset/update/' + currentAsset,
+                        method: 'POST',
+                        params: $.param({info: data}),
+                        callback: function(response) {
+                            store.load();
+                            assetDetailsWindow.hide();
+                        }
+                    });
                 }
             },{
                 text: 'Cancel',
                 handler: function() {
-                    this.up('form').getForm().reset();
                     assetDetailsWindow.hide();
                 }
             }]
@@ -85,7 +100,11 @@ function loadAssetDetails(assetData) {
         });
     } else {
         assetDetailsForm.down('textfield[name=name]').setValue(assetData.name);
-        
+        assetDetailsForm.down('numberfield[name=license]').setValue(assetData.license);
+        assetDetailsForm.down('textfield[name=version]').setValue(assetData.version);
+        assetDetailsForm.down('textareafield[name=description]').setValue(assetData.description);
+        assetDetailsForm.down('numberfield[name=baseprice]').setValue(assetData.baseprice);
+        assetDetailsForm.down('checkboxfield[name=active]').setValue(assetData.active);
     }
 
     if (assetDetailsWindow.isVisible()) {
