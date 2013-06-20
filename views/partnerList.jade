@@ -1,0 +1,177 @@
+extends layout
+block head
+
+  title Partners
+  link(rel="stylesheet", href="/css/ext-all.css")
+  script(src='/js/ext-all.js')
+
+  script
+    Ext.onReady(function() {
+        var store = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId:'bodegaStore',
+            fields:['id', 'name', 'email', 'publisher', 'distributor', 'points', 'links'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/partner/list',
+                reader: {
+                    type: 'json',
+                    root: 'partners'
+                }
+            },
+            listeners: {
+                update: function(store, record, operation, eOpts ) {
+                    record.raw.name = record.data.name;
+                    record.raw.email = record.data.email;
+                    record.raw.publisher = record.data.publisher;
+                    record.raw.distributor = record.data.distributor;
+                    record.raw.points = record.data.points;
+                    record.raw.links = record.data.links;
+
+                    Ext.Ajax.request({
+                        url: '/json/partner/update/' + record.raw.id,
+                        method: 'POST',
+                        params: $.param(record.raw),
+                        callback: function(response) {
+                            store.load();
+                        }
+                    });
+                },
+                add: function(store, records, index, eOpts) {
+                    console.log(records)
+                    var record;
+                    for (var i in records) {
+                        record = records[i];
+                        record.raw.name = record.data.name;
+                        record.raw.email = record.data.email;
+                        record.raw.publisher = record.data.publisher;
+                        record.raw.distributor = record.data.distributor;
+                        record.raw.points = record.data.points;
+                        record.raw.links = record.data.links;
+
+                        Ext.Ajax.request({
+                            url: '/json/partner/create',
+                            method: 'POST',
+                            params: $.param(record.raw),
+                            callback: function(response) {
+                                store.load();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
+            clicksToEdit: 1
+        });
+
+        var view = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('bodegaStore'),
+            selType: 'checkboxmodel',
+            inline: true,
+            columns: [
+                { header: 'Name',  dataIndex: 'name', field: {allowBlank: false}},
+                { header: 'Email', dataIndex: 'email', field: {allowBlank: false}},
+                { header: 'Publisher', dataIndex: 'publisher', xtype: 'checkcolumn'},
+                { header: 'distributor', dataIndex: 'distributor', xtype: 'checkcolumn'},
+                { header: 'Points', dataIndex: 'points', field: {xtype: 'numberfield', allowBlank: false}},
+            ],
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: [{
+                    text: 'New Partner',
+                    scope: this,
+                    handler: function() {
+                        var rec = {
+                            'name': 'New Partner',
+                            'email': 'partner@example.com',
+                            'publisher': false,
+                            'distributor': false,
+                            'points': 0,
+                            'links': []
+                        };
+
+                        store.insert(0, rec);
+                        cellEditing.startEditByPosition({
+                            row: 0, 
+                            column: 0
+                        });
+                    }
+                }, 'Search', {
+                    xtype: 'textfield',
+                    name: 'searchField',
+                    hideLabel: true,
+                    width: 200,
+                    listeners: {
+                        change: {
+                            fn: function(){
+                                store.clearFilter();
+
+                                var search = view.down('textfield[name=searchField]').getValue();
+                                store.filterBy(function (record) {
+                                    //name containing the textfield value
+                                    var name = record.get('name').toLowerCase();
+                                    var email = record.get('email').toLowerCase();
+                                    return name.indexOf(search) !== -1 || email.indexOf(search) !== -1;
+                               });
+                            },
+                            scope: this,
+                            buffer: 100
+                        }
+                    }
+                }, {
+                    xtype: 'button',
+                    text: 'Delete Partners',
+                    hidden: true,
+                    handler: function() {
+                        Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected items?', function(btn){
+                            if(btn === 'yes'){
+                                var s = view.getSelectionModel().getSelection();
+                                selected = [];
+                                Ext.each(s, function (item) {
+                                    Ext.Ajax.request({
+                                        url: '/json/partner/delete/' + item.data.id,
+                                        callback: function(response) {
+                                            store.load();
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    }
+                }]
+            }],
+            listeners: {
+                selectionchange: function() {
+                    var s = view.getSelectionModel().getSelection();
+                    if (s.length > 0) {
+                        view.dockedItems.get(1).items.get(3).show();
+                    } else {
+                        view.dockedItems.get(1).items.get(3).hide();
+                    }
+                }
+            },
+            columnWidth: 1,
+            border: 0,
+            plugins: [cellEditing]
+        });
+
+        var layout = Ext.create('Ext.Viewport', {
+            width: '100%',
+            layout:'column',
+            padding: '48 0 0 0',
+            items: [view],
+            renderTo: Ext.getBody(),
+            border: 0
+        });
+    });
+
+
+block body
+  .title
+    <br/>
+    include navigator
+    .container-fluid
+

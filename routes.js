@@ -71,6 +71,10 @@ app.get('/store/list', isAuthorized, function(req, res){
     app.BodegaManager.liststores(req, res);
 });
 
+app.get('/partner/list', isAuthorized, function(req, res){
+    app.BodegaManager.listpartners(req, res);
+});
+
 app.get('/logout', function(req, res) {
     req.session.destroy();
     delete app.cookie;
