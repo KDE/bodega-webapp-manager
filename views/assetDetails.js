@@ -67,13 +67,15 @@ function loadAssetDetails(assetData) {
                     data.description = assetDetailsForm.down('textareafield[name=description]').getValue();
                     data.baseprice = assetDetailsForm.down('numberfield[name=baseprice]').getValue();
                     data.active = assetDetailsForm.down('checkboxfield[name=active]').getValue();
+                    data.posted = false;
+                    console.log(data);
 
                     Ext.Ajax.request({
                         url: '/json/asset/update/' + currentAsset,
                         method: 'POST',
                         params: $.param({info: data}),
                         callback: function(response) {
-                            store.load();
+                            //store.load();
                             assetDetailsWindow.hide();
                         }
                     });
