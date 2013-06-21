@@ -18,20 +18,23 @@ function loadAssetDetails(assetData) {
             },
 
             items: [{
+                id: 'name',
                 xtype: 'textfield',
-                name: 'name',
+                name: 'info[name]',
                 fieldLabel: 'Name',
                 value: assetData.name
             }, {
+                id: 'license',
                 xtype: 'numberfield',
-                name: 'license',
+                name: 'info[license]',
                 fieldLabel: 'License (TODO: combobox)',
                 value: assetData.license,
                 minValue: 0,
                 maxValue: 200
             }, {
+                id: 'version',
                 xtype: 'textfield',
-                name: 'version',
+                name: 'info[version]',
                 fieldLabel: 'Version',
                 value: assetData.version
             }, {
@@ -39,38 +42,59 @@ function loadAssetDetails(assetData) {
                 name: 'image',
                 fieldLabel: 'Image (TODO)'
             }, {
+                id: 'description',
                 xtype: 'textareafield',
-                name: 'description',
+                name: 'info[description]',
                 fieldLabel: 'Description',
                 value: assetData.description
             }, {
+                id: 'baseprice',
                 xtype: 'numberfield',
-                name: 'baseprice',
+                name: 'info[baseprice]',
                 fieldLabel: 'Base Price',
                 value: assetData.baseprice,
                 minValue: 0,
                 maxValue: 200
             }, {
+                id: 'active',
                 xtype: 'checkboxfield',
-                name: 'active',
+                name: 'info[active]',
                 fieldLabel: 'Active',
                 value: assetData.active
+            }, {
+                id: 'posted',
+                xtype: 'hidden',
+                name: 'info[posted]',
+                value: false
+            }, {
+                id: 'id',
+                xtype: 'hidden',
+                name: 'info[id]',
+                value: assetData.id
             }],
 
             buttons: [{
                 text: 'Save',
                 handler: function() {
-                    var data = {};
-                    data.name = assetDetailsForm.down('textfield[name=name]').getValue();
-                    data.license = assetDetailsForm.down('numberfield[name=license]').getValue();
-                    data.version = assetDetailsForm.down('textfield[name=version]').getValue();
-                    data.description = assetDetailsForm.down('textareafield[name=description]').getValue();
-                    data.baseprice = assetDetailsForm.down('numberfield[name=baseprice]').getValue();
-                    data.active = assetDetailsForm.down('checkboxfield[name=active]').getValue();
-                    data.posted = false;
-                    console.log(data);
-
-                    Ext.Ajax.request({
+                    
+                    var form = this.up('form').getForm();
+                    if (form.isValid()) {
+                        form.submit({
+                            url: '/json/asset/update/' + currentAsset,
+                            waitMsg: 'Updating the asset...',
+                            //params: $.param({info: data}),
+                            success: function(fp, o) {
+                                store.removeAll();
+                                store.load();
+                                assetDetailsWindow.hide();
+                            },
+                            failure: function(form, action) {
+                                assetDetailsWindow.hide();
+                            }
+                        });
+                    }
+                    
+                   /* Ext.Ajax.request({
                         url: '/json/asset/update/' + currentAsset,
                         method: 'POST',
                         params: $.param({info: data}),
@@ -80,7 +104,7 @@ function loadAssetDetails(assetData) {
                             store.load();
                             assetDetailsWindow.hide();
                         }
-                    });
+                    });*/
                 }
             },{
                 text: 'Cancel',
@@ -103,12 +127,13 @@ function loadAssetDetails(assetData) {
             items: [assetDetailsForm]
         });
     } else {
-        assetDetailsForm.down('textfield[name=name]').setValue(assetData.name);
-        assetDetailsForm.down('numberfield[name=license]').setValue(assetData.license);
-        assetDetailsForm.down('textfield[name=version]').setValue(assetData.version);
-        assetDetailsForm.down('textareafield[name=description]').setValue(assetData.description);
-        assetDetailsForm.down('numberfield[name=baseprice]').setValue(assetData.baseprice);
-        assetDetailsForm.down('checkboxfield[name=active]').setValue(assetData.active);
+        assetDetailsForm.items.get('name').setValue(assetData.name);
+        assetDetailsForm.items.get('license').setValue(assetData.license);
+        assetDetailsForm.items.get('version').setValue(assetData.version);
+        assetDetailsForm.items.get('description').setValue(assetData.description);
+        assetDetailsForm.items.get('baseprice').setValue(assetData.baseprice);
+        assetDetailsForm.items.get('active').setValue(assetData.active);
+        assetDetailsForm.items.get('id').setValue(assetData.id);
     }
 
     if (assetDetailsWindow.isVisible()) {
