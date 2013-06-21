@@ -74,8 +74,10 @@ function loadAssetDetails(assetData) {
                         url: '/json/asset/update/' + currentAsset,
                         method: 'POST',
                         params: $.param({info: data}),
+                        timeout: 1000,
                         callback: function(response) {
-                            //store.load();
+                            store.removeAll();
+                            store.load();
                             assetDetailsWindow.hide();
                         }
                     });

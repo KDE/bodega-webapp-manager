@@ -10,8 +10,9 @@ block head
   include assetDetails.js
 
   script
+    var store;
     Ext.onReady(function() {
-        var store = Ext.create('Ext.data.Store', {
+        store = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId:'bodegaStore',
             fields:['name', 'license', 'description', 'file', 'version', 'baseprice', 'active'],
@@ -44,6 +45,7 @@ block head
                     record.raw.baseprice = record.data.baseprice;
                     record.raw.posted = false;
                     console.log(record.raw)
+                    console.log($.param({info: record.raw}))
                     Ext.Ajax.request({
                         url: '/json/asset/update/' + record.raw.id,
                         method: 'POST',
