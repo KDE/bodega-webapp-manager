@@ -22,6 +22,8 @@ var path = require('path');
 var fs = require('fs');
 var RedisStore = require('connect-redis')(express);
 var sockjs  = require('sockjs');
+var option = require('./lib/utils.js').options
+
 GLOBAL.app = module.exports = express();
 
 app.config = JSON.parse(fs.readFileSync(('./config.json'), 'utf8'));
@@ -66,7 +68,30 @@ if ('production' == app.get('env')) {
 
 
 //app.server must be initialized before BodegaManager!!
-app.server = http.createServer(app);
+//app.server = http.createServer(app);
+
+app.server = http.createServer(function(request, response) {
+    if (request.url.indexOf('/json/') === -1) {
+        return app(request, response);
+    } else {
+        var options = option(request.url.substring(String("/json/").length), null, true);
+        options.method = request.method;
+
+        var proxyRequest = http.request(options);
+
+        proxyRequest.addListener('response', function (proxy_response) {
+            response.writeHead(proxy_response.statusCode, proxy_response.headers);
+            proxy_response.pipe(response);
+        });
+
+        request.pipe(proxyRequest);
+
+        proxyRequest.on('error', function(e) {
+            console.log('problem with request: ' + e.message);
+        });
+    }
+
+});
 
 var bodega = require('./lib/bodega.js').BodegaManager;
 var BodegaManager = new bodega();
