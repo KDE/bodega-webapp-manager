@@ -16,11 +16,13 @@ block body
     .container-fluid
       .row-fluid
 
-          <form id="upload" method="POST" action="/asset/create" enctype="multipart/form-data">
+          <form id="upload" method="POST" action="/json/asset/create" enctype="multipart/form-data">
+          <input type="hidden" id="info" name="info" />
+          <input type="hidden" id="license" name="info[license]" value="1" />
           <legend>Upload the files of your assets</legend>
           <div id="drop"> Drop Here <br/>
           <a>Browse</a>
-          <input type="file" name="upl" multiple />
+          <input type="file" name="asset" multiple />
           </div><br/>
           <div id="button" style="display:none"><a href="/asset/list/incoming">Review the new assets</a><br/><br/></div>
           <ul>
