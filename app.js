@@ -77,6 +77,11 @@ app.server = http.createServer(function(request, response) {
         var options = option(request.url.substring(String("/json/").length), null, true);
         options.method = request.method;
 
+        options.headers['Content-Type'] = request.headers['content-type'];
+        if (request.headers['content-length']) {
+            options.headers['content-length'] = request.headers['content-length']
+        }
+
         var proxyRequest = http.request(options);
 
         proxyRequest.addListener('response', function (proxy_response) {
