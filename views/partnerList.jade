@@ -6,6 +6,7 @@ block head
   script(src='/js/ext-all.js')
 
   include partnerContacts.js
+  include partnerDetails.js
 
   script
     Ext.onReady(function() {
@@ -93,6 +94,12 @@ block head
                         tooltip: 'Edit contacts',
                         handler: function(grid, rowIndex, colIndex) {
                             loadPartnerContacts(store.getAt(rowIndex).data);
+                        }
+                    }, {
+                        icon: '/css/edit.png',
+                        tooltip: 'Edit Partner',
+                        handler: function(grid, rowIndex, colIndex) {
+                            loadPartnerDetails(store.getAt(rowIndex).data);
                         }
                     }]
                 }

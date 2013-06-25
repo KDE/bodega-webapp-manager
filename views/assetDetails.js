@@ -76,7 +76,7 @@ function loadAssetDetails(assetData) {
             buttons: [{
                 text: 'Save',
                 handler: function() {
-                    
+
                     var form = this.up('form').getForm();
                     if (form.isValid()) {
                         form.submit({
@@ -93,18 +93,6 @@ function loadAssetDetails(assetData) {
                             }
                         });
                     }
-                    
-                   /* Ext.Ajax.request({
-                        url: '/json/asset/update/' + currentAsset,
-                        method: 'POST',
-                        params: $.param({info: data}),
-                        timeout: 1000,
-                        callback: function(response) {
-                            store.removeAll();
-                            store.load();
-                            assetDetailsWindow.hide();
-                        }
-                    });*/
                 }
             },{
                 text: 'Cancel',
@@ -113,7 +101,7 @@ function loadAssetDetails(assetData) {
                 }
             }]
         });
-        
+
 
         assetDetailsWindow = Ext.create('widget.window', {
             title: 'Details of Assets ' + assetData.name,
