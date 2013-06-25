@@ -68,7 +68,7 @@ block head
             clicksToEdit: 1,
             listeners: {
                 beforeedit: function(edit, opt) {
-                    if (opt.field === 'points') {
+                    if (opt.field === 'points' || opt.field === 'publisher' || opt.field === 'distributor') {
                         return false;
                     }
                 }
@@ -82,8 +82,8 @@ block head
             columns: [
                 { header: 'Name',  dataIndex: 'name', field: {allowBlank: false}, flex: 1},
                 { header: 'Email', dataIndex: 'email', field: {allowBlank: false}, flex: 1},
-                { header: 'Publisher', dataIndex: 'publisher', xtype: 'checkcolumn'},
-                { header: 'distributor', dataIndex: 'distributor', xtype: 'checkcolumn'},
+                { header: 'Publisher', dataIndex: 'publisher', xtype: 'checkcolumn', disabled: true},
+                { header: 'distributor', dataIndex: 'distributor', xtype: 'checkcolumn', disabled: true},
                 { header: 'Points', dataIndex: 'points', field: {xtype: 'numberfield', allowBlank: false}},
                 {
                     xtype: 'actioncolumn',
