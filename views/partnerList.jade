@@ -5,12 +5,14 @@ block head
   link(rel="stylesheet", href="/css/ext-all.css")
   script(src='/js/ext-all.js')
 
+  include partnerContacts.js
+
   script
     Ext.onReady(function() {
         var store = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId:'bodegaStore',
-            fields:['id', 'name', 'email', 'publisher', 'distributor', 'points', 'links'],
+            fields:['id', 'name', 'email', 'publisher', 'distributor', 'points', 'people', 'links'],
             proxy: {
                 type: 'ajax',
                 url: '/json/partner/list',
@@ -83,6 +85,17 @@ block head
                 { header: 'Publisher', dataIndex: 'publisher', xtype: 'checkcolumn'},
                 { header: 'distributor', dataIndex: 'distributor', xtype: 'checkcolumn'},
                 { header: 'Points', dataIndex: 'points', field: {xtype: 'numberfield', allowBlank: false}},
+                {
+                    xtype: 'actioncolumn',
+                    width: 50,
+                    items: [{
+                        icon: '/css/edit.png',
+                        tooltip: 'Edit Asset',
+                        handler: function(grid, rowIndex, colIndex) {
+                            loadPartnerContacts(store.getAt(rowIndex).data);
+                        }
+                    }]
+                }
             ],
             dockedItems: [{
                 xtype: 'toolbar',
