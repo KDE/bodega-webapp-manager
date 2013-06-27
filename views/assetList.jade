@@ -7,6 +7,7 @@ block head
   script(src='/js/AssetCellFieldDropZone.js')
 
   include collectionList.js
+  include tagList.js
   include assetDetails.js
 
   script
@@ -199,12 +200,14 @@ block head
             floatable: false
         }
 
+        var tagsPanel = createTagList();
+
         var layout = Ext.create('Ext.Viewport', {
             layout:'border',
             bodyBorder: false,
             padding: '48 0 0 0',
             bodyStyle: 'width:100%',
-            items: [view, collectionsPanel],
+            items: [tagsPanel, view, collectionsPanel],
             renderTo: Ext.getBody(),
             border: 0,
         });
