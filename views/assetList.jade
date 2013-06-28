@@ -16,7 +16,7 @@ block head
         store = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId:'bodegaStore',
-            fields:['name', 'license', 'description', 'file', 'version', 'baseprice', 'active'],
+            fields:['name', 'license', 'description', 'file', 'version', 'baseprice', 'tags', 'active'],
             proxy: {
                 type: 'ajax',
                 // load remote data using HTTP

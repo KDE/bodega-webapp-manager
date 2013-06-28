@@ -63,19 +63,7 @@ function createTagList() {
             inline: true,
             columns: [
                 { header: 'Title',  width: 180, dataIndex: 'title', flex: 1, field: {allowBlank: false} },
-                { header: 'Type', width: '20%',  dataIndex: 'typename', field: {allowBlank: false}},
-                {
-                    header: 'Edit',
-                    xtype: 'actioncolumn',
-                    width: 50,
-                    items: [{
-                        icon: '/css/edit.png',
-                        tooltip: 'Edit channels',
-                        handler: function(grid, rowIndex, colIndex) {
-                            createTagDetails(tagStore.getAt(rowIndex).data);
-                        }
-                    }]
-                }
+                { header: 'Type', width: '20%',  dataIndex: 'typename', field: {allowBlank: false}}
             ],
             dockedItems: [{
                 xtype: 'toolbar',
@@ -134,14 +122,22 @@ function createTagList() {
                     ddGroup: 'viewDDGroup',
                     onCellDrop: function(target, dragData) {
                         for (var i in dragData.records) {
+                            console.log(dragData.records[i].data)
+                            console.log(target.record.data);
+
+                            dragData.records[i].data.tags.push(target.record.data);
+
                             Ext.Ajax.request({
-                                url: '/json/tag/' + target.record.data.id + '/add/' + dragData.records[i].data.id,
+                                url: '/json/asset/update/' + target.record.data.id,
+                                method: 'POST',
+                                params: $.param({info: dragData.records[i].data}),
                                 callback: function(response) {
                                     //still nothing
                                     tagStore.load();
                                 }
                             });
                         }
+                        
                     }
                 })
             ],
