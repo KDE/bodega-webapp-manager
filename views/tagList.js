@@ -106,7 +106,7 @@ function createTagList() {
                                 selected = [];
                                 Ext.each(s, function (item) {
                                     Ext.Ajax.request({
-                                        url: '/json/tag/remove/' + item.data.id,
+                                        url: '/json/tag/delete/' + item.data.id,
                                         callback: function(response) {
                                             tagStore.load();
                                         }
