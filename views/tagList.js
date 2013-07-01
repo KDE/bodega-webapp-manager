@@ -147,8 +147,6 @@ function createTagList() {
                     ddGroup: 'viewDDGroup',
                     onCellDrop: function(target, dragData) {
                         for (var i in dragData.records) {
-                            console.log(dragData.records[i].data)
-                            console.log(target.record.data);
 
                             dragData.records[i].data.tags.push(target.record.data);
 
@@ -162,7 +160,6 @@ function createTagList() {
                                 }
                             });
                         }
-                        
                     }
                 })
             ],

@@ -9,6 +9,7 @@ block head
   include collectionList.js
   include tagList.js
   include assetDetails.js
+  include assetTags.js
 
   script
     var store;
@@ -80,6 +81,12 @@ block head
                         tooltip: 'Edit Asset',
                         handler: function(grid, rowIndex, colIndex) {
                             loadAssetDetails(store.getAt(rowIndex).data);
+                        }
+                    }, {
+                        icon: '/css/edit.png',
+                        tooltip: 'Tags',
+                        handler: function(grid, rowIndex, colIndex) {
+                            loadAssetTags(store.getAt(rowIndex).data);
                         }
                     }]
                 }
