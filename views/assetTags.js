@@ -3,6 +3,7 @@ var tagsStore;
 var assetTagsWindow;
 var assetTagsView;
 var currentAsset;
+var allTagsView;
 
 function loadAssetTags(assetData) {
     currentAsset = assetData.id;
@@ -20,6 +21,7 @@ function loadAssetTags(assetData) {
                 }
             }
         });
+
 
         assetTagsView = Ext.create('Ext.grid.Panel', {
             store: tagsStore,
@@ -75,8 +77,8 @@ function loadAssetTags(assetData) {
                 }
             },
             enableDrop: true,
+            columnWidth: 0.5
         });
-
 
         assetTagsWindow = Ext.create('widget.window', {
             title: 'Tags of Assets ' + assetData.name,
@@ -87,7 +89,12 @@ function loadAssetTags(assetData) {
             height: '80%',
             layout: 'fit',
             bodyStyle: 'padding: 5px;',
-            items: [assetTagsView]
+            items: [{
+                layout: 'column',
+                autoScroll: true,
+                defaultType: 'container',
+                items: [ assetTagsView]
+            }]
         });
     } else {
         assetTagsWindow.setTitle('Tags of Assets ' + assetData.name);
