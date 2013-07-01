@@ -2,6 +2,7 @@
 var tagStore;
 var tagView;
 var cellEditing;
+var tagTypeStore;
 
 
 var currentTag;
@@ -9,10 +10,24 @@ var currentTag;
 
 function createTagList() {
     if (!tagStore) {
+        tagTypeStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId:'tagStore',
+            fields:['id', 'type'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/tag/types',
+                reader: {
+                    type: 'json',
+                    root: 'types'
+                }
+            }
+        });
+
         tagStore = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId:'tagStore',
-            fields:['id', 'type', 'typename', 'title'],
+            fields:['id', 'typeid', 'type', 'title'],
             proxy: {
                 type: 'ajax',
                 url: '/json/tag/list',
@@ -62,8 +77,18 @@ function createTagList() {
             selType: 'checkboxmodel',
             inline: true,
             columns: [
-                { header: 'Title',  width: 180, dataIndex: 'title', flex: 1, field: {allowBlank: false} },
-                { header: 'Type', width: '20%',  dataIndex: 'typename', field: {allowBlank: false}}
+                { header: 'Title',  width: '60%', dataIndex: 'title', flex: 1, field: {allowBlank: false} },
+                {
+                    header: 'Type',
+                    width: '40%',
+                    dataIndex: 'type',
+                    editor: new Ext.form.field.ComboBox({
+                        editable: false,
+                        store: tagTypeStore,
+                        displayField: 'type',
+                        valueField: 'type',
+                    })
+                }
             ],
             dockedItems: [{
                 xtype: 'toolbar',
