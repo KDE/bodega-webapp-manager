@@ -22,20 +22,60 @@ function loadAssetTags(assetData) {
             }
         });
 
+        allTagsView = createTagList({
+            plugins: {
+                ptype: 'gridviewdragdrop',
+                dropGroup: 'viewDDGroup',
+                dragGroup: 'collectionListDDGroup',
+            }
+        });
+        allTagsView.title = 'All Tags';
+        allTagsView.columnWidth = 0.5;
+        allTagsView.collapsed = false;
+        allTagsView.collapsible = false;
+
 
         assetTagsView = Ext.create('Ext.grid.Panel', {
             store: tagsStore,
             columns: [
-                { header: 'Title',  width: '80%', dataIndex: 'title', flex: 1 },
-                { header: 'Type',  width: '20%', dataIndex: 'type' },
+                { header: 'Title',  width: '70%', dataIndex: 'title', flex: 1 },
+                { header: 'Type',  width: '30%', dataIndex: 'type' },
             ],
             border: 0,
+            title: 'Asset Tags',
             region: 'center',
-            selType: 'checkboxmodel',
+            viewConfig: {
+                plugins: {
+                    ptype: 'gridviewdragdrop',
+                    dragGroup: 'viewDDGroup',
+                    dropGroup: 'collectionListDDGroup'
+                },
+                listeners: {
+                    drop: function(node, data, dropRec, dropPosition) {
+
+                        for (var i = 0; i < data.records.length; ++i) {
+                            assetData.tags.push(data.records[i].data);
+                        }
+
+                        Ext.Ajax.request({
+                            url: '/json/asset/update/' + assetData.id,
+                            method: 'POST',
+                            params: $.param({info: assetData}),
+                            callback: function(response) {
+                                tagsStore.data = assetData.tags;
+                            }
+                        });
+                    }
+                }
+            },
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
                 items: [{
+                    text: 'Drag to add tags',
+                    height: 24,
+                    xtype: 'label'
+                }, {
                     xtype: 'button',
                     text: 'Remove Tags',
                     hidden: true,
@@ -66,14 +106,27 @@ function loadAssetTags(assetData) {
                 }]
             }],
             listeners: {
-                selectionchange: function()
-                {
+                selectionchange: function() {
                     var s = assetTagsView.getSelectionModel().getSelection();
                     if (s.length > 0) {
                         assetTagsView.dockedItems.get(1).items.get(0).show();
                     } else {
                         assetTagsView.dockedItems.get(1).items.get(0).hide();
                     }
+                },
+                itemremove: function(record, index, eOpts) {
+                    for (var i = 0; i < data.records.length; ++i) {
+                        assetData.tags.push(data.records[i].data);
+                    }
+
+                    Ext.Ajax.request({
+                        url: '/json/asset/update/' + assetData.id,
+                        method: 'POST',
+                        params: $.param({info: assetData}),
+                        callback: function(response) {
+                            tagsStore.data = assetData.tags;
+                        }
+                    });
                 }
             },
             enableDrop: true,
@@ -93,7 +146,7 @@ function loadAssetTags(assetData) {
                 layout: 'column',
                 autoScroll: true,
                 defaultType: 'container',
-                items: [ assetTagsView]
+                items: [allTagsView, assetTagsView]
             }]
         });
     } else {
