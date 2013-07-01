@@ -98,7 +98,11 @@ function loadAssetTags(assetData) {
         });
     } else {
         assetTagsWindow.setTitle('Tags of Assets ' + assetData.name);
-        tagsStore.data = assetData.tags;
+
+        tagsStore.removeAll();
+        for (var i = 0; i < assetData.tags.length; ++i) {
+            tagsStore.insert(0, assetData.tags[i]);
+        }
     }
 
     if (assetTagsWindow.isVisible()) {
