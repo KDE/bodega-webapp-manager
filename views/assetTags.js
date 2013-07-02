@@ -40,6 +40,36 @@ function loadAssetTags(assetData) {
             columns: [
                 { header: 'Title',  width: '70%', dataIndex: 'title', flex: 1 },
                 { header: 'Type',  width: '30%', dataIndex: 'type' },
+                {
+                    header: 'Remove',
+                    xtype: 'actioncolumn',
+                    width: 50,
+                    items: [{
+                        icon: '/css/list-remove.png',
+                        tooltip: 'Remove Tag',
+                        handler: function(grid, rowIndex, colIndex) {
+                            var data = tagsStore.getAt(rowIndex).data;
+
+                            for (var i = 0; i < assetData.tags.length; ++i) {
+                                if (data.id === assetData.tags[i].id) {
+                                    assetData.tags.splice(i, 1);
+                                }
+                            }
+
+                            Ext.Ajax.request({
+                                url: '/json/asset/update/' + assetData.id,
+                                method: 'POST',
+                                params: $.param({info: assetData}),
+                                callback: function(response) {
+                                    tagsStore.removeAll();
+                                    for (var i = 0; i < assetData.tags.length; ++i) {
+                                        tagsStore.insert(0, assetData.tags[i]);
+                                    }
+                                }
+                            });
+                        }
+                    }]
+                }
             ],
             border: 0,
             title: 'Asset Tags',
@@ -62,7 +92,10 @@ function loadAssetTags(assetData) {
                             method: 'POST',
                             params: $.param({info: assetData}),
                             callback: function(response) {
-                                tagsStore.data = assetData.tags;
+                                tagsStore.removeAll();
+                                for (var i = 0; i < assetData.tags.length; ++i) {
+                                    tagsStore.insert(0, assetData.tags[i]);
+                                }
                             }
                         });
                     }
@@ -75,34 +108,6 @@ function loadAssetTags(assetData) {
                     text: 'Drag to add tags',
                     height: 24,
                     xtype: 'label'
-                }, {
-                    xtype: 'button',
-                    text: 'Remove Tags',
-                    hidden: true,
-                    handler: function() {
-                        Ext.MessageBox.confirm('Remove', 'Are you sure you want to remove the selected tags?', function(btn){
-                            if(btn === 'yes') {
-
-                                var s = assetTagsView.getSelectionModel().getSelection();
-                                Ext.each(s, function (item) {
-                                    for (var i = 0; i < assetData.tags.length; ++i) {
-                                        if (item.data.id === assetData.tags[i].id) {
-                                            assetData.tags.splice(i, 1);
-                                        }
-                                    }
-                                });
-
-                                Ext.Ajax.request({
-                                    url: '/json/asset/update/' + assetData.id,
-                                    method: 'POST',
-                                    params: $.param({info: assetData}),
-                                    callback: function(response) {
-                                        tagsStore.data = assetData.tags;
-                                    }
-                                });
-                            }
-                        });
-                    }
                 }]
             }],
             listeners: {
@@ -116,7 +121,11 @@ function loadAssetTags(assetData) {
                 },
                 itemremove: function(record, index, eOpts) {
                     for (var i = 0; i < data.records.length; ++i) {
-                        assetData.tags.push(data.records[i].data);
+                        for (var j = 0; j < assetData.tags.length; ++j) {
+                            if (data.records[i].data.id === assetData.tags[j].id) {
+                                assetData.tags.splice(j, 1);
+                            }
+                        }
                     }
 
                     Ext.Ajax.request({
@@ -124,7 +133,10 @@ function loadAssetTags(assetData) {
                         method: 'POST',
                         params: $.param({info: assetData}),
                         callback: function(response) {
-                            tagsStore.data = assetData.tags;
+                            tagsStore.removeAll();
+                            for (var i = 0; i < assetData.tags.length; ++i) {
+                                tagsStore.insert(0, assetData.tags[i]);
+                            }
                         }
                     });
                 }
