@@ -4,7 +4,10 @@ var itemTagsWindow;
 var itemTagsView;
 var allTagsView;
 
-function loadChannelTags(itemData) {
+var currentStore;
+
+function loadChannelTags(itemData, store) {
+    currentStore = store;
     loadItemTags(itemData, 'channel');
 }
 
@@ -13,7 +16,7 @@ function loadAssetTags(itemData) {
 }
 
 function loadItemTags(itemData, itemType) {
-
+console.log(itemData)
     if (!itemTagsWindow) {
         tagsStore = Ext.create('Ext.data.Store', {
             autoLoad: true,
@@ -93,11 +96,19 @@ function loadItemTags(itemData, itemType) {
                             itemData.tags.push(data.records[i].data);
                         }
 
-                        Ext.Ajax.request({
-                            url: '/json/' + itemType + '/update/' + itemData.id,
-                            method: 'POST',
-                            params: $.param({info: itemData}),
-                        });
+                        if (itemType == 'asset') {
+                            Ext.Ajax.request({
+                                url: '/json/asset/update/' + itemData.id,
+                                method: 'POST',
+                                params: $.param({info: itemData}),
+                            });
+                        } else {
+                            Ext.Ajax.request({
+                                url: '/json/store/channel/update/' + currentStore + '/' + itemData.id ,
+                                method: 'POST',
+                                params: $.param(itemData),
+                            });
+                        }
                     }
                 }
             },

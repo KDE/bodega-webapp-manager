@@ -44,7 +44,7 @@
             channelStore = Ext.create('Ext.data.TreeStore', {
                 autoLoad: true,
                 storeId:'channelStore',
-                fields:['id', 'name', 'description', 'image', 'active', 'tags'],
+                fields:['id', 'store', 'name', 'description', 'image', 'active', 'tags'],
                 //folderSort: true,
                 root: 'channels',
                 clearOnLoad: true,
@@ -134,7 +134,7 @@
                             icon: '/css/tags.png',
                             tooltip: 'Tags',
                             handler: function(grid, rowIndex, colIndex) {
-                                loadChannelTags(dataFromCell(channelView, rowIndex).data);
+                                loadChannelTags(dataFromCell(channelView, rowIndex).data, storeId);
                             }
                         }]
                     }
