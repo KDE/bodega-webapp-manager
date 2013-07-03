@@ -174,13 +174,10 @@
         currentPartner = partnerData.id;
 
         if (contactsWindow.isVisible()) {
-            contactsWindow.hide(this, function() {
-                button.dom.disabled = false;
-            });
+            contactsWindow.hide();
         } else {
-            contactsWindow.show(this, function() {
-                button.dom.disabled = false;
-            });
+            contactsWindow.show();
+            contactsWindow.restore();
         }
     }
 

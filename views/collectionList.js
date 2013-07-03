@@ -73,13 +73,10 @@ function createCollectionDetails(collectionData) {
     }
 
     if (collectionDetailsWindow.isVisible()) {
-        collectionDetailsWindow.hide(this, function() {
-            button.dom.disabled = false;
-        });
+        collectionDetailsWindow.hide();
     } else {
-        collectionDetailsWindow.show(this, function() {
-            button.dom.disabled = false;
-        });
+        collectionDetailsWindow.show();
+        collectionDetailsWindow.restore();
     }
 }
 

@@ -220,13 +220,10 @@
         setStoreId(storeData.id);
 
         if (win.isVisible()) {
-            win.hide(this, function() {
-                button.dom.disabled = false;
-            });
+            win.hide();
         } else {
-            win.show(this, function() {
-                button.dom.disabled = false;
-            });
+            win.show();
+            win.restore();
         }
     }
 

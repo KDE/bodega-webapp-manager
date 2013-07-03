@@ -173,13 +173,10 @@ function loadItemTags(itemData, itemType) {
     }
 
     if (itemTagsWindow.isVisible()) {
-        itemTagsWindow.hide(this, function() {
-            button.dom.disabled = false;
-        });
+        itemTagsWindow.hide();
     } else {
-        itemTagsWindow.show(this, function() {
-            button.dom.disabled = false;
-        });
+        itemTagsWindow.show();
+        itemTagsWindow.restore();
     }
 }
 

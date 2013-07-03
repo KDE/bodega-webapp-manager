@@ -85,13 +85,10 @@ function loadPartnerDetails(partnerData) {
     }
 
     if (partnerDetailsWindow.isVisible()) {
-        partnerDetailsWindow.hide(this, function() {
-            button.dom.disabled = false;
-        });
+        partnerDetailsWindow.hide();
     } else {
-        partnerDetailsWindow.show(this, function() {
-            button.dom.disabled = false;
-        });
+        partnerDetailsWindow.show();
+        partnerDetailsWindow.restore();
     }
 }
 

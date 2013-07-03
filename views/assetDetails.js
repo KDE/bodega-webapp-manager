@@ -124,14 +124,12 @@ function loadAssetDetails(assetData) {
         assetDetailsForm.items.get('id').setValue(assetData.id);
     }
 
+    
     if (assetDetailsWindow.isVisible()) {
-        assetDetailsWindow.hide(this, function() {
-            button.dom.disabled = false;
-        });
+        assetDetailsWindow.hide();
     } else {
-        assetDetailsWindow.show(this, function() {
-            button.dom.disabled = false;
-        });
+        assetDetailsWindow.show();
+        assetDetailsWindow.restore();
     }
 }
 
