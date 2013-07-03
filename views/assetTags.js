@@ -16,209 +16,208 @@ function loadAssetTags(itemData) {
 }
 
 function loadItemTags(itemData, itemType) {
-console.log(itemData)
-    if (!itemTagsWindow) {
-        tagsStore = Ext.create('Ext.data.Store', {
-            autoLoad: true,
-            storeId:'collectionStore',
-            fields:['id', 'title', 'type'],
-            data: itemData ? itemData.tags : null,
-            proxy: {
-                type: 'memory',
-                reader: {
-                    type: 'json'
-                }
+
+    if (allTagsView) {
+        tagsStore.destroy();
+        itemTagsWindow.destroy();
+        itemTagsView.destroy();
+        allTagsView.destroy();
+    }
+
+    //FIXME: deletes and recreates everything every time
+    //the store breaks if the data gets just changed after a dnd operation has been done
+    tagsStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId:'collectionStore',
+        fields:['id', 'title', 'type'],
+        data: itemData.tags,
+        proxy: {
+            type: 'memory',
+            reader: {
+                type: 'json'
             }
-        });
+        }
+    });
 
-        allTagsView = createTagList({
-            plugins: {
-                ptype: 'gridviewdragdrop',
-                dropGroup: 'viewDDGroup',
-                dragGroup: 'collectionListDDGroup',
-            }
-        });
-        allTagsView.title = 'All Tags';
-        allTagsView.columnWidth = 0.5;
-        allTagsView.collapsed = false;
-        allTagsView.collapsible = false;
+    allTagsView = createTagList({
+        plugins: {
+            ptype: 'gridviewdragdrop',
+            dropGroup: 'viewDDGroup',
+            dragGroup: 'collectionListDDGroup',
+        }
+    });
+    allTagsView.title = 'All Tags';
+    allTagsView.columnWidth = 0.5;
+    allTagsView.collapsed = false;
+    allTagsView.collapsible = false;
 
 
-        itemTagsView = Ext.create('Ext.grid.Panel', {
-            store: tagsStore,
-            columns: [
-                { header: 'Title',  width: '70%', dataIndex: 'title', flex: 1 },
-                { header: 'Type',  width: '30%', dataIndex: 'type' },
-                {
-                    header: 'Remove',
-                    xtype: 'actioncolumn',
-                    width: 50,
-                    items: [{
-                        icon: '/css/list-remove.png',
-                        tooltip: 'Remove Tag',
-                        handler: function(grid, rowIndex, colIndex) {
-                            var data = tagsStore.getAt(rowIndex).data;
+    itemTagsView = Ext.create('Ext.grid.Panel', {
+        store: tagsStore,
+        columns: [
+            { header: 'Title',  width: '70%', dataIndex: 'title', flex: 1 },
+            { header: 'Type',  width: '30%', dataIndex: 'type' },
+            {
+                header: 'Remove',
+                xtype: 'actioncolumn',
+                width: 50,
+                items: [{
+                    icon: '/css/list-remove.png',
+                    tooltip: 'Remove Tag',
+                    handler: function(grid, rowIndex, colIndex) {
+                        var data = tagsStore.getAt(rowIndex).data;
 
-                            for (var i = 0; i < itemData.tags.length; ++i) {
-                                if (data.id === itemData.tags[i].id) {
-                                    itemData.tags.splice(i, 1);
-                                }
+                        for (var i = 0; i < itemData.tags.length; ++i) {
+                            if (data.id === itemData.tags[i].id) {
+                                itemData.tags.splice(i, 1);
                             }
-                            
-                            if (itemType == 'asset') {
+                        }
                         
-                                Ext.Ajax.request({
-                                    url: '/json/asset/update/' + itemData.id,
-                                    method: 'POST',
-                                    params: $.param({info: itemData}),
-                                    callback: function(response) {
-                                        tagsStore.removeAll();
-                                        console.log(itemData.tags)
-                                        for (var i = 0; i < itemData.tags.length; ++i) {
-                                            tagsStore.insert(0, itemData.tags[i]);
-                                        }
-                                    }
-                                });
-                            } else {
-                                
-                                Ext.Ajax.request({
-                                    url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
-                                    method: 'POST',
-                                    params: $.param(itemData),
-                                    callback: function(response) {
-                                        tagsStore.removeAll();
-                                        console.log(itemData.tags)
-                                        for (var i = 0; i < itemData.tags.length; ++i) {
-                                            tagsStore.insert(0, itemData.tags[i]);
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }]
-                }
-            ],
-            border: 0,
-            title: 'Current Tags',
-            region: 'center',
-            viewConfig: {
-                plugins: {
-                    ptype: 'gridviewdragdrop',
-                    dragGroup: 'viewDDGroup',
-                    dropGroup: 'collectionListDDGroup'
-                },
-                listeners: {
-                    drop: function(node, data, dropRec, dropPosition) {
-
-                        for (var i = 0; i < data.records.length; ++i) {
-                            itemData.tags.push(data.records[i].data);
-                        }
-
                         if (itemType == 'asset') {
+                    
                             Ext.Ajax.request({
                                 url: '/json/asset/update/' + itemData.id,
                                 method: 'POST',
                                 params: $.param({info: itemData}),
+                                callback: function(response) {
+                                    tagsStore.removeAll();
+                                    console.log(itemData.tags)
+                                    for (var i = 0; i < itemData.tags.length; ++i) {
+                                        tagsStore.insert(0, itemData.tags[i]);
+                                    }
+                                }
                             });
                         } else {
+                            
                             Ext.Ajax.request({
-                                url: '/json/store/channel/update/' + currentStore + '/' + itemData.id ,
+                                url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
                                 method: 'POST',
                                 params: $.param(itemData),
+                                callback: function(response) {
+                                    tagsStore.removeAll();
+                                    console.log(itemData.tags)
+                                    for (var i = 0; i < itemData.tags.length; ++i) {
+                                        tagsStore.insert(0, itemData.tags[i]);
+                                    }
+                                }
                             });
                         }
                     }
-                }
-            },
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'top',
-                items: [{
-                    text: 'Drag to add tags',
-                    height: 24,
-                    xtype: 'label'
                 }]
-            }],
+            }
+        ],
+        border: 0,
+        title: 'Current Tags',
+        region: 'center',
+        viewConfig: {
+            plugins: {
+                ptype: 'gridviewdragdrop',
+                dragGroup: 'viewDDGroup',
+                dropGroup: 'collectionListDDGroup'
+            },
             listeners: {
-                selectionchange: function() {
-                    var s = itemTagsView.getSelectionModel().getSelection();
-                    if (s.length > 0) {
-                        itemTagsView.dockedItems.get(1).items.get(0).show();
-                    } else {
-                        itemTagsView.dockedItems.get(1).items.get(0).hide();
-                    }
-                },
-                itemremove: function(record, index, eOpts) {
+                drop: function(node, data, dropRec, dropPosition) {
+
                     for (var i = 0; i < data.records.length; ++i) {
-                        for (var j = 0; j < itemData.tags.length; ++j) {
-                            if (data.records[i].data.id === itemData.tags[j].id) {
-                                itemData.tags.splice(j, 1);
-                            }
-                        }
+                        itemData.tags.push(data.records[i].data);
                     }
 
                     if (itemType == 'asset') {
-                        
                         Ext.Ajax.request({
                             url: '/json/asset/update/' + itemData.id,
                             method: 'POST',
                             params: $.param({info: itemData}),
-                            callback: function(response) {
-                                tagsStore.removeAll();
-                                console.log(itemData.tags)
-                                for (var i = 0; i < itemData.tags.length; ++i) {
-                                    tagsStore.insert(0, itemData.tags[i]);
-                                }
-                            }
                         });
                     } else {
-                        
                         Ext.Ajax.request({
-                            url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
+                            url: '/json/store/channel/update/' + currentStore + '/' + itemData.id ,
                             method: 'POST',
                             params: $.param(itemData),
-                            callback: function(response) {
-                                tagsStore.removeAll();
-                                console.log(itemData.tags)
-                                for (var i = 0; i < itemData.tags.length; ++i) {
-                                    tagsStore.insert(0, itemData.tags[i]);
-                                }
-                            }
                         });
                     }
-                    
-                        
+                }
+            }
+        },
+        dockedItems: [{
+            xtype: 'toolbar',
+            dock: 'top',
+            items: [{
+                text: 'Drag to add tags',
+                height: 24,
+                xtype: 'label'
+            }]
+        }],
+        listeners: {
+            selectionchange: function() {
+                var s = itemTagsView.getSelectionModel().getSelection();
+                if (s.length > 0) {
+                    itemTagsView.dockedItems.get(1).items.get(0).show();
+                } else {
+                    itemTagsView.dockedItems.get(1).items.get(0).hide();
                 }
             },
-            enableDrop: true,
-            columnWidth: 0.5
-        });
+            itemremove: function(record, index, eOpts) {
+                for (var i = 0; i < data.records.length; ++i) {
+                    for (var j = 0; j < itemData.tags.length; ++j) {
+                        if (data.records[i].data.id === itemData.tags[j].id) {
+                            itemData.tags.splice(j, 1);
+                        }
+                    }
+                }
 
-        itemTagsWindow = Ext.create('widget.window', {
-            title: (itemType === 'asset' ? 'Tags of Assets ' : 'Tags of Channel ') + itemData.name,
-            closable: true,
-            closeAction: 'hide',
-            modal: true,
-            width: '80%',
-            height: '80%',
-            layout: 'fit',
-            bodyStyle: 'padding: 5px;',
-            items: [{
-                layout: 'column',
-                autoScroll: true,
-                defaultType: 'container',
-                items: [allTagsView, itemTagsView]
-            }]
-        });
-    } else {
-        itemTagsWindow.setTitle((itemType === 'asset' ? 'Tags of Assets ' : 'Tags of Channel ') + itemData.name);
+                if (itemType == 'asset') {
+                    
+                    Ext.Ajax.request({
+                        url: '/json/asset/update/' + itemData.id,
+                        method: 'POST',
+                        params: $.param({info: itemData}),
+                        callback: function(response) {
+                            tagsStore.removeAll();
+                            console.log(itemData.tags)
+                            for (var i = 0; i < itemData.tags.length; ++i) {
+                                tagsStore.insert(0, itemData.tags[i]);
+                            }
+                        }
+                    });
+                } else {
+                    
+                    Ext.Ajax.request({
+                        url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
+                        method: 'POST',
+                        params: $.param(itemData),
+                        callback: function(response) {
+                            tagsStore.removeAll();
+                            console.log(itemData.tags)
+                            for (var i = 0; i < itemData.tags.length; ++i) {
+                                tagsStore.insert(0, itemData.tags[i]);
+                            }
+                        }
+                    });
+                }
+                
+                    
+            }
+        },
+        enableDrop: true,
+        columnWidth: 0.5
+    });
 
-        tagsStore.proxy.clear()
-       // tagsStore.removeAll();
-        for (var i = 0; i < itemData.tags.length; ++i) {
-            tagsStore.insert(0, itemData.tags[i]);
-        }
-    }
+    itemTagsWindow = Ext.create('widget.window', {
+        title: (itemType === 'asset' ? 'Tags of Assets ' : 'Tags of Channel ') + itemData.name,
+        closable: true,
+        closeAction: 'hide',
+        modal: true,
+        width: '80%',
+        height: '80%',
+        layout: 'fit',
+        bodyStyle: 'padding: 5px;',
+        items: [{
+            layout: 'column',
+            autoScroll: true,
+            defaultType: 'container',
+            items: [allTagsView, itemTagsView]
+        }]
+    });
 
     if (itemTagsWindow.isVisible()) {
         itemTagsWindow.hide();
