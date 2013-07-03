@@ -5,58 +5,38 @@
     var cellEditing;
     var storeId;
 
-    var tagsStore;
-    var tagsView;
-    var currentChannel;
-
-    function loadTagsView(channelData) {
-        if (channelData) {
-            currentChannel = channelData.id;
-        }
-
-        if (!tagsView) {
-            tagsStore = Ext.create('Ext.data.Store', {
-                autoLoad: true,
-                storeId:'collectionStore',
-                fields:['id', 'title', 'type'],
-                data: channelData ? channelData.tags : null,
-                proxy: {
-                    type: 'memory',
-                    reader: {
-                        type: 'json'
-                    }
-                }
-            });
-
-            tagsView = Ext.create('Ext.grid.Panel', {
-                store: tagsStore,
-                columns: [
-                    { header: 'Title',  width: '80%', dataIndex: 'title', flex: 1 },
-                    { header: 'Type',  width: '20%', dataIndex: 'type' },
-                ],
-                border: 0,
-                region: 'west',
-                title: 'Tags',
-                width: 200,
-                split: true,
-                collapsible: true,
-                collapsed: true,
-                floatable: false
-            });
-        } else {
-            tagsStore.removeAll();
-            for (var i = 0; i < channelData.tags.length; ++i) {
-                tagsStore.insert(0, channelData.tags[i]);
-            }
-            return;
-        }
-    }
 
     function setStoreId(id) {
         storeId = id
         channelStore.proxy.url = '/json/store/structure/' + id;
         channelStore.getRootNode().removeAll();
         channelStore.load();
+    }
+
+    function dataFromCell(view, rowIndex) {
+        //HACK to find the node from the row number
+        var node = view.getRootNode();
+        var nodes = [node];
+        var visited = {};
+        var i = 0;
+        while (i <= rowIndex) {
+            if (node.firstChild !== null && !visited[node.internalId]) {
+                visited[node.internalId] = true;
+                nodes.push(node);
+                node = node.firstChild;
+                ++i;
+            } else if (node.nextSibling !== null) {
+                node = node.nextSibling;
+                ++i;
+            } else {
+                while (nodes.length > 0 && nodes[nodes.length-1].nextSibling === null) {
+                    nodes.pop();
+                    node = nodes[nodes.length-1];
+                }
+            }
+        }
+
+        return node;
     }
 
     function channelList(storeData) {
@@ -141,28 +121,7 @@
                             icon: '/css/list-add.png',
                             tooltip: 'Create Subchannel',
                             handler: function(grid, rowIndex, colIndex) {
-                                //HACK to find the node from the row number
-                                var node = channelView.getRootNode();
-                                var nodes = [node];
-                                var visited = {};
-                                var i = 0;
-                                while (i <= rowIndex) {
-                                    if (node.firstChild !== null && !visited[node.internalId]) {
-                                        visited[node.internalId] = true;
-                                        nodes.push(node);
-                                        node = node.firstChild;
-                                        ++i;
-                                    } else if (node.nextSibling !== null) {
-                                        node = node.nextSibling;
-                                        ++i;
-                                    } else {
-                                        while (nodes.length > 0 && nodes[nodes.length-1].nextSibling === null) {
-                                            nodes.pop();
-                                            node = nodes[nodes.length-1];
-                                        }
-                                    }
-                                }
-
+                                var node = dataFromCell(channelView, rowIndex);
                                 var rec = {
                                      name: 'Channel',
                                      description: 'New Channel',
@@ -170,6 +129,12 @@
                                 };
 
                                 node.insertChild(0, rec);
+                            }
+                        }, {
+                            icon: '/css/tags.png',
+                            tooltip: 'Tags',
+                            handler: function(grid, rowIndex, colIndex) {
+                                loadChannelTags(dataFromCell(channelView, rowIndex).data);
                             }
                         }]
                     }
@@ -222,21 +187,6 @@
                     }]
                 }],
                 listeners: {
-                    selectionchange: function() {
-                        var s = channelView.getSelectionModel().getSelection();
-
-                        tagsStore.removeAll();
-                        if (s.length == 1) {
-                            console.log(s[0].data)
-                            loadTagsView(s[0].data);
-                        }
-
-                        if (s.length > 0) {
-                            channelView.dockedItems.get(1).items.get(2).show();
-                        } else {
-                            channelView.dockedItems.get(1).items.get(2).hide();
-                        }
-                    },
                     load: function( parent, node, records, successful, eOpts ) {
                         if (successful) {
                             channelView.expandAll();
@@ -244,8 +194,6 @@
                     }
                 }
             });
-
-            loadTagsView();
 
             win = Ext.create('widget.window', {
                 title: 'Channels of Store ' + storeData.name,
@@ -257,7 +205,7 @@
                 height: '80%',
                 layout: 'border',
                 bodyStyle: 'padding: 5px;',
-                items: [tagsView, {
+                items: [{
                     region: 'east',
                     title: 'Collections',
                     width: 200,

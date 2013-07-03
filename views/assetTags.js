@@ -1,19 +1,25 @@
 
 var tagsStore;
-var assetTagsWindow;
-var assetTagsView;
-var currentAsset;
+var itemTagsWindow;
+var itemTagsView;
 var allTagsView;
 
-function loadAssetTags(assetData) {
-    currentAsset = assetData.id;
+function loadChannelTags(itemData) {
+    loadItemTags(itemData, 'channel');
+}
 
-    if (!assetTagsWindow) {
+function loadAssetTags(itemData) {
+    loadItemTags(itemData, 'asset');
+}
+
+function loadItemTags(itemData, itemType) {
+
+    if (!itemTagsWindow) {
         tagsStore = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId:'collectionStore',
             fields:['id', 'title', 'type'],
-            data: assetData ? assetData.tags : null,
+            data: itemData ? itemData.tags : null,
             proxy: {
                 type: 'memory',
                 reader: {
@@ -35,7 +41,7 @@ function loadAssetTags(assetData) {
         allTagsView.collapsible = false;
 
 
-        assetTagsView = Ext.create('Ext.grid.Panel', {
+        itemTagsView = Ext.create('Ext.grid.Panel', {
             store: tagsStore,
             columns: [
                 { header: 'Title',  width: '70%', dataIndex: 'title', flex: 1 },
@@ -50,20 +56,20 @@ function loadAssetTags(assetData) {
                         handler: function(grid, rowIndex, colIndex) {
                             var data = tagsStore.getAt(rowIndex).data;
 
-                            for (var i = 0; i < assetData.tags.length; ++i) {
-                                if (data.id === assetData.tags[i].id) {
-                                    assetData.tags.splice(i, 1);
+                            for (var i = 0; i < itemData.tags.length; ++i) {
+                                if (data.id === itemData.tags[i].id) {
+                                    itemData.tags.splice(i, 1);
                                 }
                             }
 
                             Ext.Ajax.request({
-                                url: '/json/asset/update/' + assetData.id,
+                                url: '/json/' + itemType + '/update/' + itemData.id,
                                 method: 'POST',
-                                params: $.param({info: assetData}),
+                                params: $.param({info: itemData}),
                                 callback: function(response) {
                                     tagsStore.removeAll();
-                                    for (var i = 0; i < assetData.tags.length; ++i) {
-                                        tagsStore.insert(0, assetData.tags[i]);
+                                    for (var i = 0; i < itemData.tags.length; ++i) {
+                                        tagsStore.insert(0, itemData.tags[i]);
                                     }
                                 }
                             });
@@ -72,7 +78,7 @@ function loadAssetTags(assetData) {
                 }
             ],
             border: 0,
-            title: 'Asset Tags',
+            title: 'Current Tags',
             region: 'center',
             viewConfig: {
                 plugins: {
@@ -84,19 +90,13 @@ function loadAssetTags(assetData) {
                     drop: function(node, data, dropRec, dropPosition) {
 
                         for (var i = 0; i < data.records.length; ++i) {
-                            assetData.tags.push(data.records[i].data);
+                            itemData.tags.push(data.records[i].data);
                         }
 
                         Ext.Ajax.request({
-                            url: '/json/asset/update/' + assetData.id,
+                            url: '/json/' + itemType + '/update/' + itemData.id,
                             method: 'POST',
-                            params: $.param({info: assetData}),
-                            callback: function(response) {
-                                tagsStore.removeAll();
-                                for (var i = 0; i < assetData.tags.length; ++i) {
-                                    tagsStore.insert(0, assetData.tags[i]);
-                                }
-                            }
+                            params: $.param({info: itemData}),
                         });
                     }
                 }
@@ -112,30 +112,31 @@ function loadAssetTags(assetData) {
             }],
             listeners: {
                 selectionchange: function() {
-                    var s = assetTagsView.getSelectionModel().getSelection();
+                    var s = itemTagsView.getSelectionModel().getSelection();
                     if (s.length > 0) {
-                        assetTagsView.dockedItems.get(1).items.get(0).show();
+                        itemTagsView.dockedItems.get(1).items.get(0).show();
                     } else {
-                        assetTagsView.dockedItems.get(1).items.get(0).hide();
+                        itemTagsView.dockedItems.get(1).items.get(0).hide();
                     }
                 },
                 itemremove: function(record, index, eOpts) {
                     for (var i = 0; i < data.records.length; ++i) {
-                        for (var j = 0; j < assetData.tags.length; ++j) {
-                            if (data.records[i].data.id === assetData.tags[j].id) {
-                                assetData.tags.splice(j, 1);
+                        for (var j = 0; j < itemData.tags.length; ++j) {
+                            if (data.records[i].data.id === itemData.tags[j].id) {
+                                itemData.tags.splice(j, 1);
                             }
                         }
                     }
 
                     Ext.Ajax.request({
-                        url: '/json/asset/update/' + assetData.id,
+                        url: '/json/' + itemType + '/update/' + itemData.id,
                         method: 'POST',
-                        params: $.param({info: assetData}),
+                        params: $.param({info: itemData}),
                         callback: function(response) {
                             tagsStore.removeAll();
-                            for (var i = 0; i < assetData.tags.length; ++i) {
-                                tagsStore.insert(0, assetData.tags[i]);
+                            console.log(itemData.tags)
+                            for (var i = 0; i < itemData.tags.length; ++i) {
+                                tagsStore.insert(0, itemData.tags[i]);
                             }
                         }
                     });
@@ -145,8 +146,8 @@ function loadAssetTags(assetData) {
             columnWidth: 0.5
         });
 
-        assetTagsWindow = Ext.create('widget.window', {
-            title: 'Tags of Assets ' + assetData.name,
+        itemTagsWindow = Ext.create('widget.window', {
+            title: (itemType === 'asset' ? 'Tags of Assets ' : 'Tags of Channel ') + itemData.name,
             closable: true,
             closeAction: 'hide',
             modal: true,
@@ -158,24 +159,25 @@ function loadAssetTags(assetData) {
                 layout: 'column',
                 autoScroll: true,
                 defaultType: 'container',
-                items: [allTagsView, assetTagsView]
+                items: [allTagsView, itemTagsView]
             }]
         });
     } else {
-        assetTagsWindow.setTitle('Tags of Assets ' + assetData.name);
+        itemTagsWindow.setTitle((itemType === 'asset' ? 'Tags of Assets ' : 'Tags of Channel ') + itemData.name);
 
-        tagsStore.removeAll();
-        for (var i = 0; i < assetData.tags.length; ++i) {
-            tagsStore.insert(0, assetData.tags[i]);
+        tagsStore.proxy.clear()
+       // tagsStore.removeAll();
+        for (var i = 0; i < itemData.tags.length; ++i) {
+            tagsStore.insert(0, itemData.tags[i]);
         }
     }
 
-    if (assetTagsWindow.isVisible()) {
-        assetTagsWindow.hide(this, function() {
+    if (itemTagsWindow.isVisible()) {
+        itemTagsWindow.hide(this, function() {
             button.dom.disabled = false;
         });
     } else {
-        assetTagsWindow.show(this, function() {
+        itemTagsWindow.show(this, function() {
             button.dom.disabled = false;
         });
     }

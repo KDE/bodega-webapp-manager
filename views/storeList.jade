@@ -4,8 +4,12 @@ block head
   title Your assets
   link(rel="stylesheet", href="/css/ext-all.css")
   script(src='/js/ext-all.js')
+  script(src='/js/AssetCellFieldDropZone.js')
 
+  include tagList.js
+  include assetTags.js
   include channelList.js
+
   script
     Ext.onReady(function() {
         var store = Ext.create('Ext.data.Store', {
