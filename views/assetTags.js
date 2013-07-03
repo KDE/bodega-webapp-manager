@@ -64,18 +64,36 @@ console.log(itemData)
                                     itemData.tags.splice(i, 1);
                                 }
                             }
-
-                            Ext.Ajax.request({
-                                url: '/json/' + itemType + '/update/' + itemData.id,
-                                method: 'POST',
-                                params: $.param({info: itemData}),
-                                callback: function(response) {
-                                    tagsStore.removeAll();
-                                    for (var i = 0; i < itemData.tags.length; ++i) {
-                                        tagsStore.insert(0, itemData.tags[i]);
+                            
+                            if (itemType == 'asset') {
+                        
+                                Ext.Ajax.request({
+                                    url: '/json/asset/update/' + itemData.id,
+                                    method: 'POST',
+                                    params: $.param({info: itemData}),
+                                    callback: function(response) {
+                                        tagsStore.removeAll();
+                                        console.log(itemData.tags)
+                                        for (var i = 0; i < itemData.tags.length; ++i) {
+                                            tagsStore.insert(0, itemData.tags[i]);
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            } else {
+                                
+                                Ext.Ajax.request({
+                                    url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
+                                    method: 'POST',
+                                    params: $.param(itemData),
+                                    callback: function(response) {
+                                        tagsStore.removeAll();
+                                        console.log(itemData.tags)
+                                        for (var i = 0; i < itemData.tags.length; ++i) {
+                                            tagsStore.insert(0, itemData.tags[i]);
+                                        }
+                                    }
+                                });
+                            }
                         }
                     }]
                 }
@@ -139,18 +157,37 @@ console.log(itemData)
                         }
                     }
 
-                    Ext.Ajax.request({
-                        url: '/json/' + itemType + '/update/' + itemData.id,
-                        method: 'POST',
-                        params: $.param({info: itemData}),
-                        callback: function(response) {
-                            tagsStore.removeAll();
-                            console.log(itemData.tags)
-                            for (var i = 0; i < itemData.tags.length; ++i) {
-                                tagsStore.insert(0, itemData.tags[i]);
+                    if (itemType == 'asset') {
+                        
+                        Ext.Ajax.request({
+                            url: '/json/asset/update/' + itemData.id,
+                            method: 'POST',
+                            params: $.param({info: itemData}),
+                            callback: function(response) {
+                                tagsStore.removeAll();
+                                console.log(itemData.tags)
+                                for (var i = 0; i < itemData.tags.length; ++i) {
+                                    tagsStore.insert(0, itemData.tags[i]);
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        
+                        Ext.Ajax.request({
+                            url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
+                            method: 'POST',
+                            params: $.param(itemData),
+                            callback: function(response) {
+                                tagsStore.removeAll();
+                                console.log(itemData.tags)
+                                for (var i = 0; i < itemData.tags.length; ++i) {
+                                    tagsStore.insert(0, itemData.tags[i]);
+                                }
+                            }
+                        });
+                    }
+                    
+                        
                 }
             },
             enableDrop: true,
