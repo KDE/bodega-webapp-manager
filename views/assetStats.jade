@@ -17,8 +17,9 @@ block head
   script(src='/js/nvd3/models/scatter.js')
   script(src='/js/nvd3/models/stackedArea.js')
   script(src='/js/nvd3/models/stackedAreaChart.js')
+
   script
-  
+
     var statsTarget = 'assets';
     var graphData = new Array();
     var assets = new Array();
@@ -40,6 +41,7 @@ block head
             }
             converted.push(row);
         }
+        console.log(converted)
         return converted;
     }
 

@@ -8,7 +8,6 @@ block head
   script
     Ext.onReady(function() {
 
-        
         var partnerStore = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId:'partnerStore',
@@ -23,6 +22,22 @@ block head
             }
         });
 
+        var from = (new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() - 14));
+        var to = new Date();
+
+        var statsStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId:'partnerStore',
+            fields:['dateof', 'total'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/stats/assets' + $.param({"granularity": 'month', "from": from, "to": to}, true),
+                reader: {
+                    type: 'json',
+                    root: 'stats'
+                }
+            }
+        });
 
 
         var partnersOverview = Ext.create('Ext.Panel', {
@@ -54,6 +69,36 @@ block head
 
         var totalAssets = Ext.create('Ext.Panel', {
             id: 'assets-view',
+            frame: true,
+            colspan: 1,
+            title: 'Assets overview',
+            items: Ext.create('Ext.view.View', {
+                store: statsStore,
+                tpl: [
+                    '<tpl for=".">',
+                        '<div class="thumb-wrap" id="{name:stripTags}">',
+                        
+                        '<h4>{dateString:htmlEncode}</h4>',
+                        '<table>',
+                            '<tr><th>Points:</th><td>{total:htmlEncode}</td></tr>',
+                        '</table>',
+                        
+                        '</div>',
+                    '</tpl>',
+                    '<div class="x-clear"></div>'
+                ],
+                emptyText: 'No stats available',
+                prepareData: function(data) {
+                    Ext.apply(data, {
+                        dateString: Ext.util.Format.date(data.dateof, "M o")
+                    });
+                    return data;
+                },
+            })
+        });
+
+        var totalAssetsa = Ext.create('Ext.Panel', {
+            id: 'assetsa-view',
             frame: true,
             colspan: 1,
             title: 'Assets overview',
