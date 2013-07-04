@@ -1,0 +1,92 @@
+extends layout
+block head
+
+  title Your assets
+  link(rel="stylesheet", href="/css/ext-all.css")
+  script(src='/js/ext-all.js')
+
+  script
+    Ext.onReady(function() {
+
+        
+        var partnerStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId:'partnerStore',
+            fields:['id', 'name', 'email', 'publisher', 'distributor', 'points', 'people', 'links', 'assets', 'downloads', 'purchases', 'stores'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/partner/list',
+                reader: {
+                    type: 'json',
+                    root: 'partners'
+                }
+            }
+        });
+
+
+
+        var partnersOverview = Ext.create('Ext.Panel', {
+            id: 'partners-view',
+            frame: true,
+            colspan: 2,
+            title: 'Partners',
+            items: Ext.create('Ext.view.View', {
+                store: partnerStore,
+                tpl: [
+                    '<tpl for=".">',
+                        '<div class="thumb-wrap" id="{name:stripTags}">',
+                        '<h4>{name:htmlEncode}</h4>',
+                        '<table>',
+                            '<tr><th>Stores:</th><td>{stores:htmlEncode}</td></tr>',
+                            '<tr><th>Total assets:</th><td>{assets:htmlEncode}</td></tr>',
+                            '<tr><th>Points earned:</th><td>{points:htmlEncode}</td></tr>',
+                            '<tr><th>Downloads:</th><td>{downloads:htmlEncode}</td></tr>',
+                            '<tr><th>Purchases:</th><td>{purchases:htmlEncode}</td></tr>',
+                        '</table>',
+                        '</div>',
+                    '</tpl>',
+                    '<div class="x-clear"></div>'
+                ],
+                emptyText: 'No partners available',
+
+            })
+        });
+
+        var totalAssets = Ext.create('Ext.Panel', {
+            id: 'assets-view',
+            frame: true,
+            colspan: 1,
+            title: 'Assets overview',
+            width: 200,
+            height: 285
+        });
+
+
+        var layout = Ext.create('Ext.Viewport', {
+            overflowY: 'auto',
+            layout: {
+                type: 'table',
+                columns: 3,
+                tdAttrs: { style: 'padding: 10px;' }
+            },
+            defaults: {
+                xtype: 'panel',
+              //  width: 200,
+              //  height: 200,
+                bodyPadding: 10
+            },
+            bodyBorder: false,
+            padding: '48 0 0 0',
+            bodyStyle: 'width:100%',
+            items: [totalAssets, partnersOverview],
+            renderTo: Ext.getBody(),
+            border: 10,
+        });
+    });
+
+block body
+  .title
+    <br/>
+    include navigator
+    .container-fluid
+

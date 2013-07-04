@@ -98,3 +98,33 @@
     right: 33px;
     cursor:pointer;
 }
+
+div.thumb-wrap {
+    float:left;
+    padding-left: 9px;
+    padding-right: 9px;
+}
+
+div.thumb-wrap table {
+     border: 1px solid #e6f1f9;
+     width: 100%;
+}
+
+div.thumb-wrap h4 {
+    color: #666666;
+    display: block;
+    text-align: center;
+    background-color: #e6f1f9;
+    margin-bottom: 0;
+    padding: 1ex;
+}
+
+div.thumb-wrap th {
+    color: #666666;
+    text-align: right;
+    padding: 1ex;
+}
+
+div.thumb-wrap td {
+    padding: 1ex;
+}
