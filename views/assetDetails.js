@@ -9,11 +9,12 @@ function loadAssetDetails(assetData) {
     var assetDetailsForm;
 
     function addImageField() {
-        
+
         var form = Ext.create('Ext.form.field.File', {
             xtype: 'filefield',
             id: 'file[' + lastImageField + ']',
-            name: 'file[' + lastImageField + ']',
+            name: 'file-' + lastImageField + '',
+            //name: 'eomatease.jpeg',
             numericalId: lastImageField,
             fieldLabel: 'Image:',
             listeners: {
@@ -29,28 +30,62 @@ function loadAssetDetails(assetData) {
                             return;
                         }
 
+                        //HACK: rename the file field on the fly: the actual internal input field and all its wrapping objects
+                        el.name = file.name;
+                        el.config.name = file.name;
+                        element.name = file.name;
+                        document.getElementById('file['+el.numericalId+']-button-fileInputEl').name = file.name;
+
+
                         assetDetailsForm.add({
                             xtype: 'hidden',
-                            name: 'previews[' + el.numericalId + '][type]',
-                            value: file.type
-                        });
-                        assetDetailsForm.add({
-                            xtype: 'hidden',
-                            name: 'previews[' + el.numericalId + '][file]',
+                            name: 'info[previews][' + el.numericalId + '][file]',
                             value: file.name
                         });
                         assetDetailsForm.add({
                             xtype: 'hidden',
-                            name: 'previews[' + el.numericalId + '][mimetype]',
+                            name: 'info[previews][' + el.numericalId + '][mimetype]',
                             value: file.type
                         });
                     });
                 }
             }
         });
-        ++lastImageField;
+
         assetDetailsForm.add(form);
+        assetDetailsForm.add({
+            xtype: 'combobox',
+            id: 'info[previews][' + lastImageField + '][type]',
+            name: 'info[previews][' + lastImageField + '][type]',
+            displayField: 'value',
+            valueField: 'value',
+            value: 'screenshot',
+            fieldLabel: 'Image type',
+            store: Ext.create('Ext.data.Store', {
+                fields: ['value'],
+                data: [{'value': 'screenshot'},
+                    {'value': 'icon'},
+                    {'value': 'cover'}],
+            }),
+        });
+        assetDetailsForm.add({
+            xtype: 'combobox',
+            id: 'info[previews][' + lastImageField + '][subtype]',
+            name: 'info[previews][' + lastImageField + '][subtype]',
+            displayField: 'value',
+            valueField: 'value',
+            value: 'screen1',
+            fieldLabel: 'Image subtype',
+            store: Ext.create('Ext.data.Store', {
+                fields: ['value'],
+                data: [{'value': 'screen1'},
+                    {'value': 'screen2'},
+                    {'value': 'front'},
+                    {'value': 'back'}],
+            }),
+        });
         assetDetailsForm.doLayout();
+        ++lastImageField;
     }
 
     if (!assetDetailsWindow) {
@@ -128,6 +163,11 @@ function loadAssetDetails(assetData) {
 
                     var form = this.up('form').getForm();
                     if (form.isValid()) {
+                        //disable the last file field, since is empty and with invalid data
+                        assetDetailsForm.items.get('file[' + (lastImageField-1) + ']').disable();
+                        assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][type]').disable();
+                        assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][subtype]').disable();
+
                         form.submit({
                             url: '/json/asset/update/' + currentAsset,
                             waitMsg: 'Updating the asset...',
@@ -174,7 +214,6 @@ function loadAssetDetails(assetData) {
         assetDetailsForm.items.get('id').setValue(assetData.id);
     }
 
-    
     if (assetDetailsWindow.isVisible()) {
         assetDetailsWindow.hide();
     } else {
