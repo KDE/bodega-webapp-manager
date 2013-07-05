@@ -17,6 +17,8 @@ function loadAssetDetails(assetData) {
                 anchor: '100%'
             },
 
+            overflowY: 'auto',
+
             items: [{
                 id: 'name',
                 xtype: 'textfield',
@@ -39,8 +41,8 @@ function loadAssetDetails(assetData) {
                 value: assetData.version
             }, {
                 xtype: 'filefield',
-                name: 'image',
-                fieldLabel: 'Image (TODO)'
+                name: 'file',
+                fieldLabel: 'File (TODO)'
             }, {
                 id: 'description',
                 xtype: 'textareafield',
@@ -71,6 +73,10 @@ function loadAssetDetails(assetData) {
                 xtype: 'hidden',
                 name: 'info[id]',
                 value: assetData.id
+            }, {
+                xtype: 'filefield',
+                name: 'image',
+                fieldLabel: 'Image (TODO)'
             }],
 
             buttons: [{

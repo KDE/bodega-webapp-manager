@@ -128,3 +128,7 @@ div.thumb-wrap th {
 div.thumb-wrap td {
     padding: 1ex;
 }
+
+.x-table-layout td {
+    vertical-align:top;
+}
