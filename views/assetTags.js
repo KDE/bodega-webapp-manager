@@ -92,7 +92,7 @@ function loadItemTags(itemData, itemType) {
                             Ext.Ajax.request({
                                 url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
                                 method: 'POST',
-                                params: $.param(itemData),
+                                params: $.param({channel: itemData, addTags: itemData.tags}),
                                 callback: function(response) {
                                     tagsStore.removeAll();
                                     console.log(itemData.tags)
@@ -132,7 +132,7 @@ function loadItemTags(itemData, itemType) {
                         Ext.Ajax.request({
                             url: '/json/store/channel/update/' + currentStore + '/' + itemData.id ,
                             method: 'POST',
-                            params: $.param(itemData),
+                            params: $.param({channel: itemData, addTags: itemData.tags}),
                         });
                     }
                 }
@@ -184,7 +184,7 @@ function loadItemTags(itemData, itemType) {
                     Ext.Ajax.request({
                         url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
                         method: 'POST',
-                        params: $.param(itemData),
+                        params: $.param({channel: itemData, addTags: itemData.tags}),
                         callback: function(response) {
                             tagsStore.removeAll();
                             console.log(itemData.tags)
