@@ -5,7 +5,54 @@ var currentAsset;
 
 function loadAssetDetails(assetData) {
     currentAsset = assetData.id;
-    
+    var lastImageField = 0;
+    var assetDetailsForm;
+
+    function addImageField() {
+        
+        var form = Ext.create('Ext.form.field.File', {
+            xtype: 'filefield',
+            id: 'file[' + lastImageField + ']',
+            name: 'file[' + lastImageField + ']',
+            numericalId: lastImageField,
+            fieldLabel: 'Image:',
+            listeners: {
+                change: function( parent, value, eOpts ) {
+                    addImageField();
+                },
+                afterrender: function(el) {
+                    var element = el.fileInputEl;
+
+                    document.getElementById('file['+el.numericalId+']-button-fileInputEl').addEventListener('change', function () {
+                        var file = this.files[0];
+                        if (!file.type) {
+                            return;
+                        }
+
+                        assetDetailsForm.add({
+                            xtype: 'hidden',
+                            name: 'previews[' + el.numericalId + '][type]',
+                            value: file.type
+                        });
+                        assetDetailsForm.add({
+                            xtype: 'hidden',
+                            name: 'previews[' + el.numericalId + '][file]',
+                            value: file.name
+                        });
+                        assetDetailsForm.add({
+                            xtype: 'hidden',
+                            name: 'previews[' + el.numericalId + '][mimetype]',
+                            value: file.type
+                        });
+                    });
+                }
+            }
+        });
+        ++lastImageField;
+        assetDetailsForm.add(form);
+        assetDetailsForm.doLayout();
+    }
+
     if (!assetDetailsWindow) {
         assetDetailsForm = Ext.create('Ext.form.Panel', {
             //frame: true,
@@ -41,7 +88,7 @@ function loadAssetDetails(assetData) {
                 value: assetData.version
             }, {
                 xtype: 'filefield',
-                name: 'file',
+                name: 'file[0]',
                 fieldLabel: 'File (TODO)'
             }, {
                 id: 'description',
@@ -73,21 +120,6 @@ function loadAssetDetails(assetData) {
                 xtype: 'hidden',
                 name: 'info[id]',
                 value: assetData.id
-            }, {
-                xtype: 'filefield',
-                name: 'image',
-                fieldLabel: 'Image (TODO)',
-                listeners: {
-                    change: function( parent, value, eOpts ) {
-                        //TODO: create a new file field
-                        var field = Ext.create('Ext.form.field.FileView', {
-                            xtype: 'filefield',
-                            name: 'image',
-                            fieldLabel: 'Image (TODO)'});
-                        assetDetailsForm.items.add([field]);
-                        assetDetailsForm.doLayout();
-                    }
-                }
             }],
 
             buttons: [{
@@ -118,6 +150,7 @@ function loadAssetDetails(assetData) {
                 }
             }]
         });
+        addImageField();
 
 
         assetDetailsWindow = Ext.create('widget.window', {
