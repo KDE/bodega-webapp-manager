@@ -88,11 +88,14 @@ function loadItemTags(itemData, itemType) {
                                 }
                             });
                         } else {
-                            
+                            var tags = new Array();
+                            for (var i = 0; i < itemData.tags.length; ++i) {
+                                tags.push(itemData.tags[i].id)
+                            }
                             Ext.Ajax.request({
                                 url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
                                 method: 'POST',
-                                params: $.param({channel: itemData, addTags: itemData.tags}),
+                                params: $.param({addTags: tags}),
                                 callback: function(response) {
                                     tagsStore.removeAll();
                                     console.log(itemData.tags)
@@ -129,10 +132,14 @@ function loadItemTags(itemData, itemType) {
                             params: $.param({info: itemData}),
                         });
                     } else {
+                        var tags = new Array();
+                        for (var i = 0; i < itemData.tags.length; ++i) {
+                            tags.push(itemData.tags[i].id)
+                        }
                         Ext.Ajax.request({
                             url: '/json/store/channel/update/' + currentStore + '/' + itemData.id ,
                             method: 'POST',
-                            params: $.param({channel: itemData, addTags: itemData.tags}),
+                            params: $.param({addTags: tags}),
                         });
                     }
                 }
@@ -180,11 +187,14 @@ function loadItemTags(itemData, itemType) {
                         }
                     });
                 } else {
-                    
+                    var tags = new Array();
+                    for (var i = 0; i < itemData.tags.length; ++i) {
+                        tags.push(itemData.tags[i].id)
+                    }
                     Ext.Ajax.request({
                         url: '/json/store/channel/update/' + currentStore + '/' + itemData.id,
                         method: 'POST',
-                        params: $.param({channel: itemData, addTags: itemData.tags}),
+                        params: $.param({addTags: tags}),
                         callback: function(response) {
                             tagsStore.removeAll();
                             console.log(itemData.tags)
