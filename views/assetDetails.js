@@ -76,7 +76,18 @@ function loadAssetDetails(assetData) {
             }, {
                 xtype: 'filefield',
                 name: 'image',
-                fieldLabel: 'Image (TODO)'
+                fieldLabel: 'Image (TODO)',
+                listeners: {
+                    change: function( parent, value, eOpts ) {
+                        //TODO: create a new file field
+                        var field = Ext.create('Ext.form.field.FileView', {
+                            xtype: 'filefield',
+                            name: 'image',
+                            fieldLabel: 'Image (TODO)'});
+                        assetDetailsForm.items.add([field]);
+                        assetDetailsForm.doLayout();
+                    }
+                }
             }],
 
             buttons: [{
