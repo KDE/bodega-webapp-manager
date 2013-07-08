@@ -11,9 +11,8 @@ function loadAssetDetails(assetData) {
 
         var form = Ext.create('Ext.form.field.File', {
             xtype: 'filefield',
-            id: 'file[' + lastImageField + ']',
-            name: 'file-' + lastImageField + '',
-            //name: 'eomatease.jpeg',
+            id: 'file-' + lastImageField,
+            name: 'file-' + lastImageField,
             numericalId: lastImageField,
             fieldLabel: 'Image:',
             listeners: {
@@ -23,7 +22,7 @@ function loadAssetDetails(assetData) {
                 afterrender: function(el) {
                     var element = el.fileInputEl;
 
-                    document.getElementById('file['+el.numericalId+']-button-fileInputEl').addEventListener('change', function () {
+                    document.getElementById('file-'+el.numericalId+'-button-fileInputEl').addEventListener('change', function () {
                         var file = this.files[0];
                         if (!file.type) {
                             return;
@@ -33,7 +32,7 @@ function loadAssetDetails(assetData) {
                         el.name = file.name;
                         el.config.name = file.name;
                         element.name = file.name;
-                        document.getElementById('file['+el.numericalId+']-button-fileInputEl').name = file.name;
+                        document.getElementById('file'+el.numericalId+'-button-fileInputEl').name = file.name;
 
 
                         assetDetailsForm.add({
@@ -124,9 +123,34 @@ function loadAssetDetails(assetData) {
             fieldLabel: 'Version',
             value: assetData.version
         }, {
+            id: 'asset',
             xtype: 'filefield',
-            name: 'file[0]',
-            fieldLabel: 'File (TODO)'
+            name: 'asset',
+            fieldLabel: 'File',
+            listeners: {
+                afterrender: function(el) {
+                    //It doesn't work if el.fileInputEl is used
+                    //var element = el.fileInputEl;
+
+                    document.getElementById('asset-button-fileInputEl').addEventListener('change', function () {
+                        var file = this.files[0];
+                        if (!file.size) {
+                            return;
+                        }
+
+                        assetDetailsForm.add({
+                            xtype: 'hidden',
+                            name: 'info[file]',
+                            value: file.name
+                        });
+                        assetDetailsForm.add({
+                            xtype: 'hidden',
+                            name: 'info[size]',
+                            value: file.size
+                        });
+                    });
+                }
+            }
         }, {
             id: 'description',
             xtype: 'textareafield',
@@ -166,9 +190,15 @@ function loadAssetDetails(assetData) {
                 var form = this.up('form').getForm();
                 if (form.isValid()) {
                     //disable the last file field, since is empty and with invalid data
-                    assetDetailsForm.items.get('file[' + (lastImageField-1) + ']').disable();
+                    assetDetailsForm.items.get('file-' + (lastImageField-1)).disable();
                     assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][type]').disable();
                     assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][subtype]').disable();
+
+                    //disable the asset file if empty
+                    var uploadAssetField = assetDetailsForm.items.get('asset');
+                    if (!uploadAssetField.value) {
+                        uploadAssetField.disable();
+                    }
 
                     form.submit({
                         url: '/json/asset/update/' + currentAsset,
