@@ -110,12 +110,27 @@ function loadAssetDetails(assetData) {
             value: assetData.name
         }, {
             id: 'license',
-            xtype: 'numberfield',
+            xtype: 'combobox',
             name: 'info[license]',
-            fieldLabel: 'License (TODO: combobox)',
-            value: assetData.license,
-            minValue: 0,
-            maxValue: 200
+            fieldLabel: 'License',
+            editable: false,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'value',
+            value: String(assetData.license),
+            store: Ext.create('Ext.data.Store', {
+                fields: ['name', 'value'],
+                data: [{'name': 'GPL', 'value': '1'},
+                    {'name': 'LGPL', 'value': '2'},
+                    {'name': 'BSD', 'value': '3'},
+                    {'name': 'Creative Commons Attribution', 'value': '4'},
+                    {'name': 'Creative Commons Attribution-ShareAlike', 'value': '5'},
+                    {'name': 'Creative Commons Attribution-NoDerivs', 'value': '6'},
+                    {'name': 'Creative Commons Attribution-NonCommercial', 'value': '7'},
+                    {'name': 'Creative Commons Attribution-NonCommercial-ShareAlike', 'value': '8'},
+                    {'name': 'Creative Commons Attribution-NonCommercial-NoDerivs', 'value': '9'},
+                    {'name': 'Proprietary', 'value': '10'}],
+            })
         }, {
             id: 'version',
             xtype: 'textfield',
