@@ -55,11 +55,11 @@ app.get('/asset/list/?:listType?', isAuthorized, function(req, res){
     app.BodegaManager.listassets(req, res);
 });
 
-app.get('/asset/create', isAuthorized, function(req, res){
+app.get('/asset/create/?:assetType?', isAuthorized, function(req, res){
     app.BodegaManager.createasset(req, res);
 });
 
-app.post('/asset/create', isAuthorized, function(req, res){
+app.post('/asset/create/?:assetType?', isAuthorized, function(req, res){
     app.BodegaManager.createasset(req, res);
 });
 

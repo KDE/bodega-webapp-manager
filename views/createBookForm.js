@@ -1,10 +1,7 @@
 
-var assetDetailsWindow;
 var assetDetailsForm;
-var currentAsset;
 
-function loadAssetDetails(assetData) {
-    currentAsset = assetData.id;
+function createBookForm() {
     var lastImageField = 0;
 
     function addImageField() {
@@ -86,8 +83,7 @@ function loadAssetDetails(assetData) {
         ++lastImageField;
     }
 
-    if (assetDetailsWindow) {
-        assetDetailsWindow.destroy();
+    if (assetDetailsForm) {
         assetDetailsForm.destroy();
     }
     assetDetailsForm = Ext.create('Ext.form.Panel', {
@@ -107,7 +103,7 @@ function loadAssetDetails(assetData) {
             xtype: 'textfield',
             name: 'info[name]',
             fieldLabel: 'Name',
-            value: assetData.name
+            allowBlank: false
         }, {
             id: 'license',
             xtype: 'combobox',
@@ -117,7 +113,7 @@ function loadAssetDetails(assetData) {
             queryMode: 'local',
             displayField: 'name',
             valueField: 'value',
-            value: String(assetData.license),
+            value: '4',
             store: Ext.create('Ext.data.Store', {
                 fields: ['name', 'value'],
                 data: [{'name': 'GPL', 'value': '1'},
@@ -130,13 +126,15 @@ function loadAssetDetails(assetData) {
                     {'name': 'Creative Commons Attribution-NonCommercial-ShareAlike', 'value': '8'},
                     {'name': 'Creative Commons Attribution-NonCommercial-NoDerivs', 'value': '9'},
                     {'name': 'Proprietary', 'value': '10'}],
-            })
+            }),
+            allowBlank: false
         }, {
             id: 'version',
             xtype: 'textfield',
             name: 'info[version]',
             fieldLabel: 'Version',
-            value: assetData.version
+            value: '1.0',
+            allowBlank: false
         }, {
             id: 'asset',
             xtype: 'filefield',
@@ -165,40 +163,31 @@ function loadAssetDetails(assetData) {
                         });
                     });
                 }
-            }
+            },
+            allowBlank: false
         }, {
             id: 'description',
             xtype: 'textareafield',
             name: 'info[description]',
             fieldLabel: 'Description',
-            value: assetData.description
+            allowBlank: false
         }, {
             id: 'baseprice',
             xtype: 'numberfield',
             name: 'info[baseprice]',
             fieldLabel: 'Base Price',
-            value: assetData.baseprice,
-            minValue: 0
-        }, {
-            id: 'active',
-            xtype: 'checkboxfield',
-            name: 'info[active]',
-            fieldLabel: 'Active',
-            value: assetData.active
+            minValue: 0,
+            value: 0,
+            allowBlank: false
         }, {
             id: 'posted',
             xtype: 'hidden',
             name: 'info[posted]',
             value: false
-        }, {
-            id: 'id',
-            xtype: 'hidden',
-            name: 'info[id]',
-            value: assetData.id
         }],
 
         buttons: [{
-            text: 'Save',
+            text: 'Create',
             handler: function() {
 
                 var form = this.up('form').getForm();
@@ -208,56 +197,25 @@ function loadAssetDetails(assetData) {
                     assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][type]').disable();
                     assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][subtype]').disable();
 
-                    //disable the asset file if empty
-                    var uploadAssetField = assetDetailsForm.items.get('asset');
-                    if (!uploadAssetField.value) {
-                        uploadAssetField.disable();
-                    }
-
                     form.submit({
-                        url: '/json/asset/update/' + currentAsset,
-                        waitMsg: 'Updating the asset...',
+                        url: '/json/asset/create',
+                        waitMsg: 'Creating the asset...',
                         //params: $.param({info: data}),
                         success: function(fp, o) {
-                            store.removeAll();
-                            store.load();
-                            assetDetailsWindow.hide();
+                            window.location.href = "/asset/list/incoming";
                         },
                         failure: function(form, action) {
-                            assetDetailsWindow.hide();
+                            window.location.href = "/asset/list/incoming";
                         }
                     });
                 }
-            }
-        },{
-            text: 'Cancel',
-            handler: function() {
-                assetDetailsWindow.hide();
             }
         }]
     });
     addImageField();
 
 
-    assetDetailsWindow = Ext.create('widget.window', {
-        title: 'Details of Assets ' + assetData.name,
-        closable: true,
-        closeAction: 'hide',
-        modal: true,
-        width: '80%',
-        height: '80%',
-        layout: 'fit',
-        bodyStyle: 'padding: 5px;',
-        items: [assetDetailsForm]
-    });
-
-
-    if (assetDetailsWindow.isVisible()) {
-        assetDetailsWindow.hide();
-    } else {
-        assetDetailsWindow.show();
-        assetDetailsWindow.restore();
-    }
+    return assetDetailsForm;
 }
 
 

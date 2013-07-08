@@ -4,22 +4,14 @@ block head
   title Your assets
   link(rel="stylesheet", href="/css/ext-all.css")
   script(src='/js/ext-all.js')
-  script(src="/js/uploader/jquery.knob.js")
-  script(src="/js/uploader/jquery.ui.widget.js")
-  script(src="/js/uploader/jquery.iframe-transport.js")
-  script(src="/js/uploader/jquery.fileupload.js")
-  script(src="/js/uploader/script.js")
+
+  include createBookForm.js
 
   script
     Ext.onReady(function() {
-        Ext.create('Ext.Panel', {
+        var panel = Ext.create('Ext.Panel', {
             collapsible: false,
-            renderTo: Ext.getBody(),
-            width: '100%',
-            height: 38,
-            y: 48,
-            x: 0,
-            floating: true,
+            region: 'center',
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
@@ -46,6 +38,17 @@ block head
                     }
                 }]
             }],
+            items: [createBookForm()]
+        });
+
+        var layout = Ext.create('Ext.Viewport', {
+            layout:'border',
+            bodyBorder: false,
+            padding: '48 0 0 0',
+            bodyStyle: 'width:100%',
+            items: [panel],
+            renderTo: Ext.getBody(),
+            border: 0
         });
     });
 
@@ -54,18 +57,3 @@ block body
     <br/>
     include navigator
     .container-fluid
-      .row-fluid
-
-          <form id="upload" method="POST" action="/json/asset/create" enctype="multipart/form-data">
-          <input type="hidden" id="info" name="info" />
-          <input type="hidden" id="license" name="info[license]" value="1" />
-          <legend>Upload the files of your assets</legend>
-          <div id="drop"> Drop Here <br/>
-          <a>Browse</a>
-          <input type="file" name="asset" multiple />
-          </div><br/>
-          <div id="button" style="display:none"><a href="/asset/list/incoming">Review the new assets</a><br/><br/></div>
-          <ul>
-          <!-- The file uploads will be shown here -->
-          </ul>
-          </form>
