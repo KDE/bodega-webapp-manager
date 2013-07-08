@@ -18,7 +18,7 @@ function createTagList(config) {
     var tagStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
         storeId:'tagStore',
-        fields:['id', 'typeid', 'type', 'title'],
+        fields:['id', 'typeid', 'type', 'editable', 'title'],
         proxy: {
             type: 'ajax',
             url: '/json/tag/list',
@@ -61,11 +61,29 @@ function createTagList(config) {
         }
     });
     var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
-        clicksToEdit: 1
+        clicksToEdit: 1,
+        listeners: {
+            beforeedit: function(editor, e, eOpts) {
+                console.log(e)
+                if (!e.record.data.editable) {
+                    return false;
+                }
+            }
+        }
     });
     var tagView = Ext.create('Ext.grid.Panel', {
         store: tagStore,
-        selType: 'checkboxmodel',
+        //selType: 'checkboxmodel',
+        selModel: {
+            selType: 'checkboxmodel',
+            renderer: function(value, metaData, record, rowIndex, colIndex, store, view) {
+                if (record.data.editable) {
+                    var baseCSSPrefix = Ext.baseCSSPrefix;
+                    metaData.tdCls = baseCSSPrefix + 'grid-cell-special ' + baseCSSPrefix + 'grid-cell-row-checker';
+                    return '<div class="' + baseCSSPrefix + 'grid-row-checker">&#160;</div>';
+                }
+            }
+        },
         inline: true,
         columns: [
             { header: 'Title',  width: '60%', dataIndex: 'title', flex: 1, field: {allowBlank: false} },
@@ -129,6 +147,11 @@ function createTagList(config) {
                     tagView.dockedItems.get(2).items.get(1).show();
                 } else {
                     tagView.dockedItems.get(2).items.get(1).hide();
+                }
+            },
+            beforeselect: function(selModel, record, index) {
+                if (!record.data.editable) {
+                    return false;
                 }
             }
         },
