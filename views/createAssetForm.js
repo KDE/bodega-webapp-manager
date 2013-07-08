@@ -1,7 +1,7 @@
 
 var assetDetailsForm;
 
-function createBookForm() {
+function createAssetForm(extraFields) {
     var lastImageField = 0;
 
     function addImageField() {
@@ -212,6 +212,7 @@ function createBookForm() {
             }
         }]
     });
+    assetDetailsForm.add(extraFields);
     addImageField();
 
 
