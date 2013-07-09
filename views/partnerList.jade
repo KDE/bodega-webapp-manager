@@ -6,7 +6,7 @@ block head
   script(src='/js/ext-all.js')
 
   include partnerContacts.js
-  include partnerDetails.js
+  include partnerRequest.js
 
   script
     Ext.onReady(function() {
@@ -83,8 +83,27 @@ block head
             columns: [
                 { header: 'Name',  dataIndex: 'name', field: {allowBlank: false}, flex: 1},
                 { header: 'Email', dataIndex: 'email', field: {allowBlank: false}, flex: 1},
-                { header: 'Publisher', dataIndex: 'publisher', xtype: 'checkcolumn', disabled: true},
-                { header: 'distributor', dataIndex: 'distributor', xtype: 'checkcolumn', disabled: true},
+                {
+                    header: 'Publisher',
+                    dataIndex: 'publisher',
+                    renderer: function(value, record) {
+                        if (value) {
+                            return Ext.String.format('Yes');
+                        } else {
+                            return Ext.String.format('<a onClick="loadPartnerRequest(\''+record.record.data.id+'\', \''+record.record.data.name+'\', \'publisher\')">Request</a>', value);
+                        }
+                    }
+                }, {
+                    header: 'distributor',
+                    dataIndex: 'distributor',
+                    renderer: function(value, record) {
+                        if (value) {
+                            return Ext.String.format('Yes');
+                        } else {
+                            return Ext.String.format('<a onClick="loadPartnerRequest(\''+record.record.data.id+'\', \''+record.record.data.name+'\', \'distributor\')">Request</a>', value);
+                        }
+                    }
+                },
                 { header: 'Points', dataIndex: 'points', field: {xtype: 'numberfield', allowBlank: false}},
                 {
                     xtype: 'actioncolumn',
@@ -94,12 +113,6 @@ block head
                         tooltip: 'Edit contacts',
                         handler: function(grid, rowIndex, colIndex) {
                             loadPartnerContacts(store.getAt(rowIndex).data);
-                        }
-                    }, {
-                        icon: '/css/edit.png',
-                        tooltip: 'Edit Partner',
-                        handler: function(grid, rowIndex, colIndex) {
-                            loadPartnerDetails(store.getAt(rowIndex).data);
                         }
                     }]
                 }
