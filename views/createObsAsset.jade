@@ -11,11 +11,63 @@ block head
     Ext.onReady(function() {
 
         var extraFields = [{
-            xtype: 'textfield',
-            name: 'obsFile[test]',
-            fieldLabel: 'Test OBS file field',
-            value: 'test'
-        }];
+                xtype: 'textfield',
+                id: 'obsInfo[pkgName]',
+                name: 'obsInfo[pkgName]',
+                fieldLabel: 'Package name',
+                allowBlank: false
+            }, {
+                xtype: 'textfield',
+                id: 'obsInfo[arch]',
+                name: 'obsInfo[arch]',
+                fieldLabel: 'Architecture',
+                allowBlank: false
+            }, {
+                xtype: 'textfield',
+                id: 'obsInfo[repoName]',
+                name: 'obsInfo[repoName]',
+                fieldLabel: 'Repository name',
+                allowBlank: false
+            }];
+
+        var beforeaction = function(extForm, action, eOpts) {
+
+            var pkgName = form.items.get('obsInfo[pkgName]').getValue();
+            var version = form.items.get('version').getValue();
+            var arch = form.items.get('obsInfo[arch]').getValue();
+            var repoName = form.items.get('obsInfo[repoName]').getValue();
+
+            var obsFileParts = [pkgName + ';' + version + ';' + arch + ';' + repoName];
+            var obsFileBlob = new Blob(obsFileParts, { "type" : "text\/plain" });
+
+
+            form = new FormData(),
+            request = new XMLHttpRequest();
+            for (var i in extForm.getFieldValues()) {
+                form.append(i, extForm.getFieldValues()[i]);
+            }
+            form.append('info[file]', pkgName + '.desc');
+            form.append('asset', obsFileBlob, pkgName + '.desc');
+            request.open(
+                        "POST",
+                        "/json/asset/create",
+                        true
+                    );
+            request.onreadystatechange = function() {
+                if (request.readyState == 4 && request.status == 200) {
+                     window.location.href = "/asset/list/incoming";
+                }
+            }
+            request.send(form);
+
+            return false;
+        }
+
+        var form = createAssetForm(extraFields);
+        form.getForm().addListener('beforeaction', beforeaction, form);
+        form.items.get('asset').disable();
+        form.items.get('asset').allowBlank = true;
+        form.items.get('asset').hide();
 
         var panel = Ext.create('Ext.Panel', {
             collapsible: false,
@@ -53,7 +105,7 @@ block head
                     }
                 }]
             }],
-            items: [createAssetForm(extraFields)]
+            items: [form]
         });
 
         var layout = Ext.create('Ext.Viewport', {
