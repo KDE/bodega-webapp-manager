@@ -127,12 +127,14 @@ function createTagList(config) {
                             var s = tagView.getSelectionModel().getSelection();
                             selected = [];
                             Ext.each(s, function (item) {
-                                Ext.Ajax.request({
-                                    url: '/json/tag/delete/' + item.data.id,
-                                    callback: function(response) {
-                                        tagStore.load();
-                                    }
-                                });
+                                if (item.data.editable) {
+                                    Ext.Ajax.request({
+                                        url: '/json/tag/delete/' + item.data.id,
+                                        callback: function(response) {
+                                            tagStore.load();
+                                        }
+                                    });
+                                }
                             });
                         }
                     });
@@ -143,15 +145,18 @@ function createTagList(config) {
             selectionchange: function()
             {
                 var s = tagView.getSelectionModel().getSelection();
-                if (s.length > 0) {
+                var show = false;
+
+                Ext.each(s, function (item) {
+                    if (item.data.editable) {
+                        show = true;
+                    }
+                });
+
+                if (show) {
                     tagView.dockedItems.get(2).items.get(1).show();
                 } else {
                     tagView.dockedItems.get(2).items.get(1).hide();
-                }
-            },
-            beforeselect: function(selModel, record, index) {
-                if (!record.data.editable) {
-                    return false;
                 }
             }
         },
