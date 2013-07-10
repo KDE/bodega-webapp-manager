@@ -10,6 +10,35 @@ block head
   script
     Ext.onReady(function() {
 
+        var typeStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId: 'typeStore',
+            fields:['type', 'title'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/tag/list/assetType',
+                reader: {
+                    type: 'json',
+                    root: 'tags'
+                }
+            }
+        });
+
+        var extraFields = [{
+                xtype: 'hidden',
+                name: 'info[tags][0][type]',
+                value: 'assetType'
+            }, {
+                xtype: 'combobox',
+                name: 'info[tags][0][title]',
+                fieldLabel: 'Type',
+                displayField: 'title',
+                valueField: 'title',
+                store: typeStore,
+                editable: false,
+                allowBlank: false
+            }];
+
         var panel = Ext.create('Ext.Panel', {
             collapsible: false,
             region: 'center',
@@ -46,7 +75,7 @@ block head
                     }
                 }]
             }],
-            items: [createAssetForm()]
+            items: [createAssetForm(extraFields)]
         });
 
         var layout = Ext.create('Ext.Viewport', {
