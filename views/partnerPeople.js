@@ -40,7 +40,7 @@
                 }
 
                 var roleTypes = responseObj.roles;
-                
+
                 peopleView = Ext.create('Ext.grid.Panel', {
                     id: 'peopleView',
                     store: peopleStore,
@@ -164,6 +164,13 @@
                                 method: 'POST',
                                 params: $.param(rec),
                                 success: function(response) {
+                                    var responseObj = Ext.decode(response.responseText);
+
+                                    if (responseObj.error && responseObj.error.type === 'InvalidAccount') {
+                                        Ext.Msg.alert('Error', 'The account ' + rec.person + ' does not exist.');
+                                        return;
+                                    }
+
                                     for (var i in partnerData.people) {
                                         if (partnerData.people[i].email === rec.person) {
                                             partnerData.people[i].roles = roles;
