@@ -6,6 +6,7 @@ block head
   script(src='/js/ext-all.js')
 
   include partnerContacts.js
+  include partnerPeople.js
   include partnerRequest.js
 
   script
@@ -114,6 +115,12 @@ block head
                         handler: function(grid, rowIndex, colIndex) {
                             loadPartnerContacts(store.getAt(rowIndex).data);
                         }
+                    }, {
+                        icon: '/css/people.png',
+                        tooltip: 'Edit partner people',
+                        handler: function(grid, rowIndex, colIndex) {
+                            loadPartnerPeople(store.getAt(rowIndex).data);
+                        }
                     }]
                 }
             ],
@@ -199,22 +206,11 @@ block head
             region: 'center'
         });
 
-        var collectionsPanel = {
-            region: 'east',
-            items: [],
-            title: 'People',
-            width: 300,
-            split: true,
-            collapsible: true,
-            collapsed: true,
-            floatable: false
-        }
-
         var layout = Ext.create('Ext.Viewport', {
             width: '100%',
             layout: 'border',
             padding: '48 0 0 0',
-            items: [view, collectionsPanel],
+            items: [view],
             renderTo: Ext.getBody(),
             border: 0
         });
