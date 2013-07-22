@@ -4,6 +4,20 @@ var assetDetailsForm;
 function createAssetForm(extraFields) {
     var lastImageField = 0;
 
+    var ratingStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId: 'ratingStore',
+        fields:['type', 'title'],
+        proxy: {
+            type: 'ajax',
+            url: '/json/tag/list/contentrating',
+            reader: {
+                type: 'json',
+                root: 'tags'
+            }
+        }
+    });
+
     function addImageField() {
 
         var form = Ext.create('Ext.form.field.File', {
@@ -184,6 +198,19 @@ function createAssetForm(extraFields) {
             xtype: 'hidden',
             name: 'info[posted]',
             value: false
+        }, {
+            xtype: 'hidden',
+            name: 'info[tags][0][type]',
+            value: 'contentrating'
+        }, {
+            xtype: 'combobox',
+            name: 'info[tags][0][title]',
+            fieldLabel: 'Rating',
+            displayField: 'title',
+            valueField: 'title',
+            store: ratingStore,
+            editable: false,
+            allowBlank: false
         }],
 
         buttons: [{

@@ -66,6 +66,8 @@ block body
           <form id="upload" method="POST" action="/json/asset/create" enctype="multipart/form-data">
           <input type="hidden" id="info" name="info" />
           <input type="hidden" id="license" name="info[license]" value="1" />
+          <input type="hidden" id="license" name="info[tags][0][type]" value="contentrating" />
+          <input type="hidden" id="license" name="info[tags][0][title]" value="Everyone" />
           <legend>Upload the files of your assets</legend>
           <div id="drop"> Drop Here <br/>
           <a>Browse</a>

@@ -195,14 +195,26 @@ block head
             },
             columnWidth: 1,
             border: 0,
-            plugins: [cellEditing]
+            plugins: [cellEditing],
+            region: 'center'
         });
+
+        var collectionsPanel = {
+            region: 'east',
+            items: [],
+            title: 'People',
+            width: 300,
+            split: true,
+            collapsible: true,
+            collapsed: true,
+            floatable: false
+        }
 
         var layout = Ext.create('Ext.Viewport', {
             width: '100%',
-            layout:'column',
+            layout: 'border',
             padding: '48 0 0 0',
-            items: [view],
+            items: [view, collectionsPanel],
             renderTo: Ext.getBody(),
             border: 0
         });
