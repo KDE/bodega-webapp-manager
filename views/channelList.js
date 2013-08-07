@@ -83,11 +83,11 @@
                     insert: function( parent, node, refNode, eOpts ) {
                         var data = {};
                         data.channel = {};
-                        data.channel.name = node.data.name;
-                        data.channel.description = node.data.description;
-                        data.channel.image = node.data.image;
-                        data.channel.parent = node.data.parentId;
-                        data.channel.active = false;
+                        data.name = node.data.name;
+                        data.description = node.data.description;
+                        data.image = node.data.image;
+                        data.parent = node.data.parentId;
+                        data.active = false;
 
                         Ext.Ajax.request({
                             url: '/json/store/channel/create/' + storeId,
@@ -189,6 +189,14 @@
                     load: function( parent, node, records, successful, eOpts ) {
                         if (successful) {
                             channelView.expandAll();
+                        }
+                    },
+                    selectionchange: function() {
+                        var s = channelView.getSelectionModel().getSelection();
+                        if (s.length > 0) {
+                            channelView.dockedItems.get(1).items.get(2).show();
+                        } else {
+                            channelView.dockedItems.get(1).items.get(2).hide();
                         }
                     }
                 }
