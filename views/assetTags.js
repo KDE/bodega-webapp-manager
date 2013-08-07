@@ -44,7 +44,8 @@ function loadItemTags(itemData, itemType) {
             ptype: 'gridviewdragdrop',
             dropGroup: 'viewDDGroup',
             dragGroup: 'collectionListDDGroup',
-        }
+        },
+        flex:1
     });
     allTagsView.title = 'All Tags';
     allTagsView.columnWidth = 0.5;
@@ -110,6 +111,7 @@ function loadItemTags(itemData, itemType) {
             }
         ],
         border: 0,
+        flex:1,
         title: 'Current Tags',
         region: 'center',
         viewConfig: {
@@ -219,14 +221,13 @@ function loadItemTags(itemData, itemType) {
         modal: true,
         width: '80%',
         height: '80%',
-        layout: 'fit',
+        layout: {
+            type: 'hbox',
+            pack: 'start',
+            align: 'stretch'
+        },
         bodyStyle: 'padding: 5px;',
-        items: [{
-            layout: 'column',
-            autoScroll: true,
-            defaultType: 'container',
-            items: [allTagsView, itemTagsView]
-        }]
+        items: [allTagsView, itemTagsView]
     });
 
     if (itemTagsWindow.isVisible()) {
