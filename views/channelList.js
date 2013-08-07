@@ -64,12 +64,11 @@
                             return;
                         }
                         var data = {};
-                        record.raw.channel = {};
-                        record.raw.channel.name = record.data.name;
-                        record.raw.channel.description = record.data.description;
-                        record.raw.channel.image = record.data.image;
-                        record.raw.channel.parent = record.data.parentId;
-                        record.raw.channel.active = record.data.active;
+                        record.raw.name = record.data.name;
+                        record.raw.description = record.data.description;
+                        record.raw.image = record.data.image;
+                        record.raw.parent = record.data.parentId;
+                        record.raw.active = record.data.active;
 
                         Ext.Ajax.request({
                             url: '/json/store/channel/update/' + storeId + '/' + record.raw.id,
