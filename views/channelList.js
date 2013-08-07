@@ -204,15 +204,7 @@
                 height: '80%',
                 layout: 'border',
                 bodyStyle: 'padding: 5px;',
-                items: [{
-                    region: 'east',
-                    title: 'Collections',
-                    width: 200,
-                    split: true,
-                    collapsible: true,
-                    collapsed: true,
-                    floatable: false
-                }, channelView]
+                items: [channelView]
             });
         }
 
