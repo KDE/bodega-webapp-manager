@@ -44,7 +44,8 @@ $(function(){
 
             });
 
-            $('#upload #info').val('{"name": "'+data.files[0].name+'", "file": "'+data.files[0].name+'", "baseprice":"0", "license":"1"}').change();
+            $('#upload #info-name').val(data.files[0].name).change();
+            $('#upload #info-file').val(data.files[0].name).change();
 
             // Automatically upload the file once it is added to the queue
             var jqXHR = data.submit();
