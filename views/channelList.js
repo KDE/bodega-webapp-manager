@@ -19,7 +19,10 @@
         var nodes = [node];
         var visited = {};
         var i = 0;
+        var iteration = 0;
         while (i <= rowIndex) {
+            ++iteration;
+
             if (node.firstChild !== null && !visited[node.internalId]) {
                 visited[node.internalId] = true;
                 nodes.push(node);
@@ -31,8 +34,11 @@
             } else {
                 while (nodes.length > 0 && nodes[nodes.length-1].nextSibling === null) {
                     nodes.pop();
-                    node = nodes[nodes.length-1];
                 }
+                node = nodes[nodes.length-1];
+            }
+            if (iteration > 10000) {
+                break;
             }
         }
 
