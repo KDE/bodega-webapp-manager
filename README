@@ -1,0 +1,4 @@
+* Install: npm Install
+* Copy config.sample.json to config.json and modify as desired
+* Run: ./main.sh
+* use jshint in order to check your code: make check
