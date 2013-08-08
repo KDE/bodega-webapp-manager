@@ -23,7 +23,7 @@ function loadPartnerRequest(partnerId, partnerName, question) {
             name: 'partner',
             value: partnerId
         }, {
-            id: 'publisherReason',
+            id: 'reason',
             xtype: 'textfield',
             name: 'reason',
             fieldLabel: 'Reason'
