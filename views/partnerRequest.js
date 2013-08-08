@@ -25,7 +25,7 @@ function loadPartnerRequest(partnerId, partnerName, question) {
         }, {
             id: 'publisherReason',
             xtype: 'textfield',
-            name: 'information',
+            name: 'reason',
             fieldLabel: 'Reason'
         }],
 
