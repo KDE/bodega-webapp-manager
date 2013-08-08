@@ -41,9 +41,15 @@ function loadPartnerRequest(partnerId, partnerName, question) {
                             waitMsg: 'Sending request...',
                             success: function(fp, o) {
                                 partnerDetailsWindow.hide();
+                                if (o.result && o.result.success) {
+                                    Ext.MessageBox.alert('', 'Request sent successfully.');
+                                } else {
+                                    Ext.MessageBox.alert('Error', 'Error in sending your request.');
+                                }
                             },
                             failure: function(form, action) {
                                 partnerDetailsWindow.hide();
+                                Ext.MessageBox.alert('Error', 'Error in sending your request.');
                             }
                         });
                     //distributor
@@ -53,9 +59,15 @@ function loadPartnerRequest(partnerId, partnerName, question) {
                             waitMsg: 'Sending request...',
                             success: function(fp, o) {
                                 partnerDetailsWindow.hide();
+                                if (o.result && o.result.success) {
+                                    Ext.MessageBox.alert('', 'Request sent successfully.');
+                                } else {
+                                    Ext.MessageBox.alert('Error', 'Error in sending your request.');
+                                }
                             },
                             failure: function(form, action) {
                                 partnerDetailsWindow.hide();
+                                Ext.MessageBox.alert('Error', 'Error in sending your request.');
                             }
                         });
                     }
