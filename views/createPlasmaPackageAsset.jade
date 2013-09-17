@@ -1,0 +1,59 @@
+extends layout
+block head
+
+  title Your assets
+  link(rel="stylesheet", href="/css/ext-all.css")
+  script(src='/js/ext-all.js')
+
+  include createAssetForm.js
+
+  script
+    Ext.onReady(function() {
+
+        var typeStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId: 'typeStore',
+            fields:['type', 'title'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/tag/list/assetType',
+                reader: {
+                    type: 'json',
+                    root: 'tags'
+                }
+            }
+        });
+
+        var extraFields = [{
+                xtype: 'hidden',
+                name: 'info[tags][1][type]',
+                value: 'assetType'
+            }, {
+                xtype: 'combobox',
+                name: 'info[tags][1][title]',
+                fieldLabel: 'Type',
+                displayField: 'title',
+                valueField: 'title',
+                store: typeStore,
+                editable: false,
+                allowBlank: false
+            }];
+
+        var panel = createPanel(extraFields);
+
+        var layout = Ext.create('Ext.Viewport', {
+            layout:'border',
+            bodyBorder: false,
+            padding: '48 0 0 0',
+            bodyStyle: 'width:100%',
+            items: [panel],
+            renderTo: Ext.getBody(),
+            border: 0
+        });
+    });
+
+block body
+  .title
+    <br/>
+    include navigator
+    .container-fluid

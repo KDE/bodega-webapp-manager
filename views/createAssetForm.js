@@ -31,7 +31,7 @@ function createToolBar() {
             text: 'Plasma Package',
             scope: this,
             handler: function() {
-                window.location.href = "/asset/create/plasmapackage";
+                window.location.href = "/asset/create/plasmaPackage";
             }
         }, {
             xtype: 'button',
