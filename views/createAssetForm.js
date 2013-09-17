@@ -1,6 +1,58 @@
 
 var assetDetailsForm;
 
+function createToolBar() {
+    return {
+        xtype: 'toolbar',
+        dock: 'top',
+        items: [{
+            xtype: 'button',
+            text: 'Mass create',
+            scope: this,
+            handler: function() {
+                window.location.href = "/asset/create/mass";
+            }
+        }, {
+            xtype: 'button',
+            text: 'Generic Asset',
+            scope: this,
+            handler: function() {
+                window.location.href = "/asset/create/generic";
+            }
+        }, {
+            xtype: 'button',
+            text: 'Book Asset',
+            scope: this,
+            handler: function() {
+                window.location.href = "/asset/create/book";
+            }
+        }, {
+            xtype: 'button',
+            text: 'Plasma Package',
+            scope: this,
+            handler: function() {
+                window.location.href = "/asset/create/plasmapackage";
+            }
+        }, {
+            xtype: 'button',
+            text: 'App from OBS',
+            scope: this,
+            handler: function() {
+                window.location.href = "/asset/create/obs";
+            }
+        }]
+    }
+}
+
+function createPanel(extraFields) {
+    return Ext.create('Ext.Panel', {
+        collapsible: false,
+        region: 'center',
+        dockedItems: [createToolBar()],
+        items: [createAssetForm(extraFields)]
+    });
+}
+
 function createAssetForm(extraFields) {
     var lastImageField = 0;
 
