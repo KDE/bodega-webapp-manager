@@ -1,0 +1,60 @@
+extends layout
+block head
+  title Modify your own #{network} Account
+block body
+  .title
+    br
+    script
+      function validateForm() {
+
+        if ($('#password').val() !== $('#password2').val()) {
+            $('#password').attr('placeholder', 'Your passwords does not match.');
+            $('#password2').attr('placeholder', 'Your passwords does not match.');
+            $('#field-control2').addClass('error');
+            $('#help-password').text('Your passwords does not match');
+            return false;
+        } else if ($('#password').val().length < 8 || $('#password2').val() < 8 ) {
+            $('#password').attr('placeholder', 'Your password must be at least 8 digits.');
+            $('#password2').attr('placeholder', 'Your password must be at least 8 digits.');
+            $('#field-control2').addClass('error');
+            $('#help-password').text('Your password must be at least 8 digits');
+            return false;
+       }
+      }
+    include navigator
+    .container-fluid
+      .row-fluid
+          form.form-horizontal.well(method='POST', id='modifyAccount')
+            fieldset.control-group(id='field-control')
+              .control-group
+                label.control-label(for='firstname') Name
+                .controls
+                  input.xlarge(type='text', value='#{firstname}', name='firstname')
+              .control-group
+                label.control-label(for='lastname') Last name
+                .controls
+                  input.xlarge(type='text', value='#{lastname}', name='lastname')
+              .control-group
+                label.control-label(for='email') Email
+                .controls
+                  input.xlarge(type='text',  value='#{email}', name='email')
+              .control-group
+              .controls
+                input.btn.btn-primary(type='submit',id='updateAccount', value='Update Account')
+
+          form.form-horizontal.well(method='POST', id='modifyPassword', onsubmit='return validateForm();')
+            fieldset.control-group(id='field-control2')
+              span.help-control(id='help-password')
+              .control-group
+                label.control-label(for='password') New Password
+                .controls
+                  input.xlarge(type='password', placeholder='Type your new password', name='password', id='password')
+              .control-group
+                label.control-label(for='password2') Confirm Password
+                .controls
+                  input.xlarge(type='password', placeholder='Retype your password', name='password2', id='password2')
+              .control-group
+              .controls
+                input.btn.btn-primary(type='submit',id='updatePassword', value='Update Password')
+
+

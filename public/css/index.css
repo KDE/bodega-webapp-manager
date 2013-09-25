@@ -133,3 +133,49 @@ div.thumb-wrap td {
 .x-table-layout td {
     vertical-align:top;
 }
+
+.well select,
+.well textarea,
+.well input[type="text"],
+.well input[type="password"],
+.well input[type="datetime"],
+.well input[type="datetime-local"],
+.well input[type="date"],
+.well input[type="month"],
+.well input[type="time"],
+.well input[type="week"],
+.well input[type="number"],
+.well input[type="email"],
+.well input[type="url"],
+.well input[type="search"],
+.well input[type="tel"],
+.well input[type="color"],
+.well .uneditable-input {
+display: inline-block;
+height: 20px;
+padding: 4px 6px;
+margin-bottom: 10px;
+font-size: 14px;
+line-height: 20px;
+color: #555555;
+vertical-align: middle;
+-webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+        border-radius: 4px;
+}
+.well input[type="submit"] {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+        border-radius: 4px;
+    -webkit-appearance: button;
+}
+.well a {
+    font-size: 10pt;
+}
+
+.form-horizontal {
+    width: 500px;
+    margin: auto;
+    margin-top: 2em;
+}
+

@@ -51,6 +51,66 @@ app.get('/login/confirm', function(req, res){
     app.BodegaManager.loginconfirm(req, res);
 });
 
+//register
+app.get('/register', function(req, res) {
+    res.render('register', {
+        network: app.config.server.name
+    });
+});
+
+app.post('/register', function(req, res) {
+    app.BodegaManager.register(req, res);
+});
+
+app.get('/register/confirm', function(req, res) {
+    res.render('registerconfirm', {
+        network: app.config.server.name,
+        success: app.operationStatus,
+        message: app.operationMessage
+    });
+});
+
+//account
+app.get('/account/modify',isAuthorized, function(req, res) {
+    app.BodegaManager.loginInfo(req, res);
+});
+
+app.post('/account/modify', isAuthorized, function(req, res) {
+    app.BodegaManager.accountmodify(req, res);
+});
+
+app.get('/account/modify/confirm', isAuthorized, function(req, res) {
+     res.render('accountmodifyconfirm', {
+         result: app.operationStatus,
+         network: app.config.server.name
+    });
+});
+
+app.get('/account', isAuthorized, function(req, res) {
+    res.redirect('/account/modify');
+    //res.render('account');
+});
+
+app.get('/account/resetPassword', function(req, res){
+    res.render('resetpassword', {
+         network: app.config.server.name
+   });
+});
+
+app.post('/account/resetPassword', function(req, res){
+    app.BodegaManager.resetpassword(req, res);
+});
+
+app.get('/account/resetPassword/confirm', function(req, res){
+    res.render('resetpasswordconfirm', {
+        message: app.operationMessage,
+        result: app.operationStatus,
+        network: app.config.server.name
+    });
+});
+
+
+
 app.get('/asset/list/?:listType?', isAuthorized, function(req, res){
     app.BodegaManager.listassets(req, res);
 });

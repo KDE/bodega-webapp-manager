@@ -1,0 +1,18 @@
+extend layout
+block head
+    title Login confirmation
+    script
+      $(document).ready(function() {
+        window.setTimeout(function() {
+          window.location = '/account/modify';
+        }, 2000);
+      });
+block body
+    .page-header
+      h1(align="center") Bodega #{network} Addon Store
+    if result === true
+      .alert.alert-success.success
+        | Your account has been updated successfully.
+    else
+      .alert.alert-error.error
+        | Some error occured, please contact the administrator

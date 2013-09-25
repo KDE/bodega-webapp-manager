@@ -1,0 +1,13 @@
+extend layout
+block head
+    title Registration Confirm
+block body
+    .page-header
+      h1(align="center") Bodega #{network} Addon Store
+      if (success === true)
+        .alert.alert-success.information
+          | A verification code has been send to your email account
+      else
+        .alert.alert-error
+          | #{message}
+

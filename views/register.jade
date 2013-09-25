@@ -1,0 +1,62 @@
+extends layout
+block head
+  title Create your own #{network} Account
+  script(src='/js/validator/validator-min.js');
+block body
+  .title
+    h1(align="center") Create your own #{network} Account
+    script
+      function validateForm() {
+        if ($('#password').val() !== $('#password2').val()) {
+            $('#password').attr('placeholder', 'Your passwords does not match.');
+            $('#password2').attr('placeholder', 'Your passwords does not match.');
+            $('#field-control').addClass('error');
+            $('#help-password').text('Your passwords does not match');
+            return false;
+        }
+
+        if ($('#email').val() !== $('#email2').val()) {
+            $('#email').attr('placeholder', 'Your email addresses does not match.');
+            $('#email2').attr('placeholder', 'Your email addresses does not match.');
+            $('#field-control').addClass('error');
+            $('#help-password').text('Your email addresses does not match');
+            return false;
+        }
+
+        if ($('#password').val().length < 8 || $('#password2').val() < 8 ) {
+            $('#password').attr('placeholder', 'Your password must be at least 8 digits.');
+            $('#password2').attr('placeholder', 'Your password must be at least 8 digits.');
+            $('#field-control').addClass('error');
+            $('#help-password').text('Your password must be at least 8 digits');
+            return false;
+        }
+
+        try {
+          check($('#email').val()).isEmail();
+        } catch (e) {
+            $('#email').attr('placeholder', 'Your email address is not valid.');
+            $('#field-control').addClass('error');
+            $('#help-email').text('Your Email Address is not valid');
+            return false;
+        }
+      }
+    .container
+      .span6.offset3
+        form.well(method='POST', id='login', align='center', onsubmit='return validateForm();')
+          fieldset.control-group(id='field-control')
+            span.help-block(id='help-password')
+            span.help-block(id='help-email')
+            .input
+              input.xlarge(type='text', placeholder='Enter your Firstname', name='firstname', required)
+            .input
+              input.xlarge(type='text', placeholder='Enter your Lastname', name='lastname', required)
+            .input
+              input.xlarge(type='text', placeholder='Enter your Email Adress', name='email', id='email', required)
+            .input
+              input.xlarge(type='text', placeholder='Enter your Email Adress Again', name='email2', id='email2', required)
+            .input
+              input.xlarge(type='password', placeholder='Enter your Password', name='password', id='password' , required)
+            .input
+              input.xlarge(type='password', placeholder='Retype your Password', name='password2', id='password2' , required)
+            .action
+              input.btn-primary(type='submit',id='loginButton', value='Create My New Account!')
