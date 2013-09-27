@@ -8,8 +8,7 @@
     },
     "client": {
         "port": 3002,
-        "hostname": "localhost",
-        "downloadTarget": "browser"
+        "hostname": "localhost"
     },
     "redis" : {
         "host" : "localhost"
