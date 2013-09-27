@@ -108,7 +108,7 @@ function createTagList(config) {
                 handler: function(){
                     var rec = {
                         title: 'Tag',
-                        type: 'license',
+                        type: 'author',
                         editable: true,
                         newData: true
                     };
