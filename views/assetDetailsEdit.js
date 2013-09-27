@@ -32,8 +32,8 @@ function loadAssetDetails(assetData) {
                         el.name = file.name;
                         el.config.name = file.name;
                         element.name = file.name;
-                        document.getElementById('file'+el.numericalId+'-button-fileInputEl').name = file.name;
 
+                        document.getElementById('file-'+el.numericalId+'-button-fileInputEl').name = file.name;
 
                         assetDetailsForm.add({
                             xtype: 'hidden',
