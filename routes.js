@@ -135,6 +135,10 @@ app.get('/partner/list', isAuthorized, function(req, res){
     app.BodegaManager.listpartners(req, res);
 });
 
+app.get('/asset/publish', isAuthorized, function(req, res){
+    app.BodegaManager.publishasset(req, res);
+});
+
 app.get('/logout', function(req, res) {
     req.session.destroy();
     delete app.cookie;
