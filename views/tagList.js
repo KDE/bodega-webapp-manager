@@ -28,35 +28,35 @@ function createTagList(config) {
             }
         },
         listeners: {
-            add: function (parent, component, index, eOpts ) {
-                console.log(component[0].raw)
-                Ext.Ajax.request({
-                    url: '/json/tag/create/',
-                    method: 'POST',
-                    params: $.param(component[0].raw),
-                    callback: function(response) {
-                        tagStore.removeAll();
-                        tagStore.load();
-                        cellEditing.startEditByPosition({
-                            row: 0,
-                            column: 0
-                        });
-                    }
-                });
-            },
             update: function(store, record, operation, eOpts ) {
                 record.raw.title = record.data.title;
                 record.raw.type = record.data.type;
                 console.log(record.raw)
-                Ext.Ajax.request({
-                    url: '/json/tag/update/' + record.raw.id,
-                    method: 'POST',
-                    params: $.param(record.raw),
-                    callback: function(response) {
-                        tagStore.removeAll();
-                        tagStore.load();
-                    }
-                });
+                if (record.raw.newData) {
+                     Ext.Ajax.request({
+                        url: '/json/tag/create/',
+                        method: 'POST',
+                        params: $.param(record.raw),
+                        callback: function(response) {
+                            tagStore.removeAll();
+                            tagStore.load();
+                            cellEditing.startEditByPosition({
+                                row: 0,
+                                column: 0
+                            });
+                        }
+                    });
+                } else {
+                    Ext.Ajax.request({
+                        url: '/json/tag/update/' + record.raw.id,
+                        method: 'POST',
+                        params: $.param(record.raw),
+                        callback: function(response) {
+                            tagStore.removeAll();
+                            tagStore.load();
+                        }
+                    });
+                }
             }
         }
     });
@@ -108,7 +108,9 @@ function createTagList(config) {
                 handler: function(){
                     var rec = {
                         title: 'Tag',
-                        type: 1
+                        type: 'license',
+                        editable: true,
+                        newData: true
                     };
 
                     tagStore.insert(0, rec);
