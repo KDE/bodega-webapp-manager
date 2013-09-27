@@ -19,11 +19,12 @@ style
           i.icon-th-list.icon-white
           | Assets
       li.divider-vertical
-      li
-        a.btn.btn-inverse(href='/asset/publish')
-          i.icon-thumbs-up.icon-white
-          | Publish
-      li.divider-vertical
+      if inManagementGroup
+        li
+          a.btn.btn-inverse(href='/asset/publish')
+            i.icon-thumbs-up.icon-white
+            | Publish
+        li.divider-vertical
       li
         a.btn.btn-inverse(href='/store/list')
           i.icon-shopping-cart.icon-white
