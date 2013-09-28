@@ -40,13 +40,21 @@ function createToolBar() {
             handler: function() {
                 window.location.href = "/asset/create/obs";
             }
+        }, {
+            xtype: 'button',
+            text: 'Wallpaper',
+            scope: this,
+            handler: function() {
+                window.location.href = "/asset/create/wallpaper";
+            }
         }]
     }
 }
 
-function createPanel(extraFields) {
+function createPanel(extraFields, title) {
     return Ext.create('Ext.Panel', {
         collapsible: false,
+        title: title,
         region: 'center',
         dockedItems: [createToolBar()],
         items: [createAssetForm(extraFields)]

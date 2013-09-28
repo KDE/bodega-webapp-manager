@@ -72,6 +72,7 @@ block head
         var panel = Ext.create('Ext.Panel', {
             collapsible: false,
             region: 'center',
+            title: "#{readableAssetType}",
             dockedItems: [createToolBar()],
             items: [form]
         });

@@ -57,14 +57,9 @@ block head
                 name: 'info[tags][1][type]',
                 value: 'assetType'
             }, {
-                xtype: 'combobox',
+                xtype: 'hidden',
                 name: 'info[tags][1][title]',
-                fieldLabel: 'Type',
-                displayField: 'title',
-                valueField: 'title',
-                store: typeStore,
-                editable: false,
-                allowBlank: false
+                value: 'wallpaper'
             }, {
                 xtype: 'hidden',
                 name: 'info[tags][2][type]',
