@@ -51,7 +51,7 @@ function loadAssetDetails(assetData) {
         });
 
         assetDetailsForm.add(form);
-        assetDetailsForm.add({
+        var typeCombo = assetDetailsForm.add({
             xtype: 'combobox',
             id: 'info[previews][' + lastImageField + '][type]',
             name: 'info[previews][' + lastImageField + '][type]',
@@ -65,8 +65,44 @@ function loadAssetDetails(assetData) {
                     {'value': 'icon'},
                     {'value': 'cover'}],
             }),
+            listeners:{
+                'select': function() {
+                    subTypeCombo.store = previewStoreForType(typeCombo.value);
+                    subTypeCombo.store.load();
+                    subTypeCombo.reset();
+                    subTypeCombo.resetOriginalValue();
+                }
+            }
         });
-        assetDetailsForm.add({
+
+        function previewStoreForType(type) {
+            if (type === 'screenshot') {
+                return Ext.create('Ext.data.Store', {
+                    fields: ['value'],
+                    data: [{'value': 'screen1'},
+                        {'value': 'screen2'}],
+                });
+            } else if (type === 'icon') {
+                return Ext.create('Ext.data.Store', {
+                    fields: ['value'],
+                    data: [{'value': 'tiny'},
+                        {'value': 'small'},
+                        {'value': 'medium'},
+                        {'value': 'big'},
+                        {'value': 'large'},
+                        {'value': 'huge'}],
+                });
+            //Assume "cover"
+            } else if (type === 'icon') {
+                return Ext.create('Ext.data.Store', {
+                    fields: ['value'],
+                    data: [{'value': 'front'},
+                        {'value': 'back'}],
+                });
+            }
+        }
+
+        var subTypeCombo = assetDetailsForm.add({
             xtype: 'combobox',
             id: 'info[previews][' + lastImageField + '][subtype]',
             name: 'info[previews][' + lastImageField + '][subtype]',
@@ -74,13 +110,7 @@ function loadAssetDetails(assetData) {
             valueField: 'value',
             value: 'screen1',
             fieldLabel: 'Image subtype',
-            store: Ext.create('Ext.data.Store', {
-                fields: ['value'],
-                data: [{'value': 'screen1'},
-                    {'value': 'screen2'},
-                    {'value': 'front'},
-                    {'value': 'back'}],
-            }),
+            store: previewStoreForType(typeCombo.value),
         });
         assetDetailsForm.doLayout();
         ++lastImageField;
