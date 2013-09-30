@@ -96,14 +96,27 @@ block head
                             Ext.Ajax.request({
                                 url: '/json/asset/post/' + store.getAt(rowIndex).data.id,
                                 method: 'POST',
-                                callback: function(response) {
+                                success: function(response, opts) {
+                                    var resp = JSON.parse(response.responseText);
+                                    if (resp.success) {
+                                        Ext.MessageBox.alert('', 'Publish request sent successfully.');
+                                    } else {
+                                        Ext.MessageBox.alert('Error', 'Error in sending your request.<br/>' + resp.error.message);
+                                    }
+                                },
+                                failure: function(response, opts) {
+                                    console.log('server-side failure with status code ' + response.status);
+                                    Ext.MessageBox.alert('Error', 'Error in sending your request.');
+                                }
+                                /*callback: function(response) {
                                     if (response.success) {
                                         Ext.MessageBox.alert('', 'Publish request sent successfully.');
                                     } else {
-                                        Ext.MessageBox.alert('Error', 'Error in sending your request.');
+                                        console.log(response.responseText)
+                                        Ext.MessageBox.alert('Error', 'Error in sending your request.<br/>' + response.error.message);
                                     }
                                     store.load();
-                                }
+                                }*/
                             });
                         }
                     }]
