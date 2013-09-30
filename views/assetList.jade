@@ -98,7 +98,6 @@ block head
                     header: 'Published',
                     dataIndex: 'status',
                     renderer: function(value, record) {
-                        console.log(value)
                         if (value === 'published') {
                             return Ext.String.format('<img src="/css/published-asset.png" alt="Yes"/>');
                         } else if (value === 'posted') {
