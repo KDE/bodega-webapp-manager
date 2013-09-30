@@ -108,15 +108,6 @@ block head
                                     console.log('server-side failure with status code ' + response.status);
                                     Ext.MessageBox.alert('Error', 'Error in sending your request.');
                                 }
-                                /*callback: function(response) {
-                                    if (response.success) {
-                                        Ext.MessageBox.alert('', 'Publish request sent successfully.');
-                                    } else {
-                                        console.log(response.responseText)
-                                        Ext.MessageBox.alert('Error', 'Error in sending your request.<br/>' + response.error.message);
-                                    }
-                                    store.load();
-                                }*/
                             });
                         }
                     }]
