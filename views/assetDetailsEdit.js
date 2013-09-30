@@ -252,9 +252,12 @@ function loadAssetDetails(assetData) {
                             store.removeAll();
                             store.load();
                             assetDetailsWindow.hide();
+                            Ext.MessageBox.alert('', 'Asset successfully updated.');
                         },
                         failure: function(form, action) {
+                            var resp = JSON.parse(action.response.responseText);
                             assetDetailsWindow.hide();
+                            Ext.MessageBox.alert('Error', 'Error in sending the asset.<br/>'+resp.error.message);
                         }
                     });
                 }
