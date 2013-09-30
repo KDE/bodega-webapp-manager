@@ -13,6 +13,14 @@ block head
 
   script
     var store;
+    var currentType = '#{listType}';
+    var currentPartner;
+
+    function refreshAssetsStore() {
+        store.proxy.url = '/json/asset/list/' + currentPartner + '/' + currentType;
+
+        store.load();
+    }
 
     function postAsset(assetId) {
         Ext.Ajax.request({
@@ -32,6 +40,27 @@ block head
             }
         });
     }
+
+    var partnerStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId: 'typeStore',
+            fields:['id', 'name'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/partner/list',
+                reader: {
+                    type: 'json',
+                    root: 'partners'
+                }
+            },
+            listeners: {
+                load: function ( store, records, successful, eOpts ) {
+                    currentPartner = records[0].internalId;
+                    store.combo.setValue(currentPartner);
+                    refreshAssetsStore();
+                }
+            }
+        });
 
     Ext.onReady(function() {
         store = Ext.create('Ext.data.Store', {
@@ -162,6 +191,7 @@ block head
                     queryMode: 'local',
                     displayField: 'name',
                     valueField: 'value',
+                    width: 120,
                     value: '#{listType}',
                     store: Ext.create('Ext.data.Store', {
                         fields: ['name', 'value'],
@@ -171,9 +201,26 @@ block head
                     }),
                     listeners: {
                         'select': function(combo, record, index) {
-                            console.log('store.proxy')
-                            store.proxy.url = '/json/asset/list/' + combo.getValue();
-                            store.load();
+                            currentType = combo.getValue();
+                            refreshAssetsStore();
+                        }
+                    }
+                }, {
+                    xtype: 'combobox',
+                    editable: false,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    width: 120,
+                    //value: '#{listType}',
+                    store: partnerStore,
+                    listeners: {
+                        'select': function(combo, record, index) {
+                            currentPartner = combo.getValue();
+                            refreshAssetsStore();
+                        },
+                        afterrender: function (combo, eopts) {
+                            partnerStore.combo = combo;
                         }
                     }
                 }, {
@@ -203,9 +250,9 @@ block head
                 {
                     var s = view.getSelectionModel().getSelection();
                     if (s.length > 0) {
-                        view.dockedItems.get(1).items.get(4).show();
+                        view.dockedItems.get(1).items.get(5).show();
                     } else {
-                        view.dockedItems.get(1).items.get(4).hide();
+                        view.dockedItems.get(1).items.get(5).hide();
                     }
                 }
             },
