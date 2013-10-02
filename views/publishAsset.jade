@@ -11,6 +11,35 @@ block head
 
   script
     var store;
+    var currentPartner;
+
+    function refreshAssetsStore() {
+        store.proxy.url = '/json/asset/list/' + currentPartner + '/posted';
+
+        store.load();
+    }
+
+     var partnerStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId: 'typeStore',
+            fields:['id', 'name'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/partner/list',
+                reader: {
+                    type: 'json',
+                    root: 'partners'
+                }
+            },
+            listeners: {
+                load: function ( store, records, successful, eOpts ) {
+                    currentPartner = records[0].internalId;
+                    store.combo.setValue(currentPartner);
+                    refreshAssetsStore();
+                }
+            }
+        });
+
     Ext.onReady(function() {
         store = Ext.create('Ext.data.Store', {
             autoLoad: true,
@@ -19,7 +48,7 @@ block head
             proxy: {
                 type: 'ajax',
                 // load remote data using HTTP
-                url: '/json/asset/list/posted',
+                url: '/json/asset/list/' + currentPartner + '/posted',
                 // specify a XmlReader (coincides with the XML format of the returned data)
                 reader: {
                     type: 'json',
@@ -96,6 +125,24 @@ block head
                         });
                     }
                 }, {
+                    xtype: 'combobox',
+                    editable: false,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    width: 120,
+                    //value: '#{listType}',
+                    store: partnerStore,
+                    listeners: {
+                        'select': function(combo, record, index) {
+                            currentPartner = combo.getValue();
+                            refreshAssetsStore();
+                        },
+                        afterrender: function (combo, eopts) {
+                            partnerStore.combo = combo;
+                        }
+                    }
+                }, {
                     xtype: 'button',
                     text: 'Reject assets',
                     hidden: true,
@@ -111,11 +158,11 @@ block head
                 {
                     var s = view.getSelectionModel().getSelection();
                     if (s.length > 0) {
-                        view.dockedItems.get(1).items.get(2).show();
                         view.dockedItems.get(1).items.get(3).show();
+                        view.dockedItems.get(1).items.get(4).show();
                     } else {
-                        view.dockedItems.get(1).items.get(2).hide();
                         view.dockedItems.get(1).items.get(3).hide();
+                        view.dockedItems.get(1).items.get(4).hide();
                     }
                 }
             },
