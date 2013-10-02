@@ -25,7 +25,7 @@ function loadAssetDetails(assetData) {
             store: Ext.create('Ext.data.Store', {
                 autoLoad: true,
                 storeId: 'typeStore',
-                fields:['id', 'name'],
+                fields:['path'],
                 proxy: {
                     type: 'ajax',
                     url: '/json/asset/' + currentAsset + '?incoming=true&previews=true',
@@ -38,9 +38,9 @@ function loadAssetDetails(assetData) {
             colspan: 2,
             tpl: [
                 '<tpl for=".">',
-                    '<div class="thumb-wrap" id="{name}">',
-                    '<div class="thumb"><img src="{data.path}" title="{name}"></div>',
-                    '<span class="x-editable">{data.path}</span></div>',
+                    '<div class="thumb-wrap">',
+                    '<div class="thumb"><img src="/json/incomingimages/' + currentAsset + '/{path}" title="{path}" width="64" height="64"/></div>',
+                    '<span class="x-editable">{path}</span></div>',
                 '</tpl>',
                 '<div class="x-clear"></div>'
             ],
@@ -50,11 +50,8 @@ function loadAssetDetails(assetData) {
             emptyText: 'No images to display',
 
             prepareData: function(data) {
-                Ext.apply(data, {
-                    shortName: Ext.util.Format.ellipsis(data.name, 15),
-                    sizeString: Ext.util.Format.fileSize(data.size),
-                    dateString: Ext.util.Format.date(data.lastmod, "m/d/Y g:i a")
-                });
+                console.log(data)
+                data.path = encodeURIComponent(data.path);
                 return data;
             }
         }),
