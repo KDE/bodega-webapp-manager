@@ -140,7 +140,7 @@ function loadAssetDetails(assetData) {
                     fields:['path', 'type', 'subtype'],
                     proxy: {
                         type: 'ajax',
-                        url: '/json/asset/' + currentAsset + '?previews=true' + (assetData.status == 'incoming' ? '&incoming=true' : ''),
+                        url: '/json/asset/' + currentAsset + '?previews=true' + (assetData.status != 'published' ? '&incoming=true' : ''),
                         reader: {
                             type: 'json',
                             root: 'asset.previews'
@@ -152,7 +152,7 @@ function loadAssetDetails(assetData) {
                 tpl: [
                     '<tpl for=".">',
                         '<div class="thumb-wrap">',
-                        '<div class="thumb"><img src="/json/' + (assetData.status == 'incoming' ? 'incomingimages' : 'images') + '/' + currentAsset + '/{path}" title="{path}" width="64" height="64" style="margin:auto;display:block"/></div>',
+                        '<div class="thumb"><img src="/json/' + (assetData.status != 'published' ? 'incomingimages' : 'images') + '/' + currentAsset + '/{path}" title="{path}" width="64" height="64" style="margin:auto;display:block"/></div>',
                         '<span class="x-editable">{type} - {subtype}</span></div>',
                     '</tpl>',
                     '<div class="x-clear"></div>'
