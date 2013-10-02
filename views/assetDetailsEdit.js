@@ -132,7 +132,40 @@ function loadAssetDetails(assetData) {
 
         overflowY: 'auto',
 
-        items: [{
+        items: [
+            Ext.create('Ext.view.View', {
+                store: Ext.create('Ext.data.Store', {
+                    autoLoad: true,
+                    storeId: 'typeStore',
+                    fields:['path', 'type', 'subtype'],
+                    proxy: {
+                        type: 'ajax',
+                        url: '/json/asset/' + currentAsset + '?previews=true' + (assetData.status == 'incoming' ? '&incoming=true' : ''),
+                        reader: {
+                            type: 'json',
+                            root: 'asset.previews'
+                        }
+                    }
+                }),
+                margin: 4,
+                colspan: 2,
+                tpl: [
+                    '<tpl for=".">',
+                        '<div class="thumb-wrap">',
+                        '<div class="thumb"><img src="/json/' + (assetData.status == 'incoming' ? 'incomingimages' : 'images') + '/' + currentAsset + '/{path}" title="{path}" width="64" height="64" style="margin:auto;display:block"/></div>',
+                        '<span class="x-editable">{type} - {subtype}</span></div>',
+                    '</tpl>',
+                    '<div class="x-clear"></div>'
+                ],
+                multiSelect: false,
+                trackOver: false,
+
+                prepareData: function(data) {
+                    console.log(data)
+                    data.path = encodeURIComponent(data.path);
+                    return data;
+                }
+            }), {
             id: 'name',
             xtype: 'textfield',
             name: 'info[name]',
@@ -280,7 +313,7 @@ function loadAssetDetails(assetData) {
         width: '80%',
         height: '80%',
         layout: 'fit',
-        bodyStyle: 'padding: 5px;',
+        bodyStyle: 'padding: 0;',
         items: [assetDetailsForm]
     });
 
