@@ -2,7 +2,7 @@
 var partnerDetailsWindow;
 var partnerDetailsForm;
 
-function loadPartnerRequest(partnerId, partnerName, question) {
+function loadPartnerRequest(partnerId, partnerName, type) {
 
     if (partnerDetailsWindow) {
         partnerDetailsWindow.destroy();
@@ -35,10 +35,10 @@ function loadPartnerRequest(partnerId, partnerName, question) {
 
                 var form = this.up('form').getForm();
                 if (form.isValid()) {
-                    if (question === 'publisher') {
+                    if (type == 'publisher') {
                         form.submit({
                             url: '/json/partner/request/publisher/' + partnerId,
-                            waitMsg: 'Sending request...',
+                            waitMsg: 'Sending publisher request...',
                             success: function(fp, o) {
                                 partnerDetailsWindow.hide();
                                 if (o.result && o.result.success) {
@@ -56,7 +56,7 @@ function loadPartnerRequest(partnerId, partnerName, question) {
                     } else {
                         form.submit({
                             url: '/json/partner/request/distributor/' + partnerId,
-                            waitMsg: 'Sending request...',
+                            waitMsg: 'Sending distributor request...',
                             success: function(fp, o) {
                                 partnerDetailsWindow.hide();
                                 if (o.result && o.result.success) {
@@ -82,7 +82,7 @@ function loadPartnerRequest(partnerId, partnerName, question) {
     });
 
     partnerDetailsWindow = Ext.create('widget.window', {
-        title: 'Request ' + question +' status for Partner ' + partnerName,
+        title: 'Request ' + type +' status for Partner ' + partnerName,
         closable: true,
         closeAction: 'hide',
         modal: true,

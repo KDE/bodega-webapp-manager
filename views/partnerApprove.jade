@@ -1,0 +1,122 @@
+extends layout
+block head
+
+  title Partners
+  link(rel="stylesheet", href="/css/ext-all.css")
+  script(src='/js/ext-all.js')
+
+  include partnerRejectForm.js
+
+  script
+    Ext.onReady(function() {
+        var store = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId:'bodegaStore',
+            fields:['id', 'name', 'supportemail', 'type', 'reason'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/partner/request/list',
+                reader: {
+                    type: 'json',
+                    root: 'partners'
+                }
+            }
+        });
+
+
+        var view = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('bodegaStore'),
+            selType: 'checkboxmodel',
+            inline: true,
+            columns: [
+                { header: 'Name',  dataIndex: 'name', field: {allowBlank: false}, flex: 1},
+                { header: 'Email', dataIndex: 'supportemail', field: {allowBlank: false}},
+                { header: 'Type', dataIndex: 'type'},
+                { header: 'Reason', dataIndex: 'reason', flex: 1}
+            ],
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: ['Search', {
+                    xtype: 'textfield',
+                    name: 'searchField',
+                    hideLabel: true,
+                    width: 200,
+                    listeners: {
+                        change: {
+                            fn: function(){
+                                store.clearFilter();
+
+                                var search = view.down('textfield[name=searchField]').getValue();
+                                store.filterBy(function (record) {
+                                    //name containing the textfield value
+                                    var name = record.get('name').toLowerCase();
+                                    var email = record.get('email').toLowerCase();
+                                    return name.indexOf(search) !== -1 || email.indexOf(search) !== -1;
+                               });
+                            },
+                            scope: this,
+                            buffer: 100
+                        }
+                    }
+                }, {
+                    xtype: 'button',
+                    text: 'Approve Partners',
+                    hidden: true,
+                    handler: function() {
+                        var s = view.getSelectionModel().getSelection();
+                        selected = [];
+                        Ext.each(s, function (item) {
+                            Ext.Ajax.request({
+                                url: '/json/partner/managerequest/' + item.data.id,
+                                method: 'POST',
+                                params: $.param({approved: true}),
+                                callback: function(response) {
+                                    store.load();
+                                }
+                            });
+                        });
+                    }
+                }, {
+                    xtype: 'button',
+                    text: 'Reject Partners',
+                    hidden: true,
+                    handler: function() {
+                        showRejectForm(view.getSelectionModel().getSelection(), store);
+                    }
+                }]
+            }],
+            listeners: {
+                selectionchange: function() {
+                    var s = view.getSelectionModel().getSelection();
+                    if (s.length > 0) {
+                        view.dockedItems.get(1).items.get(2).show();
+                        view.dockedItems.get(1).items.get(3).show();
+                    } else {
+                        view.dockedItems.get(1).items.get(2).hide();
+                        view.dockedItems.get(1).items.get(3).hide();
+                    }
+                }
+            },
+            columnWidth: 1,
+            border: 0,
+            region: 'center'
+        });
+
+        var layout = Ext.create('Ext.Viewport', {
+            width: '100%',
+            layout: 'border',
+            padding: '48 0 0 0',
+            items: [view],
+            renderTo: Ext.getBody(),
+            border: 0
+        });
+    });
+
+
+block body
+  .title
+    <br/>
+    include navigator
+    .container-fluid
+

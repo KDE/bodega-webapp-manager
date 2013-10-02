@@ -188,6 +188,13 @@ block head
                             }
                         });
                     }
+                }, {
+                    xtype: 'button',
+                    text: 'Approve Partners',
+                    hidden: !#{inManagementGroup},
+                    handler: function() {
+                        window.location.href = "/partner/approve";
+                    }
                 }]
             }],
             listeners: {
