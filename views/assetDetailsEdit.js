@@ -258,6 +258,11 @@ function loadAssetDetails(assetData) {
             xtype: 'hidden',
             name: 'info[id]',
             value: assetData.id
+        }, {
+            id: 'id',
+            xtype: 'hidden',
+            name: 'info[partner]',
+            value: assetData.partner
         }],
 
         buttons: [{

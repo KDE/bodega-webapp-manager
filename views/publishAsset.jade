@@ -104,8 +104,26 @@ block head
                         }
                     }
                 }, {
+                    xtype: 'combobox',
+                    editable: false,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    width: 120,
+                    //value: '#{listType}',
+                    store: partnerStore,
+                    listeners: {
+                        'select': function(combo, record, index) {
+                            currentPartner = combo.getValue();
+                            refreshAssetsStore();
+                        },
+                        afterrender: function (combo, eopts) {
+                            partnerStore.combo = combo;
+                        }
+                    }
+                }, {
                     xtype: 'button',
-                    text: 'Publish assets',
+                    text: 'Publish Assets',
                     hidden: true,
                     handler: function() {
                         Ext.MessageBox.confirm('Publish', 'Are you sure you want to publish the selected assets?', function(btn){
@@ -123,24 +141,6 @@ block head
                                 });
                             }
                         });
-                    }
-                }, {
-                    xtype: 'combobox',
-                    editable: false,
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    width: 120,
-                    //value: '#{listType}',
-                    store: partnerStore,
-                    listeners: {
-                        'select': function(combo, record, index) {
-                            currentPartner = combo.getValue();
-                            refreshAssetsStore();
-                        },
-                        afterrender: function (combo, eopts) {
-                            partnerStore.combo = combo;
-                        }
                     }
                 }, {
                     xtype: 'button',
