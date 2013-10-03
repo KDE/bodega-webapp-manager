@@ -33,7 +33,7 @@ function showRejectForm(selection, store) {
 
                 Ext.each(selection, function (item) {
                     form.submit({
-                        url: '/json/partner/managerequest/' + item.data.id,
+                        url: '/json/partner/request/manage/' + item.data.id,
                         waitMsg: 'Sending request...',
                         success: function(fp, o) {
                             --assetsCount;

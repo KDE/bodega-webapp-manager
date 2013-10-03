@@ -68,7 +68,7 @@ block head
                         selected = [];
                         Ext.each(s, function (item) {
                             Ext.Ajax.request({
-                                url: '/json/partner/managerequest/' + item.data.id,
+                                url: '/json/partner/request/manage/' + item.data.id,
                                 method: 'POST',
                                 params: $.param({approved: true}),
                                 callback: function(response) {
