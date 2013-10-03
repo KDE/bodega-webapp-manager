@@ -73,7 +73,7 @@ block head
                         icon: '/css/edit.png',
                         tooltip: 'Asset details',
                         handler: function(grid, rowIndex, colIndex) {
-                            loadAssetDetails(store.getAt(rowIndex).data);
+                            loadAssetDetails(store.getAt(rowIndex).data, '#{remoteUrl}');
                         }
                     }]
                 }
@@ -110,7 +110,6 @@ block head
                     displayField: 'name',
                     valueField: 'id',
                     width: 120,
-                    //value: '#{listType}',
                     store: partnerStore,
                     listeners: {
                         'select': function(combo, record, index) {

@@ -143,7 +143,7 @@ block head
                         icon: '/css/edit.png',
                         tooltip: 'Edit Asset',
                         handler: function(grid, rowIndex, colIndex) {
-                            loadAssetDetails(store.getAt(rowIndex).data);
+                            loadAssetDetails(store.getAt(rowIndex).data, '#{remoteUrl}');
                         }
                     }, {
                         icon: '/css/tags.png',

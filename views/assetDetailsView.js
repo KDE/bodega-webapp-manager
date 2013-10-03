@@ -3,7 +3,7 @@ var assetDetailsWindow;
 var assetDetailsForm;
 var currentAsset;
 
-function loadAssetDetails(assetData) {
+function loadAssetDetails(assetData, remoteUrl) {
     currentAsset = assetData.id;
     console.log(assetData)
     if (assetDetailsForm) {
@@ -42,7 +42,7 @@ function loadAssetDetails(assetData) {
             tpl: [
                 '<tpl for=".">',
                     '<div class="thumb-wrap">',
-                    '<div class="thumb"><img src="/json/incomingimages/' + currentAsset + '/{path}" title="{path}" width="64" height="64" style="margin:auto;display:block"/></div>',
+                    '<div class="thumb"><img src="{url}" title="{path}" width="64" height="64" style="margin:auto;display:block"/></div>',
                     '<span class="x-editable">{type} - {subtype}</span></div>',
                 '</tpl>',
                 '<div class="x-clear"></div>'
@@ -53,7 +53,29 @@ function loadAssetDetails(assetData) {
 
             prepareData: function(data) {
                 console.log(data)
-                data.path = encodeURIComponent(data.path);
+                if (assetData.status != 'published') {
+                    data.url = '/json/incomingimages/' + assetData.id + '/' +  encodeURIComponent(data.path);
+                } else {
+                    if (data.type == 'icon') {
+                        var size;
+                        if (data.subtype == 'huge') {
+                            size = '512';
+                        } else if (data.subtype == 'large') {
+                            size = '256';
+                        } else if (data.subtype == 'big') {
+                            size = '128';
+                        } else if (data.subtype == 'medium') {
+                            size = '64';
+                        } else if (data.subtype == 'small') {
+                            size = '32';
+                        } else if (data.subtype == 'tiny') {
+                            size = '22';
+                        } 
+                        data.url = remoteUrl + '/icons/' + size + '/' + data.path;
+                    } else {
+                        data.url = remoteUrl + '/previews/' + data.path;
+                    }
+                }
                 return data;
             }
         }),
