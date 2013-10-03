@@ -11,21 +11,21 @@ block head
     Ext.onReady(function() {
         var store = Ext.create('Ext.data.Store', {
             autoLoad: true,
-            storeId:'bodegaStore',
+            storeId:'requestStore',
             fields:['id', 'name', 'supportemail', 'type', 'reason'],
             proxy: {
                 type: 'ajax',
                 url: '/json/partner/request/list',
                 reader: {
                     type: 'json',
-                    root: 'partners'
+                    root: 'requests'
                 }
             }
         });
 
 
         var view = Ext.create('Ext.grid.Panel', {
-            store: Ext.data.StoreManager.lookup('bodegaStore'),
+            store: Ext.data.StoreManager.lookup('requestStore'),
             selType: 'checkboxmodel',
             inline: true,
             columns: [
