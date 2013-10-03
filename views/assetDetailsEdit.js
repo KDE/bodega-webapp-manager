@@ -165,7 +165,7 @@ function loadAssetDetails(assetData, remoteUrl) {
                     console.log(data)
 
                     if (assetData.status != 'published') {
-                        data.url = '/json/incomingimages/' + assetData.id + '/' +  encodeURIComponent(data.path);
+                        data.url = '/json/incomingassetpreview/' + assetData.id + '/' +  encodeURIComponent(data.path);
                     } else {
                         if (data.type == 'icon') {
                             var size;
