@@ -56,7 +56,7 @@ block head
             listeners: {
                 load: function ( store, records, successful, eOpts ) {
                     currentPartner = records[0].internalId;
-                    store.combo.setValue(currentPartner);
+                    partnerStore.combo.setValue(currentPartner);
                     refreshAssetsStore();
                 }
             }
