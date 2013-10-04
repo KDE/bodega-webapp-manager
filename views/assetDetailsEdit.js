@@ -254,6 +254,9 @@ function loadAssetDetails(assetData, remoteUrl) {
                 }
             }
         }, {
+            xtype: 'label',
+            html: '<a href="/json/asset/download/' + assetData.id + '" style="margin-left:8em">' + assetData.file + '</a>'
+        }, {
             id: 'description',
             xtype: 'textareafield',
             name: 'info[description]',

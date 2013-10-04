@@ -99,6 +99,12 @@ function loadAssetDetails(assetData, remoteUrl) {
             text: assetData.version
         }, {
             xtype: 'label',
+            text: "File: "
+        }, {
+            xtype: 'label',
+            html: '<a href="/json/asset/download/' + assetData.id + '?incoming=true">' + assetData.file + '</a>'
+        }, {
+            xtype: 'label',
             text: "Tags: ",
             colspan: 2
         }]
