@@ -27,7 +27,7 @@ block head
 
         var statsStore = Ext.create('Ext.data.Store', {
             autoLoad: true,
-            storeId:'partnerStore',
+            storeId:'statsStore',
             fields:['dateof', 'total'],
             proxy: {
                 type: 'ajax',
@@ -87,6 +87,7 @@ block head
                     '<div class="x-clear"></div>'
                 ],
                 emptyText: 'No stats available',
+                deferEmptyText: false,
                 prepareData: function(data) {
                     Ext.apply(data, {
                         dateString: Ext.util.Format.date(data.dateof, "M o")
