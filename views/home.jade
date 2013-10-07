@@ -72,6 +72,7 @@ block head
             colspan: 1,
             title: 'Store Activity',
             items: Ext.create('Ext.view.View', {
+                deferEmptyText: false,
                 store: statsStore,
                 tpl: [
                     '<tpl for=".">',
@@ -87,7 +88,6 @@ block head
                     '<div class="x-clear"></div>'
                 ],
                 emptyText: 'No stats available',
-                deferEmptyText: false,
                 prepareData: function(data) {
                     Ext.apply(data, {
                         dateString: Ext.util.Format.date(data.dateof, "M o")
