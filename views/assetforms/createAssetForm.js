@@ -74,7 +74,6 @@ function createAssetForm(extraFields, assetType) {
             load: function ( store, records, successful, eOpts ) {
                 currentPartner = records[0].internalId;
                 partnerStore.combo.setValue(currentPartner);
-                refreshAssetsStore();
             }
         }
     });
@@ -209,8 +208,8 @@ function createAssetForm(extraFields, assetType) {
                         el.name = file.name;
                         el.config.name = file.name;
                         element.name = file.name;
-                        document.getElementById('file'+el.numericalId+'-button-fileInputEl').name = file.name;
 
+                        document.getElementById('file-'+el.numericalId+'-button-fileInputEl').name = file.name;
 
                         assetDetailsForm.add({
                             xtype: 'hidden',
@@ -228,7 +227,7 @@ function createAssetForm(extraFields, assetType) {
         });
 
         assetDetailsForm.add(form);
-        assetDetailsForm.add({
+        var typeCombo = assetDetailsForm.add({
             xtype: 'combobox',
             id: 'info[previews][' + lastImageField + '][type]',
             name: 'info[previews][' + lastImageField + '][type]',
@@ -242,8 +241,34 @@ function createAssetForm(extraFields, assetType) {
                     {'value': 'icon'},
                     {'value': 'cover'}],
             }),
+            listeners:{
+                'select': function() {
+                    subTypeCombo.store.removeAll();
+                    subTypeCombo.store.loadData(subTypeData(typeCombo.value));
+                    subTypeCombo.setValue(subTypeCombo.store.data.items[0].data.value);
+                }
+            }
         });
-        assetDetailsForm.add({
+
+        function subTypeData(type) {
+            if (type === 'screenshot') {
+                return [{'value': 'screen1'},
+                        {'value': 'screen2'}];
+            } else if (type === 'icon') {
+                return [{'value': 'tiny'},
+                        {'value': 'small'},
+                        {'value': 'medium'},
+                        {'value': 'big'},
+                        {'value': 'large'},
+                        {'value': 'huge'}];
+            //Assume "cover"
+            } else {
+                return [{'value': 'front'},
+                        {'value': 'back'}];
+            }
+        }
+
+        var subTypeCombo = assetDetailsForm.add({
             xtype: 'combobox',
             id: 'info[previews][' + lastImageField + '][subtype]',
             name: 'info[previews][' + lastImageField + '][subtype]',
@@ -253,11 +278,8 @@ function createAssetForm(extraFields, assetType) {
             fieldLabel: 'Image subtype',
             store: Ext.create('Ext.data.Store', {
                 fields: ['value'],
-                data: [{'value': 'screen1'},
-                    {'value': 'screen2'},
-                    {'value': 'front'},
-                    {'value': 'back'}],
-            }),
+                data: subTypeData('screenshot')
+            })
         });
         assetDetailsForm.doLayout();
         ++lastImageField;
@@ -292,7 +314,6 @@ function createAssetForm(extraFields, assetType) {
             listeners: {
                 'select': function(combo, record, index) {
                     currentPartner = combo.getValue();
-                    refreshAssetsStore();
                 },
                 afterrender: function (combo, eopts) {
                     partnerStore.combo = combo;

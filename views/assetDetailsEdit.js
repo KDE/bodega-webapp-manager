@@ -67,38 +67,28 @@ function loadAssetDetails(assetData, remoteUrl) {
             }),
             listeners:{
                 'select': function() {
-                    subTypeCombo.store = previewStoreForType(typeCombo.value);
-                    subTypeCombo.store.load();
-                    subTypeCombo.reset();
-                    subTypeCombo.resetOriginalValue();
+                    subTypeCombo.store.removeAll();
+                    subTypeCombo.store.loadData(subTypeData(typeCombo.value));
+                    subTypeCombo.setValue(subTypeCombo.store.data.items[0].data.value);
                 }
             }
         });
 
-        function previewStoreForType(type) {
+        function subTypeData(type) {
             if (type === 'screenshot') {
-                return Ext.create('Ext.data.Store', {
-                    fields: ['value'],
-                    data: [{'value': 'screen1'},
-                        {'value': 'screen2'}],
-                });
+                return [{'value': 'screen1'},
+                        {'value': 'screen2'}];
             } else if (type === 'icon') {
-                return Ext.create('Ext.data.Store', {
-                    fields: ['value'],
-                    data: [{'value': 'tiny'},
+                return [{'value': 'tiny'},
                         {'value': 'small'},
                         {'value': 'medium'},
                         {'value': 'big'},
                         {'value': 'large'},
-                        {'value': 'huge'}],
-                });
+                        {'value': 'huge'}];
             //Assume "cover"
-            } else if (type === 'icon') {
-                return Ext.create('Ext.data.Store', {
-                    fields: ['value'],
-                    data: [{'value': 'front'},
-                        {'value': 'back'}],
-                });
+            } else {
+                return [{'value': 'front'},
+                        {'value': 'back'}];
             }
         }
 
@@ -110,7 +100,10 @@ function loadAssetDetails(assetData, remoteUrl) {
             valueField: 'value',
             value: 'screen1',
             fieldLabel: 'Image subtype',
-            store: previewStoreForType(typeCombo.value),
+            store: Ext.create('Ext.data.Store', {
+                fields: ['value'],
+                data: subTypeData('screenshot')
+            })
         });
         assetDetailsForm.doLayout();
         ++lastImageField;
