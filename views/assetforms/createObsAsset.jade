@@ -55,7 +55,7 @@ block head
                     );
             request.onreadystatechange = function() {
                 if (request.readyState == 4 && request.status == 200) {
-                     window.location.href = "/asset/list/incoming";
+                    window.location.href = "/asset/list/incoming";
                 }
             }
             request.send(form);

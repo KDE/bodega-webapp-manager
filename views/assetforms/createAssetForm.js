@@ -57,6 +57,27 @@ function createAssetForm(extraFields, assetType) {
         }
     });
 
+    var partnerStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId: 'typeStore',
+        fields:['id', 'name'],
+        proxy: {
+            type: 'ajax',
+            url: '/json/partner/list',
+            reader: {
+                type: 'json',
+                root: 'partners'
+            }
+        },
+        listeners: {
+            load: function ( store, records, successful, eOpts ) {
+                currentPartner = records[0].internalId;
+                partnerStore.combo.setValue(currentPartner);
+                refreshAssetsStore();
+            }
+        }
+    });
+
     var typeStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
         storeId: 'typeStore',
@@ -106,7 +127,7 @@ function createAssetForm(extraFields, assetType) {
                             border: 0,
                             padding: 0,
                             fieldRecord: record,
-                            addItem: function() {
+                            addItem: function(isFirst) {
                                 var fields = Ext.getCmp(record.type + 'TagFields');
                                 this.add([
                                     {
@@ -134,14 +155,14 @@ function createAssetForm(extraFields, assetType) {
                                                 }
                                             }
                                         }),
-                                        allowBlank: !this.fieldRecord.required,
+                                        allowBlank: !this.fieldRecord.required || !isFirst,
                                         listeners: {
                                             change: function( parent, value, eOpts ) {
                                                 if (!this.generateClone) {
                                                     return;
                                                 }
                                                 var fields = this.up('fieldset');
-                                                fields.addItem();
+                                                fields.addItem(false);
                                                 this.generateClone = false;
                                             }
                                         }
@@ -156,7 +177,7 @@ function createAssetForm(extraFields, assetType) {
                         }
                     ]);
                     var tagFields = Ext.getCmp(record.type + 'TagFields');
-                    tagFields.addItem();
+                    tagFields.addItem(true);
                 }
             }
         }
@@ -257,6 +278,26 @@ function createAssetForm(extraFields, assetType) {
         overflowY: 'auto',
 
         items: [{
+            xtype: 'combobox',
+            fieldLabel: 'Partner',
+            name: 'info[partner]',
+            editable: false,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'id',
+            width: 120,
+            //value: '#{listType}',
+            store: partnerStore,
+            listeners: {
+                'select': function(combo, record, index) {
+                    currentPartner = combo.getValue();
+                    refreshAssetsStore();
+                },
+                afterrender: function (combo, eopts) {
+                    partnerStore.combo = combo;
+                }
+            }
+        }, {
             id: 'name',
             xtype: 'textfield',
             name: 'info[name]',
