@@ -21,8 +21,6 @@ var http = require('http');
 var path = require('path');
 var fs = require('fs');
 var RedisStore = require('connect-redis')(express);
-var sockjs  = require('sockjs');
-var option = require('./lib/utils.js').options
 
 GLOBAL.app = module.exports = express();
 
