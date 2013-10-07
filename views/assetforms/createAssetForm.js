@@ -107,6 +107,7 @@ function createAssetForm(extraFields) {
                             padding: 0,
                             fieldRecord: record,
                             addItem: function() {
+                console.log(this.fieldRecord)
                                 var fields = Ext.getCmp(record.type + 'TagFields');
                                 this.add([
                                     {
@@ -114,10 +115,11 @@ function createAssetForm(extraFields) {
                                         name: 'info[tags][' + lastTagIndex + '][type]',
                                         value: this.fieldRecord.type
                                     }, {
-                                        xtype: 'combobox',
+                                        xtype: this.fieldRecord.tags === undefined ? 'textfield' : 'combobox',
                                         name: 'info[tags][' + lastTagIndex + '][title]',
                                         fieldLabel: this.fieldRecord.name,
                                         displayField: 'title',
+                                        editable: this.fieldRecord.tags === undefined,
                                         valueField: 'title',
                                         generateClone: this.fieldRecord.multi,
                                         store: Ext.create('Ext.data.Store', {
