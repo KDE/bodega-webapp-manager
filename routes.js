@@ -23,7 +23,7 @@ function isAuthorized(req, res, next)
     if (req.session.authorized) {
         next();
     } else {
-        console.log("Unauthorized user", req, res);
+        console.log("Unauthorized user " + req.url);
         res.redirect('/');
     }
 }
@@ -128,11 +128,11 @@ app.get('/stats/assets', isAuthorized, function(req, res){
 });
 
 app.get('/store/list', isAuthorized, function(req, res){
-    app.BodegaManager.liststores(req, res);
+    app.BodegaManager.listStores(req, res);
 });
 
 app.get('/partner/list', isAuthorized, function(req, res){
-    app.BodegaManager.listpartners(req, res);
+    app.BodegaManager.listPartners(req, res);
 });
 
 app.get('/partner/approve', isAuthorized, function(req, res){
