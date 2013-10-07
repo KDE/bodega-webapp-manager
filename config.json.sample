@@ -12,6 +12,7 @@
         "hostname": "localhost"
     },
     "redis" : {
-        "host" : "localhost"
+        "host": "localhost",
+        "prefix": "bodega-manager-sess:"
     }
 }
