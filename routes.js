@@ -16,17 +16,44 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+var utils = require('./lib/utils');
+
 var express = require('express');
+var http = require('http');
 
 function isAuthorized(req, res, next)
 {
-    if (req.session.authorized) {
+    if (req.session.manager_authorized) {
         next();
     } else {
         console.log("Unauthorized user " + req.url);
         res.redirect('/');
     }
 }
+
+app.all('/json/*', function(request, response) {
+        var options = utils.options(request, request.url.substring(String("/json/").length), null, true);
+        options.method = request.method;
+
+        //console.log(JSON.stringify(request.headers.cookie));
+        options.headers['Content-Type'] = request.headers['content-type'];
+        if (request.headers['content-length']) {
+            options.headers['content-length'] = request.headers['content-length']
+        }
+
+        var proxyRequest = http.request(options);
+
+        proxyRequest.addListener('response', function (proxy_response) {
+            response.writeHead(proxy_response.statusCode, proxy_response.headers);
+            proxy_response.pipe(response);
+        });
+
+        proxyRequest.on('error', function(e) {
+            console.log('problem with request: ' + e.message);
+        });
+
+        request.pipe(proxyRequest);
+});
 
 app.get('/', function(req, res) {
     res.render('login', {
