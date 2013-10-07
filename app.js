@@ -43,8 +43,8 @@ app.use('/js', express.static(__dirname + '/public/js'));
 app.use('/js/validator', express.static(__dirname + '/node_modules/validator/'));
 
 app.use(express.cookieParser());
-app.use(express.session({ secret: "love cookies",
-                            store: new RedisStore(app.config.redis) }));
+app.use(express.session({ secret: app.config.cookieSecret ? app.config.cookieSecret : 'we love cookies',
+                          store: new RedisStore(app.config.redis) }));
 
 app.use(app.router);
 app.use(function(req, res, next) {
@@ -70,33 +70,7 @@ if ('production' == app.get('env')) {
 //app.server must be initialized before BodegaManager!!
 //app.server = http.createServer(app);
 
-app.server = http.createServer(function(request, response) {
-    if (request.url.indexOf('/json/') === -1) {
-        return app(request, response);
-    } else {
-        var options = option(request.url.substring(String("/json/").length), null, true);
-        options.method = request.method;
-
-        options.headers['Content-Type'] = request.headers['content-type'];
-        if (request.headers['content-length']) {
-            options.headers['content-length'] = request.headers['content-length']
-        }
-
-        var proxyRequest = http.request(options);
-
-        proxyRequest.addListener('response', function (proxy_response) {
-            response.writeHead(proxy_response.statusCode, proxy_response.headers);
-            proxy_response.pipe(response);
-        });
-
-        request.pipe(proxyRequest);
-
-        proxyRequest.on('error', function(e) {
-            console.log('problem with request: ' + e.message);
-        });
-    }
-
-});
+app.server = http.createServer(app);
 
 var bodega = require('./lib/bodega.js').BodegaManager;
 var BodegaManager = new bodega();
