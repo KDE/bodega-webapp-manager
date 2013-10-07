@@ -35,6 +35,7 @@ function createPanel(extraFields, title, assetType) {
         collapsible: false,
         title: title,
         region: 'center',
+        overflowY: 'auto',
         dockedItems: [createToolBar()],
         items: [createAssetForm(extraFields, assetType)]
     });
