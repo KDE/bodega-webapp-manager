@@ -21,31 +21,10 @@ function createToolBar() {
             }
         }, {
             xtype: 'button',
-            text: 'Book Asset',
-            scope: this,
-            handler: function() {
-                window.location.href = "/asset/create/book";
-            }
-        }, {
-            xtype: 'button',
-            text: 'Plasma Package',
-            scope: this,
-            handler: function() {
-                window.location.href = "/asset/create/plasmaPackage";
-            }
-        }, {
-            xtype: 'button',
             text: 'App from OBS',
             scope: this,
             handler: function() {
                 window.location.href = "/asset/create/obs";
-            }
-        }, {
-            xtype: 'button',
-            text: 'Wallpaper',
-            scope: this,
-            handler: function() {
-                window.location.href = "/asset/create/wallpaper";
             }
         }]
     }
@@ -74,6 +53,110 @@ function createAssetForm(extraFields) {
             reader: {
                 type: 'json',
                 root: 'tags'
+            }
+        }
+    });
+
+    var typeStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId: 'typeStore',
+        fields:['id', 'type', 'title'],
+        proxy: {
+            type: 'ajax',
+            url: '/json/tag/list/assetType',
+            reader: {
+                type: 'json',
+                root: 'tags'
+            }
+        }
+    });
+
+    var lastTagIndex = 1;
+
+    var relatedStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId: 'relatedStore',
+        fields:['name', 'multi', 'required', 'tags', 'type'],
+        proxy: {
+            type: 'ajax',
+            url: '/json/tag/list/forAssetType/',
+            reader: {
+                type: 'json',
+                //root: 'tags'
+            }
+        },
+        listeners: {
+            load: function ( store, records, successful, eOpts ) {
+
+                var fields = Ext.getCmp('typeSpecificFields');
+                var assetTypeCombo = Ext.getCmp('assetTypeCombo');
+               // var newType = records[0].data.title;
+
+                var record;
+
+                var fieldsData = records[0].data.tags;
+                for (var i in fieldsData) {
+                    record = fieldsData[i];
+                    fields.add([{
+                            id: record.type + 'TagFields',
+                            xtype:'fieldset',
+                            collapsible: false,
+                            defaultType: 'textfield',
+                            layout: 'anchor',
+                            border: 0,
+                            padding: 0,
+                            fieldRecord: record,
+                            addItem: function() {
+                                var fields = Ext.getCmp(record.type + 'TagFields');
+                                this.add([
+                                    {
+                                        xtype: 'hidden',
+                                        name: 'info[tags][' + lastTagIndex + '][type]',
+                                        value: this.fieldRecord.type
+                                    }, {
+                                        xtype: 'combobox',
+                                        name: 'info[tags][' + lastTagIndex + '][title]',
+                                        fieldLabel: this.fieldRecord.name,
+                                        displayField: 'title',
+                                        valueField: 'title',
+                                        generateClone: this.fieldRecord.multi,
+                                        store: Ext.create('Ext.data.Store', {
+                                            autoLoad: true,
+                                            storeId:'tagStore',
+                                            fields:['type', 'title'],
+                                            data: this.fieldRecord,
+                                            proxy: {
+                                                type: 'memory',
+                                                reader: {
+                                                    type: 'json',
+                                                    root: 'tags'
+                                                }
+                                            }
+                                        }),
+                                        allowBlank: !this.fieldRecord.required,
+                                        listeners: {
+                                            change: function( parent, value, eOpts ) {
+                                                if (!this.generateClone) {
+                                                    return;
+                                                }
+                                                var fields = this.up('fieldset');
+                                                fields.addItem();
+                                                this.generateClone = false;
+                                            }
+                                        }
+                                    }
+                                ]);
+                                ++lastTagIndex;
+                            },
+                            defaults: {
+                                anchor: '100%'
+                            },
+                            items :[]
+                        }
+                    ]);
+                    var tagFields = Ext.getCmp(record.type + 'TagFields');
+                    tagFields.addItem();
+                }
             }
         }
     });
@@ -261,16 +344,43 @@ function createAssetForm(extraFields) {
         }, {
             xtype: 'hidden',
             name: 'info[tags][0][type]',
-            value: 'contentrating'
+            value: 'assetType'
         }, {
+            id: 'assetTypeCombo',
             xtype: 'combobox',
             name: 'info[tags][0][title]',
-            fieldLabel: 'Rating',
+            fieldLabel: 'Type',
             displayField: 'title',
             valueField: 'title',
-            store: ratingStore,
+            store: typeStore,
             editable: false,
-            allowBlank: false
+            allowBlank: false,
+            listeners: {
+                'select': function (combo, records, eOpts) {
+                    var fields = Ext.getCmp('typeSpecificFields');
+
+                    //get rid of old fields
+                    for (var i = fields.items.items.length -1; i >=0; --i) {
+                        fields.items.items[i].destroy();
+                    }
+                    lastImageField = 1;
+
+                    relatedStore.proxy.url = '/json/tag/list/forAssetType/' + records[0].data.title;
+                    relatedStore.reload();
+                }
+            }
+        }, {
+            id: 'typeSpecificFields',
+            xtype:'fieldset',
+            collapsible: false,
+            defaultType: 'textfield',
+            layout: 'anchor',
+            border: 0,
+            padding: 0,
+            defaults: {
+                anchor: '100%'
+            },
+            items :[]
         }],
 
         buttons: [{
