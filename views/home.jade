@@ -35,6 +35,11 @@ block head
                 reader: {
                     type: 'json',
                     root: 'stats'
+                },
+                listeners: {
+                    exception: function( proxy, response, operation, eOpts ) {
+                        totalAssets.hidden = true;
+                    }
                 }
             },
             listeners: {
