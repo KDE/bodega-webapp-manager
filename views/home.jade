@@ -5,13 +5,13 @@ block head
   link(rel="stylesheet", href="/css/ext-all.css")
   script(src='/js/ext-all.js')
 
-  script
+  script.
     Ext.onReady(function() {
 
         var partnerStore = Ext.create('Ext.data.Store', {
             autoLoad: true,
-            storeId:'partnerStore',
-            fields:['id', 'name', 'email', 'publisher', 'distributor', 'points', 'people', 'links', 'assets', 'downloads', 'purchases', 'stores'],
+            storeId: 'partnerStore',
+            fields: ['id', 'name', 'email', 'publisher', 'distributor', 'points', 'people', 'links', 'assets', 'downloads', 'purchases', 'stores'],
             proxy: {
                 type: 'ajax',
                 url: '/json/partner/list',
@@ -27,11 +27,11 @@ block head
 
         var statsStore = Ext.create('Ext.data.Store', {
             autoLoad: true,
-            storeId:'statsStore',
-            fields:['dateof', 'total'],
+            storeId: 'statsStore',
+            fields: ['dateof', 'total'],
             proxy: {
                 type: 'ajax',
-                url: '/json/stats/assets' + $.param({"granularity": 'month', "from": from, "to": to}, true),
+                url: '/json/stats/assets?' + $.param({"granularity": 'month', "from": from, "to": to}, true),
                 reader: {
                     type: 'json',
                     root: 'stats'
