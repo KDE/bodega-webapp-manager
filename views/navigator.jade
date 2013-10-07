@@ -8,9 +8,6 @@ style
 
 .navbar.navbar-inverse.navbar-fixed-top(id='navigator')
   .navbar-inner
-    ul.navbar-text.pull-left
-      i.icon-user.icon-white
-      |&nbsp;#{userName}
     ul.nav.pull-right
       li
         a.btn.btn-inverse(href='/index')
@@ -45,13 +42,19 @@ style
           i.icon-briefcase.icon-white
           |&nbsp;Partners
       li.divider-vertical
-      li
-        a.btn.btn-inverse(href='/account/modify')
+      li.dropdown
+        a(href='#', data-toggle='dropdown', id='dLabel').btn.btn-inverse.dropdown-toggle
           i.icon-user.icon-white
-          |&nbsp;Account
-      li.divider-vertical
-      li
-        a.btn.btn-inverse(href='/logout')
-          i.icon-off.icon-white
-          |&nbsp;Logout
+          |&nbsp;#{userName}
+        ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
+          li
+            a(href='/account/modify')
+              i.icon-user.icon-black
+              |&nbsp;Account
+          li
+            a(href='/logout')
+              i.icon-off.icon-black
+              |&nbsp;Logout
+script
+  $('.dropdown-toggle').dropdown()
 
