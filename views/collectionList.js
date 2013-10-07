@@ -37,7 +37,7 @@ function createCollectionDetails(collectionData) {
                         icon: '/css/list-remove.png',
                         tooltip: 'Remove Asset',
                         handler: function(grid, rowIndex, colIndex) {
-                            console.log(collectionDetailsStore.getAt(rowIndex).data);
+                            //console.log(collectionDetailsStore.getAt(rowIndex).data);
                             Ext.Ajax.request({
                                 url: '/json/collection/' + currentCollection + '/remove/' + collectionDetailsStore.getAt(rowIndex).data.id,
                                 callback: function(response) {
@@ -98,7 +98,7 @@ function createCollectionList() {
             },
             listeners: {
                 add: function (parent, component, index, eOpts ) {
-                    console.log(component[0].raw)
+                    //console.log(component[0].raw)
                     Ext.Ajax.request({
                         url: '/json/collection/create/',
                         method: 'POST',
@@ -118,7 +118,7 @@ function createCollectionList() {
                     record.raw.public = record.data.public;
                     //TODO: other types
                     record.raw.type = record.data.type;
-                    console.log(record.raw)
+                    //console.log(record.raw)
                     Ext.Ajax.request({
                         url: '/json/collection/update/' + record.raw.id,
                         method: 'POST',

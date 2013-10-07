@@ -162,7 +162,7 @@ function loadAssetDetails(assetData, remoteUrl) {
                 trackOver: false,
 
                 prepareData: function(data) {
-                    console.log(data)
+                    //console.log(data)
 
                     if (assetData.status != 'published') {
                         data.url = '/json/incomingassetpreview/' + assetData.id + '/' +  encodeURIComponent(data.path);

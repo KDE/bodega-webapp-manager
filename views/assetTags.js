@@ -73,16 +73,15 @@ function loadItemTags(itemData, itemType) {
                                 itemData.tags.splice(i, 1);
                             }
                         }
-                        
+
                         if (itemType == 'asset') {
-                    
                             Ext.Ajax.request({
                                 url: '/json/asset/update/' + itemData.id,
                                 method: 'POST',
                                 params: $.param({info: itemData}),
                                 callback: function(response) {
                                     tagsStore.removeAll();
-                                    console.log(itemData.tags)
+                                    //console.log(itemData.tags)
                                     for (var i = 0; i < itemData.tags.length; ++i) {
                                         tagsStore.insert(0, itemData.tags[i]);
                                     }
@@ -99,7 +98,7 @@ function loadItemTags(itemData, itemType) {
                                 params: $.param({'tags': tags}),
                                 callback: function(response) {
                                     tagsStore.removeAll();
-                                    console.log(itemData.tags)
+                                    //console.log(itemData.tags)
                                     for (var i = 0; i < itemData.tags.length; ++i) {
                                         tagsStore.insert(0, itemData.tags[i]);
                                     }
@@ -175,14 +174,13 @@ function loadItemTags(itemData, itemType) {
                 }
 
                 if (itemType == 'asset') {
-                    
                     Ext.Ajax.request({
                         url: '/json/asset/update/' + itemData.id,
                         method: 'POST',
                         params: $.param({info: itemData}),
                         callback: function(response) {
                             tagsStore.removeAll();
-                            console.log(itemData.tags)
+                            //console.log(itemData.tags)
                             for (var i = 0; i < itemData.tags.length; ++i) {
                                 tagsStore.insert(0, itemData.tags[i]);
                             }
@@ -199,15 +197,13 @@ function loadItemTags(itemData, itemType) {
                         params: $.param({'tags': tags}),
                         callback: function(response) {
                             tagsStore.removeAll();
-                            console.log(itemData.tags)
+                            //console.log(itemData.tags)
                             for (var i = 0; i < itemData.tags.length; ++i) {
                                 tagsStore.insert(0, itemData.tags[i]);
                             }
                         }
                     });
                 }
-                
-                    
             }
         },
         enableDrop: true,

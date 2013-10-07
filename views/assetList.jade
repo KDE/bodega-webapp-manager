@@ -84,7 +84,7 @@ block head
             },
             listeners: {
                 write: function(proxy, operation) {
-                    console.log(operation);
+                    //console.log(operation);
                     if (operation.action == 'destroy') {
                         main.child('#form').setActiveRecord(null);
                     }
@@ -95,8 +95,8 @@ block head
                     record.raw.description = record.data.description;
                     record.raw.baseprice = record.data.baseprice;
                     record.raw.posted = false;
-                    console.log(record.raw)
-                    console.log($.param({info: record.raw}))
+                    //console.log(record.raw)
+                    //console.log($.param({info: record.raw}))
                     Ext.Ajax.request({
                         url: '/json/asset/update/' + record.raw.id,
                         method: 'POST',

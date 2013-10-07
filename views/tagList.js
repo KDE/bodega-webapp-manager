@@ -31,7 +31,7 @@ function createTagList(config) {
             update: function(store, record, operation, eOpts ) {
                 record.raw.title = record.data.title;
                 record.raw.type = record.data.type;
-                console.log(record.raw)
+                //console.log(record.raw)
                 if (record.raw.newData) {
                      Ext.Ajax.request({
                         url: '/json/tag/create/',
@@ -64,7 +64,7 @@ function createTagList(config) {
         clicksToEdit: 1,
         listeners: {
             beforeedit: function(editor, e, eOpts) {
-                console.log(e)
+                //console.log(e)
                 if (!e.record.data.editable) {
                     return false;
                 }
