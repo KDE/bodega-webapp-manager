@@ -36,6 +36,15 @@ block head
                     type: 'json',
                     root: 'stats'
                 }
+            },
+            listeners: {
+                load: function ( store, records, successful, eOpts ) {
+                    if (records) {
+                        totalAssets.hidden = false;
+                    } else {
+                        totalAssets.hidden = true;
+                    }
+                }
             }
         });
 
