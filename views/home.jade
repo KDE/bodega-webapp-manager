@@ -39,7 +39,6 @@ block head
             }
         });
 
-
         var partnersOverview = Ext.create('Ext.Panel', {
             id: 'partners-view',
             frame: true,
@@ -77,12 +76,12 @@ block head
                 tpl: [
                     '<tpl for=".">',
                         '<div class="thumb-wrap" id="{name:stripTags}">',
-                        
+
                         '<h4>{dateString:htmlEncode}</h4>',
                         '<table>',
                             '<tr><th>Points:</th><td>{total:htmlEncode}</td></tr>',
                         '</table>',
-                        
+
                         '</div>',
                     '</tpl>',
                     '<div class="x-clear"></div>'
