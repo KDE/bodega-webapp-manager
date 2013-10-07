@@ -5,9 +5,7 @@
     "dependencies": {
         "express": "> 2.4.6",
         "connect-redis" : "latest",
-        "sockjs" : "latest",
         "jade" : "latest",
-        "formstream" : "latest"
     },
     "devDependencies": {
     },
