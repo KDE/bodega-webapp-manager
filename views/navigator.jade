@@ -17,22 +17,24 @@ style
           i.icon-home.icon-white
           |&nbsp;Home
       li.divider-vertical
-      li
-        a.btn.btn-inverse(href='/asset/list')
-          i.icon-th-list.icon-white
-          |&nbsp;Assets
-      li.divider-vertical
+      if inDistributorGroup || inPublisherGroup
+        li
+          a.btn.btn-inverse(href='/asset/list')
+            i.icon-th-list.icon-white
+            |&nbsp;Assets
+        li.divider-vertical
       if inManagementGroup
         li
           a.btn.btn-inverse(href='/asset/publish')
             i.icon-thumbs-up.icon-white
             |&nbsp;Publish
         li.divider-vertical
-      li
-        a.btn.btn-inverse(href='/store/list')
-          i.icon-shopping-cart.icon-white
-          |&nbsp;Stores
-      li.divider-vertical
+      if inDistributorGroup || inPublisherGroup
+        li
+          a.btn.btn-inverse(href='/store/list')
+            i.icon-shopping-cart.icon-white
+            |&nbsp;Stores
+        li.divider-vertical
       li
         a.btn.btn-inverse(href='/stats/assets')
           i.icon-signal.icon-white
