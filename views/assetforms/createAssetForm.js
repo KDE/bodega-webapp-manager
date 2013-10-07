@@ -30,17 +30,17 @@ function createToolBar() {
     }
 }
 
-function createPanel(extraFields, title) {
+function createPanel(extraFields, title, assetType) {
     return Ext.create('Ext.Panel', {
         collapsible: false,
         title: title,
         region: 'center',
         dockedItems: [createToolBar()],
-        items: [createAssetForm(extraFields)]
+        items: [createAssetForm(extraFields, assetType)]
     });
 }
 
-function createAssetForm(extraFields) {
+function createAssetForm(extraFields, assetType) {
     var lastImageField = 0;
 
     var ratingStore = Ext.create('Ext.data.Store', {
@@ -107,7 +107,6 @@ function createAssetForm(extraFields) {
                             padding: 0,
                             fieldRecord: record,
                             addItem: function() {
-                console.log(this.fieldRecord)
                                 var fields = Ext.getCmp(record.type + 'TagFields');
                                 this.add([
                                     {
@@ -411,6 +410,16 @@ function createAssetForm(extraFields) {
             }
         }]
     });
+
+    if (assetType) {
+        var assetTypeCombo = Ext.getCmp('assetTypeCombo');
+        if (assetTypeCombo) {
+            assetTypeCombo.select(assetType);
+            assetTypeCombo.hidden = true;
+            relatedStore.proxy.url = '/json/tag/list/forAssetType/' + assetType;
+        }
+    }
+
     assetDetailsForm.add(extraFields);
     addImageField();
 

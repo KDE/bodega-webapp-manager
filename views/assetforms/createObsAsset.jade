@@ -63,7 +63,7 @@ block head
             return false;
         }
 
-        var form = createAssetForm(extraFields);
+        var form = createAssetForm(extraFields, 'application');
         form.getForm().addListener('beforeaction', beforeaction, form);
         form.items.get('asset').disable();
         form.items.get('asset').allowBlank = true;
