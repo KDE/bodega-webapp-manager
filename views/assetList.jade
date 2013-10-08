@@ -244,6 +244,25 @@ block head
                         });
                     }
                 }]
+            }, {
+                xtype: 'toolbar',
+                dock: 'bottom',
+                items: [{
+                    text: '<',
+                    scope: this,
+                    handler: function() {
+                        if (store.currentPage <= 1) {
+                            return;
+                        }
+                        store.loadPage(store.currentPage - 1)
+                    }
+                }, {
+                    text: '>',
+                    scope: this,
+                    handler: function() {
+                        store.loadPage(store.currentPage + 1)
+                    }
+                }]
             }],
             listeners: {
                 selectionchange: function()
@@ -272,14 +291,7 @@ block head
             columnWidth: 1,
             border: 0,
             region: 'center',
-            plugins: [cellEditing],
-            verticalScrollerType: 'paginggridscroller',
-            /*bbar: Ext.create('Ext.PagingToolbar', {
-                store: store,
-                displayInfo: false,
-                displayMsg: 'Displaying topics {0} - {1} of {2}',
-                emptyMsg: "No topics to display"
-            }),*/
+            plugins: [cellEditing]
         });
 
         var collectionList = createCollectionList();
