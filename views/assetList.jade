@@ -273,12 +273,13 @@ block head
             border: 0,
             region: 'center',
             plugins: [cellEditing],
-            bbar: Ext.create('Ext.PagingToolbar', {
+            verticalScrollerType: 'paginggridscroller',
+            /*bbar: Ext.create('Ext.PagingToolbar', {
                 store: store,
-                displayInfo: true,
+                displayInfo: false,
                 displayMsg: 'Displaying topics {0} - {1} of {2}',
                 emptyMsg: "No topics to display"
-            }),
+            }),*/
         });
 
         var collectionList = createCollectionList();
