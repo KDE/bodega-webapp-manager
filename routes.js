@@ -32,64 +32,65 @@ function isAuthorized(req, res, next)
 }
 
 app.all('/json/*', function(request, response) {
-        var options = utils.options(request, request.url.substring(String("/json/").length), null, true);
-        options.method = request.method;
 
-        //console.log(JSON.stringify(request.headers.cookie));
-        options.headers['Content-Type'] = request.headers['content-type'];
-        if (request.headers['content-length']) {
-            options.headers['content-length'] = request.headers['content-length']
-        }
+    var options = utils.options(request, request.url.substring(String("/json/").length), null, true);
+    options.method = request.method;
 
-        var proxyRequest = http.request(options);
+    //console.log(JSON.stringify(request.headers.cookie));
+    options.headers['Content-Type'] = request.headers['content-type'];
+    if (request.headers['content-length']) {
+        options.headers['content-length'] = request.headers['content-length']
+    }
 
-        proxyRequest.addListener('response', function (proxy_response) {
-            response.writeHead(proxy_response.statusCode, proxy_response.headers);
-            proxy_response.pipe(response);
-        });
+    var proxyRequest = http.request(options);
 
-        proxyRequest.on('error', function(e) {
-            console.log('problem with request: ' + e.message);
-        });
+    proxyRequest.addListener('response', function (proxy_response) {
+        response.writeHead(proxy_response.statusCode, proxy_response.headers);
+        proxy_response.pipe(response);
+    });
 
-        request.pipe(proxyRequest);
+    proxyRequest.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+    });
+
+    request.pipe(proxyRequest);
 });
 
-app.get('/', function(req, res) {
+app.get('/', express.bodyParser(), function(req, res) {
     res.render('login', {
         network: app.config.server.name
     });
     //res.render('index');
 });
 
-app.post('/', function(req, res){
+app.post('/', express.bodyParser(), function(req, res){
     app.BodegaManager.login(req, res);
 });
 
-app.get('/index', isAuthorized, function(req, res) {
+app.get('/index', express.bodyParser(), isAuthorized, function(req, res) {
     app.BodegaManager.index(req, res);
 });
 
-app.get('/login/info', isAuthorized,  function(req, res) {
+app.get('/login/info', express.bodyParser(), isAuthorized,  function(req, res) {
     app.BodegaManager.loginInfo(req, res);
 });
 
-app.get('/login/confirm', function(req, res){
+app.get('/login/confirm', express.bodyParser(), function(req, res){
     app.BodegaManager.loginconfirm(req, res);
 });
 
 //register
-app.get('/register', function(req, res) {
+app.get('/register', express.bodyParser(), function(req, res) {
     res.render('register', {
         network: app.config.server.name
     });
 });
 
-app.post('/register', function(req, res) {
+app.post('/register', express.bodyParser(), function(req, res) {
     app.BodegaManager.register(req, res);
 });
 
-app.get('/register/confirm', function(req, res) {
+app.get('/register/confirm', express.bodyParser(), function(req, res) {
     res.render('registerconfirm', {
         network: app.config.server.name,
         success: app.operationStatus,
@@ -98,37 +99,37 @@ app.get('/register/confirm', function(req, res) {
 });
 
 //account
-app.get('/account/modify',isAuthorized, function(req, res) {
+app.get('/account/modify', express.bodyParser(), isAuthorized, function(req, res) {
     app.BodegaManager.loginInfo(req, res);
 });
 
-app.post('/account/modify', isAuthorized, function(req, res) {
+app.post('/account/modify', express.bodyParser(), isAuthorized, function(req, res) {
     app.BodegaManager.accountmodify(req, res);
 });
 
-app.get('/account/modify/confirm', isAuthorized, function(req, res) {
+app.get('/account/modify/confirm', express.bodyParser(), isAuthorized, function(req, res) {
      res.render('accountmodifyconfirm', {
          result: app.operationStatus,
          network: app.config.server.name
     });
 });
 
-app.get('/account', isAuthorized, function(req, res) {
+app.get('/account', express.bodyParser(), isAuthorized, function(req, res) {
     res.redirect('/account/modify');
     //res.render('account');
 });
 
-app.get('/account/resetPassword', function(req, res){
+app.get('/account/resetPassword', express.bodyParser(), function(req, res){
     res.render('resetpassword', {
          network: app.config.server.name
    });
 });
 
-app.post('/account/resetPassword', function(req, res){
+app.post('/account/resetPassword', express.bodyParser(), function(req, res){
     app.BodegaManager.resetpassword(req, res);
 });
 
-app.get('/account/resetPassword/confirm', function(req, res){
+app.get('/account/resetPassword/confirm', express.bodyParser(), function(req, res){
     res.render('resetpasswordconfirm', {
         message: app.operationMessage,
         result: app.operationStatus,
@@ -138,39 +139,39 @@ app.get('/account/resetPassword/confirm', function(req, res){
 
 
 
-app.get('/asset/list/?:listType?', isAuthorized, function(req, res){
+app.get('/asset/list/?:listType?', express.bodyParser(), isAuthorized, function(req, res){
     app.BodegaManager.listassets(req, res);
 });
 
-app.get('/asset/create/?:assetType?', isAuthorized, function(req, res){
+app.get('/asset/create/?:assetType?', express.bodyParser(), isAuthorized, function(req, res){
     app.BodegaManager.createasset(req, res);
 });
 
-app.post('/asset/create/?:assetType?', isAuthorized, function(req, res){
+app.post('/asset/create/?:assetType?', express.bodyParser(), isAuthorized, function(req, res){
     app.BodegaManager.createasset(req, res);
 });
 
-app.get('/stats/assets', isAuthorized, function(req, res){
+app.get('/stats/assets', express.bodyParser(), isAuthorized, function(req, res){
     app.BodegaManager.assetStats(req, res);
 });
 
-app.get('/store/list', isAuthorized, function(req, res){
+app.get('/store/list', express.bodyParser(), isAuthorized, function(req, res){
     app.BodegaManager.listStores(req, res);
 });
 
-app.get('/partner/list', isAuthorized, function(req, res){
+app.get('/partner/list', express.bodyParser(), isAuthorized, function(req, res){
     app.BodegaManager.listPartners(req, res);
 });
 
-app.get('/partner/approve', isAuthorized, function(req, res){
+app.get('/partner/approve', express.bodyParser(), isAuthorized, function(req, res){
     app.BodegaManager.partnerapprove(req, res);
 });
 
-app.get('/asset/publish', isAuthorized, function(req, res){
+app.get('/asset/publish', express.bodyParser(), isAuthorized, function(req, res){
     app.BodegaManager.publishasset(req, res);
 });
 
-app.get('/logout', function(req, res) {
+app.get('/logout', express.bodyParser(), function(req, res) {
     req.session.destroy();
     delete app.cookie;
 

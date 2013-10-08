@@ -21,6 +21,8 @@ var http = require('http');
 var path = require('path');
 var fs = require('fs');
 var RedisStore = require('connect-redis')(express);
+var option = require('./lib/utils.js').options;
+var sockjs  = require('sockjs');
 
 GLOBAL.app = module.exports = express();
 
@@ -33,7 +35,11 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.bodyParser());
+
+//WARNING:don't use a bodyParser globally:
+//the json requests forwarded to the server needs to just pipe the raw data
+//all the other routes will have to set a bodyParser manually
+//app.use(express.bodyParser());
 
 //app.use(express.methodOverride());
 app.use('/css', express.static(__dirname + '/public/css'));
