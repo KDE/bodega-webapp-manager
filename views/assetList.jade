@@ -31,7 +31,7 @@ block head
                 if (resp.success) {
                     Ext.MessageBox.alert('', 'Publish request sent successfully.');
                 } else {
-                    Ext.MessageBox.alert('Error', 'Error in sending your request.<br/>' + resp.message);
+                    Ext.MessageBox.alert('Error', 'Error in sending your request.<br/>' + (resp.message ? resp.message : resp.error.type));
                 }
             },
             failure: function(response, opts) {
