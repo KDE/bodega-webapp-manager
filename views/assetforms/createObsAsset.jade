@@ -30,6 +30,9 @@ block head
                 allowBlank: false
             }];
 
+
+        var form = createAssetForm(extraFields, 'application');
+
         var beforeaction = function(extForm, action, eOpts) {
 
             var pkgName = form.items.get('obsInfo[pkgName]').getValue();
@@ -41,13 +44,13 @@ block head
             var obsFileBlob = new Blob(obsFileParts, { "type" : "text\/plain" });
 
 
-            form = new FormData(),
+            formData = new FormData(),
             request = new XMLHttpRequest();
             for (var i in extForm.getFieldValues()) {
-                form.append(i, extForm.getFieldValues()[i]);
+                formData.append(i, extForm.getFieldValues()[i]);
             }
-            form.append('info[file]', pkgName + '.desc');
-            form.append('asset', obsFileBlob, pkgName + '.desc');
+            formData.append('info[file]', pkgName + '.desc');
+            formData.append('asset', obsFileBlob, pkgName + '.desc');
             request.open(
                         "POST",
                         "/json/asset/create",
@@ -58,12 +61,11 @@ block head
                     window.location.href = "/asset/list/incoming";
                 }
             }
-            request.send(form);
+            request.send(formData);
 
             return false;
         }
 
-        var form = createAssetForm(extraFields, 'application');
         form.getForm().addListener('beforeaction', beforeaction, form);
         form.items.get('asset').disable();
         form.items.get('asset').allowBlank = true;
