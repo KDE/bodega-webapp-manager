@@ -28,6 +28,50 @@ block head
     var metric = "points";
     var from = (new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() - 14));
     var to = new Date();
+    var currentPartner;
+
+    var store = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId:'bodegaStore',
+        fields:['name', 'description', 'baseprice'],
+        proxy: {
+            type: 'ajax',
+            // load remote data using HTTP
+            url: '/json/asset/list',
+            // specify a XmlReader (coincides with the XML format of the returned data)
+            reader: {
+                type: 'json',
+                root: 'assets'
+            }
+        }
+    });
+
+    function refreshAssetsStore() {
+        store.proxy.url = '/json/asset/list/' + currentPartner;
+
+        store.load();
+    }
+
+    var partnerStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId: 'typeStore',
+        fields:['id', 'name'],
+        proxy: {
+            type: 'ajax',
+            url: '/json/partner/list',
+            reader: {
+                type: 'json',
+                root: 'partners'
+            }
+        },
+        listeners: {
+            load: function ( store, records, successful, eOpts ) {
+                currentPartner = records[0].internalId;
+                partnerStore.combo.setValue(currentPartner);
+                refreshAssetsStore();
+            }
+        }
+    });
 
     function convertData(data) {
         var converted = new Array();
@@ -181,6 +225,24 @@ block head
                     },
                     width: 100,
                     height: 22
+                }, 'Partner:', {
+                    xtype: 'combobox',
+                    editable: false,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    width: 120,
+                    //value: '#{listType}',
+                    store: partnerStore,
+                    listeners: {
+                        'select': function(combo, record, index) {
+                            currentPartner = combo.getValue();
+                            refreshAssetsStore();
+                        },
+                        afterrender: function (combo, eopts) {
+                            partnerStore.combo = combo;
+                        }
+                    }
                 }]
             },{
                 xtype: 'toolbar',
@@ -209,21 +271,6 @@ block head
 
     //Assets list
     Ext.onReady(function() {
-        var store = Ext.create('Ext.data.Store', {
-            autoLoad: true,
-            storeId:'bodegaStore',
-            fields:['name', 'description', 'baseprice'],
-            proxy: {
-                type: 'ajax',
-                // load remote data using HTTP
-                url: '/json/asset/list',
-                // specify a XmlReader (coincides with the XML format of the returned data)
-                reader: {
-                    type: 'json',
-                    root: 'assets'
-                }
-            }
-        });
 
         var view = Ext.create('Ext.grid.Panel', {
             store: Ext.data.StoreManager.lookup('bodegaStore'),
@@ -255,6 +302,25 @@ block head
                             scope: this,
                             buffer: 100
                         }
+                    }
+                }]
+            }, {
+                xtype: 'toolbar',
+                dock: 'bottom',
+                items: [{
+                    text: '<',
+                    scope: this,
+                    handler: function() {
+                        if (store.currentPage <= 1) {
+                            return;
+                        }
+                        store.loadPage(store.currentPage - 1)
+                    }
+                }, {
+                    text: '>',
+                    scope: this,
+                    handler: function() {
+                        store.loadPage(store.currentPage + 1)
                     }
                 }]
             }],
