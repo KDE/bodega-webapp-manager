@@ -103,8 +103,12 @@ app.get('/account/modify', express.bodyParser(), isAuthorized, function(req, res
     app.BodegaManager.loginInfo(req, res);
 });
 
-app.post('/account/modify', express.bodyParser(), isAuthorized, function(req, res) {
+app.post('/account/modify', isAuthorized, function(req, res) {
     app.BodegaManager.accountmodify(req, res);
+});
+
+app.get('/account/changePassword', isAuthorized, function(req, res) {
+    app.BodegaManager.changepassword(req, res);
 });
 
 app.get('/account/modify/confirm', express.bodyParser(), isAuthorized, function(req, res) {
