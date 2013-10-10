@@ -7,17 +7,17 @@ function createToolBar() {
         dock: 'top',
         items: [{
             xtype: 'button',
+            text: 'Single Asset',
+            scope: this,
+            handler: function() {
+                window.location.href = "/asset/create/single";
+            }
+        }, {
+            xtype: 'button',
             text: 'Mass create',
             scope: this,
             handler: function() {
                 window.location.href = "/asset/create/mass";
-            }
-        }, {
-            xtype: 'button',
-            text: 'Generic Asset',
-            scope: this,
-            handler: function() {
-                window.location.href = "/asset/create/generic";
             }
         }, {
             xtype: 'button',
@@ -301,6 +301,30 @@ function createAssetForm(extraFields, assetType) {
         overflowY: 'auto',
 
         items: [{
+            id: 'assetTypeCombo',
+            xtype: 'combobox',
+            name: 'info[tags][0][title]',
+            fieldLabel: 'Type',
+            displayField: 'title',
+            valueField: 'title',
+            store: typeStore,
+            editable: false,
+            allowBlank: false,
+            listeners: {
+                'select': function (combo, records, eOpts) {
+                    var fields = Ext.getCmp('typeSpecificFields');
+
+                    //get rid of old fields
+                    for (var i = fields.items.items.length -1; i >=0; --i) {
+                        fields.items.items[i].destroy();
+                    }
+                    lastImageField = 1;
+
+                    relatedStore.proxy.url = '/json/tag/list/forAssetType/' + records[0].data.title;
+                    relatedStore.reload();
+                }
+            }
+        }, {
             xtype: 'combobox',
             fieldLabel: 'Partner',
             name: 'info[partner]',
@@ -409,30 +433,6 @@ function createAssetForm(extraFields, assetType) {
             xtype: 'hidden',
             name: 'info[tags][0][type]',
             value: 'assetType'
-        }, {
-            id: 'assetTypeCombo',
-            xtype: 'combobox',
-            name: 'info[tags][0][title]',
-            fieldLabel: 'Type',
-            displayField: 'title',
-            valueField: 'title',
-            store: typeStore,
-            editable: false,
-            allowBlank: false,
-            listeners: {
-                'select': function (combo, records, eOpts) {
-                    var fields = Ext.getCmp('typeSpecificFields');
-
-                    //get rid of old fields
-                    for (var i = fields.items.items.length -1; i >=0; --i) {
-                        fields.items.items[i].destroy();
-                    }
-                    lastImageField = 1;
-
-                    relatedStore.proxy.url = '/json/tag/list/forAssetType/' + records[0].data.title;
-                    relatedStore.reload();
-                }
-            }
         }, {
             id: 'typeSpecificFields',
             xtype:'fieldset',
