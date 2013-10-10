@@ -14,17 +14,17 @@ function createToolBar() {
             }
         }, {
             xtype: 'button',
-            text: 'Mass create',
-            scope: this,
-            handler: function() {
-                window.location.href = "/asset/create/mass";
-            }
-        }, {
-            xtype: 'button',
             text: 'App from OBS',
             scope: this,
             handler: function() {
                 window.location.href = "/asset/create/obs";
+            }
+        }, {
+            xtype: 'button',
+            text: 'Mass create',
+            scope: this,
+            handler: function() {
+                window.location.href = "/asset/create/mass";
             }
         }]
     }
