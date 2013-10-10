@@ -169,8 +169,18 @@ block head
                                 Ext.each(s, function (item) {
                                     Ext.Ajax.request({
                                         url: '/json/partner/delete/' + item.data.id,
-                                        callback: function(response) {
-                                            store.load();
+                                        success: function(response, opts) {
+                                            var resp = JSON.parse(response.responseText);
+                                            if (resp.success) {
+                                                Ext.MessageBox.alert('', 'Partner deleted successfully.');
+                                                store.reload();
+                                            } else {
+                                                Ext.MessageBox.alert('Error', 'Error in deleting the partnert.<br/>' + (resp.message ? resp.message : resp.error.type));
+                                            }
+                                        },
+                                        failure: function(response, opts) {
+                                            console.log('server-side failure with status code ' + response.status);
+                                            Ext.MessageBox.alert('Error', 'Error in deleting the partner.');
                                         }
                                     });
                                 });
