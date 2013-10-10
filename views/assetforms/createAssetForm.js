@@ -463,10 +463,16 @@ function createAssetForm(extraFields, assetType) {
                         waitMsg: 'Creating the asset...',
                         //params: $.param({info: data}),
                         success: function(fp, o) {
-                            window.location.href = "/asset/list/incoming";
+                            var resp = JSON.parse(response.responseText);
+                            if (resp.success) {
+                                window.location.href = "/asset/list/incoming";
+                            } else {
+                                Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
+                            }
                         },
                         failure: function(form, action) {
-                            window.location.href = "/asset/list/incoming";
+                            Ext.MessageBox.alert('Error', 'Error in uploading the asset');
+                            //window.location.href = "/asset/list/incoming";
                         }
                     });
                 }
