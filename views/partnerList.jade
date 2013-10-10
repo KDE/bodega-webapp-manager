@@ -8,6 +8,7 @@ block head
   include partnerContacts.js
   include partnerPeople.js
   include partnerRequest.js
+  include partnerCreationForm.js
 
   script
     Ext.onReady(function() {
@@ -25,6 +26,7 @@ block head
             },
             listeners: {
                 update: function(store, record, operation, eOpts ) {
+                    console.log(record.raw)
                     record.raw.name = record.data.name;
                     record.raw.email = record.data.email;
                     record.raw.publisher = record.data.publisher;
@@ -41,8 +43,8 @@ block head
                         }
                     });
                 },
-                add: function(store, records, index, eOpts) {
-                    //console.log(records)
+                /*add: function(store, records, index, eOpts) {
+                    console.log(records)
                     var record;
                     for (var i in records) {
                         record = records[i];
@@ -62,7 +64,7 @@ block head
                             }
                         });
                     }
-                }
+                }*/
             }
         });
 
@@ -131,20 +133,7 @@ block head
                     text: 'New Partner',
                     scope: this,
                     handler: function() {
-                        var rec = {
-                            'name': 'New Partner',
-                            'email': 'partner@example.com',
-                            'publisher': false,
-                            'distributor': false,
-                            'points': 0,
-                            'links': []
-                        };
-
-                        store.insert(0, rec);
-                        cellEditing.startEditByPosition({
-                            row: 0, 
-                            column: 0
-                        });
+                        showPartnerCreationForm(store);
                     }
                 }, 'Search', {
                     xtype: 'textfield',
