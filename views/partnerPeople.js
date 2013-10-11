@@ -203,7 +203,7 @@
                 }
 
                 peopleWindow = Ext.create('widget.window', {
-                    title: 'Contacts for Partner ' + partnerData.name,
+                    title: 'People with ' + partnerData.name,
                     closable: true,
                     closeAction: 'hide',
                     modal: true,
