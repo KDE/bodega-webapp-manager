@@ -24,7 +24,8 @@ function createTagList(config) {
             url: '/json/tag/list',
             reader: {
                 type: 'json',
-                root: 'tags'
+                root: 'tags',
+                totalProperty: 'totalTags'
             }
         },
         listeners: {
@@ -142,7 +143,15 @@ function createTagList(config) {
                     });
                 }
             }]
-        }],
+        },
+        Ext.create('Ext.PagingToolbar', {
+                store: tagStore,
+                dock: 'bottom',
+                displayInfo: true,
+                displayMsg: 'Displaying assets {0} - {1} of {2}',
+                emptyMsg: "No assets to display",
+                
+        })],
         listeners: {
             selectionchange: function()
             {
