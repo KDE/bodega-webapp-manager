@@ -26,7 +26,7 @@ function showPartnerCreationForm(store) {
             id: 'email',
             xtype: 'textfield',
             name: 'email',
-            fieldLabel: 'email'
+            fieldLabel: 'Email'
         }],
 
         buttons: [{
