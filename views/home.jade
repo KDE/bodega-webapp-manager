@@ -102,15 +102,52 @@ block head
             })
         });
 
-        var totalAssetsa = Ext.create('Ext.Panel', {
+        var contactInfo = Ext.create('Ext.Panel', {
             id: 'assetsa-view',
             frame: true,
             colspan: 1,
-            title: 'Assets overview',
-            width: 200,
-            height: 285
+            html: 'No contact info available',
+            title: 'Contact info',
+            //width: 200,
+            //height: 285
         });
 
+        var contactStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId: 'partnerStore',
+            fields: ['store', 'warehouse'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/contact',
+                reader: {
+                    type: 'json',
+                   // root: 'partners'
+                }
+            },
+            listeners: {
+                load: function( store, records, successful, eOpts ) {
+                    console.log(records)
+                    if (!successful) {
+                        return;
+                    }
+
+                    var html = '<h4>Warehouse ' + records[0].data.warehouse.name + '</h4>';
+                    html += '<p>' + records[0].data.warehouse.description + '</p>';
+                    html += '<p><a href="' + records[0].data.warehouse.url + '">' + records[0].data.warehouse.url + '</a></p>';
+                    html += '<p>Contact: <a href="' + records[0].data.warehouse.contact + '">' + records[0].data.warehouse.contact + '</a></p>';
+
+                    if (records[0].data.store.contact) {
+                        html += '<h4>Store ' + records[0].data.store.name + '</h4>';
+                        html += '<p>' + records[0].data.store.description + '</p>';
+                        html += '<p>Contact: <a href="' + records[0].data.store.contact + '">' + records[0].data.store.contact + '</a></p>';
+                    }
+
+                    contactInfo.update(html);
+                }
+            }
+        });
+
+        
 
         var layout = Ext.create('Ext.Viewport', {
             overflowY: 'auto',
@@ -128,7 +165,7 @@ block head
             bodyBorder: false,
             padding: '48 0 0 0',
             bodyStyle: 'width:100%',
-            items: [partnersOverview, totalAssets],
+            items: [partnersOverview, totalAssets, contactInfo],
             renderTo: Ext.getBody(),
             border: 10,
         });
