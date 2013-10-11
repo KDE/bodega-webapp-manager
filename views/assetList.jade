@@ -67,6 +67,7 @@ block head
             autoLoad: true,
             storeId:'bodegaStore',
             fields:['name', 'license', 'description', 'file', 'version', 'baseprice', 'tags', 'status', 'partner', 'active'],
+            
             proxy: {
                 type: 'ajax',
                 // load remote data using HTTP
@@ -74,7 +75,8 @@ block head
                 // specify a XmlReader (coincides with the XML format of the returned data)
                 reader: {
                     type: 'json',
-                    root: 'assets'
+                    root: 'assets',
+                    totalProperty: 'totalAssets'
                 },
                 writer: {
                     type: 'json',
@@ -244,26 +246,16 @@ block head
                         });
                     }
                 }]
-            }, {
-                xtype: 'toolbar',
-                dock: 'bottom',
-                items: [{
-                    text: '<',
-                    scope: this,
-                    handler: function() {
-                        if (store.currentPage <= 1) {
-                            return;
-                        }
-                        store.loadPage(store.currentPage - 1)
-                    }
-                }, {
-                    text: '>',
-                    scope: this,
-                    handler: function() {
-                        store.loadPage(store.currentPage + 1)
-                    }
-                }]
-            }],
+            },
+            Ext.create('Ext.PagingToolbar', {
+                    store: store,
+                    dock: 'bottom',
+                    displayInfo: true,
+                    displayMsg: 'Displaying topics {0} - {1} of {2}',
+                    emptyMsg: "No topics to display",
+                   
+            })
+            ],
             listeners: {
                 selectionchange: function()
                 {
