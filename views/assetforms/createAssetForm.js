@@ -451,14 +451,14 @@ function createAssetForm(extraFields, assetType) {
             text: 'Create',
             handler: function() {
 
-                var form = this.up('form').getForm();
-                if (form.isValid()) {
+                var formData = this.up('form').getForm();
+                if (formData.isValid()) {
                     //disable the last file field, since is empty and with invalid data
                     assetDetailsForm.items.get('file-' + (lastImageField-1)).disable();
                     assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][type]').disable();
                     assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][subtype]').disable();
 
-                    form.submit({
+                    formData.submit({
                         url: '/json/asset/create',
                         waitMsg: 'Creating the asset...',
                         //params: $.param({info: data}),
@@ -466,13 +466,12 @@ function createAssetForm(extraFields, assetType) {
                             var resp = JSON.parse(opts.response.responseText);
                             console.log(resp)
                             if (resp.success) {
-                                Ext.MessageBox.alert('', 'Asset uploaded successfully');
                                 window.location.href = "/asset/list/incoming";
                             } else {
                                 Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
                             }
                         },
-                        failure: function(form, opts) {
+                        failure: function(formData, opts) {
                             var resp = JSON.parse(opts.response.responseText);
                             Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
                             //window.location.href = "/asset/list/incoming";
