@@ -22,6 +22,21 @@ block head
         store.load();
     }
 
+    var runner = new Ext.util.TaskRunner();
+    var assetSearchTask = runner.newTask({
+        query: '',
+        run: function () {
+            if (assetSearchTask.query && assetSearchTask.query.length > 3) {
+                store.proxy.url = '/json/asset/search/' + currentPartner + '/' + assetSearchTask.query + '/' + currentType;
+                store.reload();
+            } else {
+                refreshAssetsStore();
+            }
+        },
+        interval: 600,
+        repeat: 1
+    });
+
     function postAsset(assetId) {
         Ext.Ajax.request({
             url: '/json/asset/post/' + assetId,
@@ -178,20 +193,9 @@ block head
                     hideLabel: true,
                     width: 200,
                     listeners: {
-                        change: {
-                            fn: function(){
-                                store.clearFilter();
-
-                                var search = view.down('textfield[name=searchField]').getValue();
-                                store.filterBy(function (record) {
-                                    //name containing the textfield value
-                                    var name = record.get('name').toLowerCase();
-                                    var desc = record.get('description').toLowerCase();
-                                    return name.indexOf(search) !== -1 || desc.indexOf(search) !== -1;
-                               });
-                            },
-                            scope: this,
-                            buffer: 100
+                       change: function( field, newValue, oldValue, eOpts ) {
+                            assetSearchTask.query = newValue;
+                            assetSearchTask.start();
                         }
                     }
                 }, {
@@ -226,7 +230,7 @@ block head
                     listeners: {
                         'select': function(combo, record, index) {
                             currentPartner = combo.getValue();
-                            refreshAssetsStore();
+                            assetSearchTask.start();
                         },
                         afterrender: function (combo, eopts) {
                             partnerStore.combo = combo;
