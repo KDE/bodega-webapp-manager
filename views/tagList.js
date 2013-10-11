@@ -72,6 +72,22 @@ function createTagList(config) {
             }
         }
     });
+    var runner = new Ext.util.TaskRunner();
+    var tagSearchTask = runner.newTask({
+        query: '',
+        run: function () {
+            if (tagSearchTask.query && tagSearchTask.query.length > 3) {
+                tagStore.proxy.url = '/json/tag/search/'+tagSearchTask.query;
+                tagStore.reload();
+            } else {
+                tagStore.proxy.url = '/json/tag/list';
+                tagStore.reload();
+            }
+        },
+        interval: 600,
+        repeat: 1
+    });
+    
     var tagView = Ext.create('Ext.grid.Panel', {
         store: tagStore,
         //selType: 'checkboxmodel',
@@ -121,6 +137,17 @@ function createTagList(config) {
                     });
                 }
             }, {
+                xtype: 'textfield',
+                name: 'searchField',
+                hideLabel: true,
+                width: 120,
+                listeners: {
+                    change: function( field, newValue, oldValue, eOpts ) {
+                        tagSearchTask.query = newValue;
+                        tagSearchTask.start();
+                    }
+                }
+            }, {
                 xtype: 'button',
                 text: 'Delete Tags',
                 hidden: true,
@@ -165,9 +192,9 @@ function createTagList(config) {
                 });
 
                 if (show) {
-                    tagView.dockedItems.get(2).items.get(1).show();
+                    tagView.dockedItems.get(2).items.get(2).show();
                 } else {
-                    tagView.dockedItems.get(2).items.get(1).hide();
+                    tagView.dockedItems.get(2).items.get(2).hide();
                 }
             }
         },
