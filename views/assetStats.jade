@@ -41,7 +41,8 @@ block head
             // specify a XmlReader (coincides with the XML format of the returned data)
             reader: {
                 type: 'json',
-                root: 'assets'
+                root: 'assets',
+                totalProperty: 'totalAssets'
             }
         }
     });
@@ -304,26 +305,16 @@ block head
                         }
                     }
                 }]
-            }, {
-                xtype: 'toolbar',
-                dock: 'bottom',
-                items: [{
-                    text: '<',
-                    scope: this,
-                    handler: function() {
-                        if (store.currentPage <= 1) {
-                            return;
-                        }
-                        store.loadPage(store.currentPage - 1)
-                    }
-                }, {
-                    text: '>',
-                    scope: this,
-                    handler: function() {
-                        store.loadPage(store.currentPage + 1)
-                    }
-                }]
-            }],
+            },
+            Ext.create('Ext.PagingToolbar', {
+                    store: store,
+                    dock: 'bottom',
+                    displayInfo: true,
+                    emptyMsg: "No assets to display",
+                    afterPageText: '',
+                    beforePageText: ''
+                   
+            })],
             listeners: {
                 selectionchange: function()
                 {
