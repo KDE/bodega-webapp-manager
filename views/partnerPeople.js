@@ -127,7 +127,6 @@
 
                     fieldDefaults: {
                         labelAlign: 'right',
-                        labelWidth: 90,
                         anchor: '100%'
                     },
 
@@ -198,7 +197,7 @@
                         id: fieldName,
                         xtype: 'checkboxfield',
                         name: fieldName,
-                        fieldLabel: roleTypes[i]
+                        fieldLabel: roleTypes[i].replace(/\s/g, '&nbsp;')
                      });
                 }
 
