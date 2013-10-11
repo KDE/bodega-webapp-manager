@@ -69,7 +69,7 @@ function showPartnerCreationForm(store) {
     });
 
     creationFormWindow = Ext.create('widget.window', {
-        title: 'Reject',
+        title: 'Create A New Partner',
         closable: true,
         closeAction: 'hide',
         modal: true,
