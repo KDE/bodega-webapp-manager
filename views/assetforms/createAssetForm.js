@@ -462,16 +462,19 @@ function createAssetForm(extraFields, assetType) {
                         url: '/json/asset/create',
                         waitMsg: 'Creating the asset...',
                         //params: $.param({info: data}),
-                        success: function(fp, o) {
-                            var resp = JSON.parse(response.responseText);
+                        success: function(fp, opts) {
+                            var resp = JSON.parse(opts.response.responseText);
+                            console.log(resp)
                             if (resp.success) {
+                                Ext.MessageBox.alert('', 'Asset uploaded successfully');
                                 window.location.href = "/asset/list/incoming";
                             } else {
                                 Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
                             }
                         },
-                        failure: function(form, action) {
-                            Ext.MessageBox.alert('Error', 'Error in uploading the asset');
+                        failure: function(form, opts) {
+                            var resp = JSON.parse(opts.response.responseText);
+                            Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
                             //window.location.href = "/asset/list/incoming";
                         }
                     });
