@@ -22,28 +22,6 @@ block head
             }
         });
 
-        var from = (new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() - 14));
-        var to = new Date();
-
-        var statsStore = Ext.create('Ext.data.Store', {
-            autoLoad: true,
-            storeId: 'statsStore',
-            fields: ['dateof', 'total'],
-            proxy: {
-                type: 'ajax',
-                url: '/json/stats/assets?' + $.param({"granularity": 'month', "from": from, "to": to}, true),
-                reader: {
-                    type: 'json',
-                    root: 'stats'
-                },
-                listeners: {
-                    exception: function( proxy, response, operation, eOpts ) {
-                        totalAssets.hidden = true;
-                    }
-                }
-            }
-        });
-
         var partnersOverview = Ext.create('Ext.Panel', {
             id: 'partners-view',
             frame: true,
@@ -71,43 +49,12 @@ block head
             })
         });
 
-        var totalAssets = Ext.create('Ext.Panel', {
-            id: 'assets-view',
-            frame: true,
-            colspan: 1,
-            title: 'Store Activity',
-            items: Ext.create('Ext.view.View', {
-                deferEmptyText: false,
-                emptyText: 'No stats available',
-                store: statsStore,
-                tpl: [
-                    '<tpl for=".">',
-                        '<div class="thumb-wrap" id="{name:stripTags}">',
-
-                        '<h4>{dateString:htmlEncode}</h4>',
-                        '<table>',
-                            '<tr><th>Points:</th><td>{total:htmlEncode}</td></tr>',
-                        '</table>',
-
-                        '</div>',
-                    '</tpl>',
-                    '<div class="x-clear"></div>'
-                ],
-                prepareData: function(data) {
-                    Ext.apply(data, {
-                        dateString: Ext.util.Format.date(data.dateof, "M o")
-                    });
-                    return data;
-                },
-            })
-        });
-
         var contactInfo = Ext.create('Ext.Panel', {
             id: 'assetsa-view',
             frame: true,
             colspan: 1,
             html: 'No contact info available',
-            title: 'Contact info',
+            title: 'Warehouse',
             //width: 200,
             //height: 285
         });
@@ -131,9 +78,9 @@ block head
                         return;
                     }
 
-                    var html = '<h4>' + records[0].data.warehouse.name + '</h4>';
+                    var html = '<h4><a href="' + records[0].data.warehouse.url + '">';
+                    html +=  records[0].data.warehouse.name + '</a></h4>';
                     html += '<p>' + records[0].data.warehouse.description + '</p>';
-                    html += '<p><a href="' + records[0].data.warehouse.url + '">' + records[0].data.warehouse.url + '</a></p>';
                     html += '<p>Contact: <a href="' + records[0].data.warehouse.contact + '">' + records[0].data.warehouse.contact + '</a></p>';
 
                     if (records[0].data.store.contact) {
@@ -147,7 +94,53 @@ block head
             }
         });
 
-        
+        var totalAssets = Ext.create('Ext.Panel', {
+            id: 'assets-view',
+            frame: true,
+            colspan: 1,
+            title: 'Store Activity',
+            items: Ext.create('Ext.view.View', {
+                deferEmptyText: false,
+                emptyText: 'No store activity to report',
+                store: statsStore,
+                tpl: [
+                    '<tpl for=".">',
+                        '<div class="thumb-wrap" id="{name:stripTags}">',
+
+                        '<h4>{dateString:htmlEncode}</h4>',
+                        '<table>',
+                            '<tr><th>Points:</th><td>{total:htmlEncode}</td></tr>',
+                        '</table>',
+
+                        '</div>',
+                    '</tpl>',
+                    '<div class="x-clear"></div>'
+                ],
+                prepareData: function(data) {
+                    Ext.apply(data, {
+                        dateString: Ext.util.Format.date(data.dateof, "M o")
+                    });
+                    return data;
+                },
+            })
+        });
+
+        var from = (new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() - 14));
+        var to = new Date();
+
+        var statsStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId: 'statsStore',
+            fields: ['dateof', 'total'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/stats/assets?' + $.param({"granularity": 'month', "from": from, "to": to}, true),
+                reader: {
+                    type: 'json',
+                    root: 'stats'
+                }
+            }
+        });
 
         var layout = Ext.create('Ext.Viewport', {
             overflowY: 'auto',
