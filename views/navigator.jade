@@ -14,7 +14,7 @@ style.
           i.icon-home.icon-white
           |&nbsp;Home
       li.divider-vertical
-      if inDistributorGroup || inPublisherGroup
+      if inPublisherGroup
         li
           a.btn.btn-inverse(href='/asset/list')
             i.icon-th-list.icon-white
@@ -26,12 +26,13 @@ style.
             i.icon-thumbs-up.icon-white
             |&nbsp;Publish
         li.divider-vertical
-      if inDistributorGroup || inPublisherGroup
+      if inDistributorGroup
         li
           a.btn.btn-inverse(href='/store/list')
             i.icon-shopping-cart.icon-white
             |&nbsp;Stores
         li.divider-vertical
+      if inDistributorGroup || inPublisherGroup
         li
           a.btn.btn-inverse(href='/stats/assets')
             i.icon-signal.icon-white
