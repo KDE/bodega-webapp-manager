@@ -1,6 +1,7 @@
- 
+
 * edit the bank account information of a partner, as another action icon in the partner list
-* image fields for account creation coming from the image descriptions for asset ype from the server
+* image fields for account creation coming from the image descriptions for asset type from the server
 * search as you type for assets
 * use the same form for asset creation and edit
+* show ratings for assets
 
