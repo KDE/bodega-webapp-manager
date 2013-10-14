@@ -10,6 +10,7 @@ block head
   include tagList.js
   include assetDetailsEdit.js
   include assetTags.js
+  include assetforms/createAssetForm.js
 
   script
     var store;
@@ -167,7 +168,17 @@ block head
                         icon: '/css/edit.png',
                         tooltip: 'Edit Asset',
                         handler: function(grid, rowIndex, colIndex) {
-                            loadAssetDetails(store.getAt(rowIndex).data, '#{remoteUrl}');
+                            //loadAssetDetails(store.getAt(rowIndex).data, '#{remoteUrl}');
+                            var assetType;
+                            var assetInfo = store.getAt(rowIndex).data;
+                            for (var i = 0; i < assetInfo.tags.length; ++i) {
+
+                                if (assetInfo.tags[i].type == 'assetType') {
+                                    assetType = assetInfo.tags[i].title;
+                                    break;
+                                }
+                            }
+                            createAssetWindow([], assetType, store.getAt(rowIndex).data, '#{remoteUrl}');
                         }
                     }, {
                         icon: '/css/tags.png',

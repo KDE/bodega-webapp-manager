@@ -1,5 +1,6 @@
 
 var assetDetailsForm;
+var assetDetailsWindow;
 
 function createToolBar() {
     return {
@@ -30,20 +31,57 @@ function createToolBar() {
     }
 }
 
-function createPanel(extraFields, title, assetType) {
+function createAssetWindow(extraFields, assetType, assetData, remoteUrl) {
+
+    if (assetDetailsWindow) {
+        assetDetailsWindow.destroy();
+        assetDetailsForm.destroy();
+    }
+
+    assetDetailsWindow = Ext.create('widget.window', {
+        title: 'Details of Assets ' + assetData.name,
+        closable: true,
+        closeAction: 'hide',
+        modal: true,
+        width: '80%',
+        height: '80%',
+        layout: 'fit',
+        bodyStyle: 'padding: 0;',
+        items: [createAssetForm(extraFields, assetType, assetData, remoteUrl)]
+    });
+    //assetDetailsWindow.items.add()
+
+    assetDetailsWindow.show();
+    assetDetailsWindow.restore();
+}
+
+function createPanel(extraFields, title, assetType, assetData, remoteUrl) {
     return Ext.create('Ext.Panel', {
         collapsible: false,
         title: title,
         region: 'center',
         overflowY: 'auto',
         dockedItems: [createToolBar()],
-        items: [createAssetForm(extraFields, assetType)]
+        items: [createAssetForm(extraFields, assetType, assetData, remoteUrl)]
     });
 }
 
-function createAssetForm(extraFields, assetType) {
+function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
     var lastImageField = 0;
     var lastTagIndex = 1;
+
+    var tagsByType = {};
+    if (assetData && assetData.tags) {
+        for (var i = 0; i < assetData.tags.length; ++i) {
+            if (tagsByType[assetData.tags[i].type]) {
+                tagsByType[assetData.tags[i].type].push(assetData.tags[i].title);
+            } else {
+                tagsByType[assetData.tags[i].type] = [assetData.tags[i].title];
+            }
+        }
+    }
+
+    var imagesByType = {};
 
     var ratingStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
@@ -93,6 +131,60 @@ function createAssetForm(extraFields, assetType) {
         }
     });
 
+    function imageUrl(path, type) {
+
+        if (assetData.status != 'published') {
+            return '/json/incomingassetpreview/' + assetData.id + '/' +  encodeURIComponent(path);
+        } else {
+            if (type == 'icon') {
+                var size;
+                if (data.subtype == 'huge') {
+                    size = '512';
+                } else if (data.subtype == 'large') {
+                    size = '256';
+                } else if (data.subtype == 'big') {
+                    size = '128';
+                } else if (data.subtype == 'medium') {
+                    size = '64';
+                } else if (data.subtype == 'small') {
+                    size = '32';
+                } else if (data.subtype == 'tiny') {
+                    size = '22';
+                } 
+                return remoteUrl + '/icons/' + size + '/' + path;
+            } else {
+                return remoteUrl + '/previews/' + path;
+            }
+        }
+    }
+
+    var previewsStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId: 'typeStore',
+        fields:['path', 'type', 'subtype'],
+        proxy: {
+            type: 'ajax',
+            url: assetData ? '/json/asset/' + assetData.id + '?previews=true' + (assetData.status != 'published' ? '&incoming=true' : '') : '',
+            reader: {
+                type: 'json',
+                root: 'asset.previews'
+            }
+        },
+        listeners: {
+            load: function ( store, records, successful, eOpts ) {
+                var imageFields = Ext.getCmp('imageSpecificFields');
+                for (var i in records) {
+                    if (imageFields.items.items.length > 0) {
+                        imagesByType[records[i].data.type+'-'+records[i].data.subtype] = records[i].data.path;
+                        imageFields.items.get('thumbnail-'+records[i].data.type+'-'+records[i].data.subtype).update(
+                            'Current image: <img src="'+imageUrl(records[i].data.path, records[i].data.type)+'" title="'+records[i].data.path+'" width="64" height="64" />'
+                            );
+                    }
+                }
+            }
+        }
+    })
+
     var relatedStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
         storeId: 'relatedStore',
@@ -136,6 +228,7 @@ function createAssetForm(extraFields, assetType) {
                                     }, {
                                         xtype: this.fieldRecord.tags === undefined ? 'textfield' : 'combobox',
                                         name: 'info[tags][' + lastTagIndex + '][title]',
+                                        value: tagsByType[this.fieldRecord.type] ? tagsByType[this.fieldRecord.type][0] : '',
                                         fieldLabel: this.fieldRecord.name,
                                         displayField: 'title',
                                         editable: this.fieldRecord.tags === undefined,
@@ -248,6 +341,10 @@ function createAssetForm(extraFields, assetType) {
 
         var fields = Ext.getCmp('imageSpecificFields');
 
+        fields.add({
+            xtype: 'label',
+            html: '<hr/>'
+        });
         fields.add(form);
         fields.add({
             xtype: 'hidden',
@@ -271,6 +368,15 @@ function createAssetForm(extraFields, assetType) {
             ? '<p style="margin-left:7em">Required size: '+record.props.sizes.min.w+'x'+record.props.sizes.min.h+'</p>'
             :  '<p style="margin-left:7em">Minimum size: '+record.props.sizes.min.w+'x'+record.props.sizes.min.h+'. Maximum size: '+record.props.sizes.max.w+'x'+record.props.sizes.max.h+'</p>'
         });
+
+        fields.add({
+            id: 'thumbnail-'+record.type+'-'+record.subtype,
+            xtype: 'label',
+            html: imagesByType[record.type+'-'+record.subtype] !== undefined 
+             ? 'Current image: <img src="'+imageUrl(imagesByType[record.type+'-'+record.subtype], record.type)+'" title="'+imagesByType[record.type+'-'+record.subtype]+'" width="64" height="64" />'
+             : '',
+        });
+
         fields.doLayout();
         ++lastImageField;
     }
@@ -352,6 +458,7 @@ function createAssetForm(extraFields, assetType) {
             xtype: 'textfield',
             name: 'info[name]',
             fieldLabel: 'Name',
+            value: assetData ? assetData.name : '',
             allowBlank: false
         }, {
             id: 'license',
@@ -362,7 +469,7 @@ function createAssetForm(extraFields, assetType) {
             queryMode: 'local',
             displayField: 'name',
             valueField: 'value',
-            value: '4',
+            value: assetData ? String(assetData.license) : '4',
             store: Ext.create('Ext.data.Store', {
                 fields: ['name', 'value'],
                 data: [{'name': 'GPL', 'value': '1'},
@@ -382,7 +489,7 @@ function createAssetForm(extraFields, assetType) {
             xtype: 'textfield',
             name: 'info[version]',
             fieldLabel: 'Version',
-            value: '1.0',
+            value: assetData ? String(assetData.version) : '1.0',
             allowBlank: false
         }, {
             id: 'asset',
@@ -415,15 +522,21 @@ function createAssetForm(extraFields, assetType) {
             },
             allowBlank: false
         }, {
+            xtype: 'label',
+            hidden: assetData === undefined,
+            html: assetData ? '<p style="margin-left:8em">Current file: <a href="/json/asset/download/' + assetData.id + '">' + assetData.file + '</a></p>' : ''
+        }, {
             id: 'description',
             xtype: 'textareafield',
             name: 'info[description]',
+            value: assetData ? assetData.description : '',
             fieldLabel: 'Description',
             allowBlank: false
         }, {
             id: 'baseprice',
             xtype: 'numberfield',
             name: 'info[baseprice]',
+            value: assetData ? assetData.baseprice : '',
             fieldLabel: 'Base Price',
             minValue: 0,
             value: 0,
@@ -464,7 +577,7 @@ function createAssetForm(extraFields, assetType) {
         }],
 
         buttons: [{
-            text: 'Create',
+            text: assetData ? 'Update' : 'Create',
             handler: function() {
 
                 var formData = this.up('form').getForm();
@@ -483,8 +596,8 @@ function createAssetForm(extraFields, assetType) {
                     }
 
                     formData.submit({
-                        url: '/json/asset/create',
-                        waitMsg: 'Creating the asset...',
+                        url: assetData ? '/json/asset/update' : '/json/asset/create',
+                        waitMsg: assetData ? 'Updating the asset...' : 'Creating the asset...',
                         //params: $.param({info: data}),
                         success: function(fp, opts) {
                             var resp = JSON.parse(opts.response.responseText);
@@ -508,6 +621,12 @@ function createAssetForm(extraFields, assetType) {
                     });
                 }
             }
+        }, {
+            text: 'Cancel',
+            hidden: assetDetailsWindow === null,
+            handler: function() {
+                assetDetailsWindow.hide();
+            }
         }]
     });
 
@@ -517,6 +636,8 @@ function createAssetForm(extraFields, assetType) {
             assetTypeCombo.select(assetType);
             assetTypeCombo.hidden = true;
             relatedStore.proxy.url = '/json/tag/list/forAssetType/' + assetType;
+
+            imagesForAssetStore.proxy.url = '/json/images/forAssetType/' + assetType;
         }
     }
 
