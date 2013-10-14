@@ -43,6 +43,7 @@ function createPanel(extraFields, title, assetType) {
 
 function createAssetForm(extraFields, assetType) {
     var lastImageField = 0;
+    var lastTagIndex = 1;
 
     var ratingStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
@@ -91,8 +92,6 @@ function createAssetForm(extraFields, assetType) {
             }
         }
     });
-
-    var lastTagIndex = 1;
 
     var relatedStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
@@ -183,18 +182,37 @@ function createAssetForm(extraFields, assetType) {
         }
     });
 
-    function addImageField() {
+    var imagesForAssetStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId: 'imagesForAssetStore',
+        fields:['type', 'subtype', 'name', 'props'],
+        proxy: {
+            type: 'ajax',
+            //url: '/json/images/forAssetType/',
+            reader: {
+                type: 'json',
+                root: 'images'
+            }
+        },
+        listeners: {
+            load: function ( store, records, successful, eOpts ) {
+                var record;
+                for (i in records) {
+                    record = records[i];
+                    createImageField(record.data)
+                }
+            }
+        }
+    });
 
+    function createImageField(record) {
         var form = Ext.create('Ext.form.field.File', {
             xtype: 'filefield',
             id: 'file-' + lastImageField,
             name: 'file-' + lastImageField,
             numericalId: lastImageField,
-            fieldLabel: 'Image:',
+            fieldLabel: record.name+':',
             listeners: {
-                change: function( parent, value, eOpts ) {
-                    addImageField();
-                },
                 afterrender: function(el) {
                     var element = el.fileInputEl;
 
@@ -209,14 +227,16 @@ function createAssetForm(extraFields, assetType) {
                         el.config.name = file.name;
                         element.name = file.name;
 
+                        var fields = Ext.getCmp('imageSpecificFields');
+
                         document.getElementById('file-'+el.numericalId+'-button-fileInputEl').name = file.name;
 
-                        assetDetailsForm.add({
+                        fields.add({
                             xtype: 'hidden',
                             name: 'info[previews][' + el.numericalId + '][file]',
                             value: file.name
                         });
-                        assetDetailsForm.add({
+                        fields.add({
                             xtype: 'hidden',
                             name: 'info[previews][' + el.numericalId + '][mimetype]',
                             value: file.type
@@ -226,64 +246,38 @@ function createAssetForm(extraFields, assetType) {
             }
         });
 
-        assetDetailsForm.add(form);
-        var typeCombo = assetDetailsForm.add({
-            xtype: 'combobox',
+        var fields = Ext.getCmp('imageSpecificFields');
+
+        fields.add(form);
+        fields.add({
+            xtype: 'hidden',
             id: 'info[previews][' + lastImageField + '][type]',
             name: 'info[previews][' + lastImageField + '][type]',
-            displayField: 'value',
-            valueField: 'value',
-            value: 'screenshot',
-            fieldLabel: 'Image type',
-            store: Ext.create('Ext.data.Store', {
-                fields: ['value'],
-                data: [{'value': 'screenshot'},
-                    {'value': 'icon'},
-                    {'value': 'cover'}],
-            }),
-            listeners:{
-                'select': function() {
-                    subTypeCombo.store.removeAll();
-                    subTypeCombo.store.loadData(subTypeData(typeCombo.value));
-                    subTypeCombo.setValue(subTypeCombo.store.data.items[0].data.value);
-                }
-            }
+            value: record.type,
         });
 
-        function subTypeData(type) {
-            if (type === 'screenshot') {
-                return [{'value': 'screen1'},
-                        {'value': 'screen2'}];
-            } else if (type === 'icon') {
-                return [{'value': 'tiny'},
-                        {'value': 'small'},
-                        {'value': 'medium'},
-                        {'value': 'big'},
-                        {'value': 'large'},
-                        {'value': 'huge'}];
-            //Assume "cover"
-            } else {
-                return [{'value': 'front'},
-                        {'value': 'back'}];
-            }
-        }
-
-        var subTypeCombo = assetDetailsForm.add({
-            xtype: 'combobox',
+        fields.add({
+            xtype: 'hidden',
             id: 'info[previews][' + lastImageField + '][subtype]',
             name: 'info[previews][' + lastImageField + '][subtype]',
-            displayField: 'value',
-            valueField: 'value',
-            value: 'screen1',
-            fieldLabel: 'Image subtype',
-            store: Ext.create('Ext.data.Store', {
-                fields: ['value'],
-                data: subTypeData('screenshot')
-            })
+            value: record.subtype
         });
-        assetDetailsForm.doLayout();
+
+        fields.add({
+            xtype: 'label',
+            html: (record.props.sizes.min.w == record.props.sizes.max.w &&
+                   record.props.sizes.min.h == record.props.sizes.max.h
+            )
+            ? '<p style="margin-left:7em">Required size: '+record.props.sizes.min.w+'x'+record.props.sizes.min.h+'</p>'
+            :  '<p style="margin-left:7em">Minimum size: '+record.props.sizes.min.w+'x'+record.props.sizes.min.h+'. Maximum size: '+record.props.sizes.max.w+'x'+record.props.sizes.max.h+'</p>'
+        });
+        fields.doLayout();
         ++lastImageField;
     }
+
+
+
+
 
     if (assetDetailsForm) {
         assetDetailsForm.destroy();
@@ -318,10 +312,20 @@ function createAssetForm(extraFields, assetType) {
                     for (var i = fields.items.items.length -1; i >=0; --i) {
                         fields.items.items[i].destroy();
                     }
+                    var imageFields = Ext.getCmp('imageSpecificFields');
+
+                    //get rid of old fields
+                    for (var i = imageFields.items.items.length -1; i >=0; --i) {
+                        imageFields.items.items[i].destroy();
+                    }
                     lastImageField = 1;
+                    lastTagIndex = 0;
 
                     relatedStore.proxy.url = '/json/tag/list/forAssetType/' + records[0].data.title;
                     relatedStore.reload();
+
+                    imagesForAssetStore.proxy.url = '/json/images/forAssetType/' + records[0].data.title;
+                    imagesForAssetStore.reload();
                 }
             }
         }, {
@@ -445,6 +449,18 @@ function createAssetForm(extraFields, assetType) {
                 anchor: '100%'
             },
             items :[]
+        }, {
+            id: 'imageSpecificFields',
+            xtype:'fieldset',
+            collapsible: false,
+            defaultType: 'textfield',
+            layout: 'anchor',
+            border: 0,
+            padding: 0,
+            defaults: {
+                anchor: '100%'
+            },
+            items :[]
         }],
 
         buttons: [{
@@ -454,9 +470,17 @@ function createAssetForm(extraFields, assetType) {
                 var formData = this.up('form').getForm();
                 if (formData.isValid()) {
                     //disable the last file field, since is empty and with invalid data
-                    assetDetailsForm.items.get('file-' + (lastImageField-1)).disable();
-                    assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][type]').disable();
-                    assetDetailsForm.items.get('info[previews][' + (lastImageField-1) + '][subtype]').disable();
+                    var imgUploadForm;
+                    var imageFields = Ext.getCmp('imageSpecificFields');
+                    for (var i = 1; i < lastImageField; ++i) {
+                        imgUploadForm = imageFields.items.get('file-' + i);
+
+                        if (!imgUploadForm.rawValue) {
+                            imgUploadForm.disable();
+                            imageFields.items.get('info[previews][' + i + '][type]').disable();
+                            imageFields.items.get('info[previews][' + i + '][subtype]').disable();
+                        }
+                    }
 
                     formData.submit({
                         url: '/json/asset/create',
@@ -470,11 +494,16 @@ function createAssetForm(extraFields, assetType) {
                             } else {
                                 Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
                             }
+                            for (var i = imageFields.items.items.length -1; i >=0; --i) {
+                                imageFields.items.items[i].enable();
+                            }
                         },
                         failure: function(formData, opts) {
                             var resp = JSON.parse(opts.response.responseText);
                             Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
-                            //window.location.href = "/asset/list/incoming";
+                            for (var i = imageFields.items.items.length -1; i >=0; --i) {
+                                imageFields.items.items[i].enable();
+                            }
                         }
                     });
                 }
@@ -492,8 +521,6 @@ function createAssetForm(extraFields, assetType) {
     }
 
     assetDetailsForm.add(extraFields);
-    addImageField();
-
 
     return assetDetailsForm;
 }

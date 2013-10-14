@@ -1,10 +1,9 @@
 == Current Priority
 * edit the bank account information of a partner, as another action icon in the partner list
-* image fields for account creation coming from the image descriptions for asset type from the server
+* use the same form for asset creation and edit
 
 == Unscheduled
 
-* use the same form for asset creation and edit
 * show ratings for assets
 * show error when trying to add an unpublished asset to a collection
 
