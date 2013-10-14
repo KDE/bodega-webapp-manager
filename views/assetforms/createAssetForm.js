@@ -67,7 +67,7 @@ function createPanel(extraFields, title, assetType, assetData, remoteUrl) {
 }
 
 function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
-    var lastImageField = 0;
+    var lastImageField = 1;
     var lastTagIndex = 1;
 
     var tagsByType = {};
@@ -176,9 +176,12 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                 for (var i in records) {
                     if (imageFields.items.items.length > 0) {
                         imagesByType[records[i].data.type+'-'+records[i].data.subtype] = records[i].data.path;
-                        imageFields.items.get('thumbnail-'+records[i].data.type+'-'+records[i].data.subtype).update(
-                            'Current image: <img src="'+imageUrl(records[i].data.path, records[i].data.type)+'" title="'+records[i].data.path+'" width="64" height="64" />'
-                            );
+                        var thumbnailElement =  imageFields.items.get('thumbnail-'+records[i].data.type+'-'+records[i].data.subtype);
+                        if (thumbnailElement) {
+                            thumbnailElement.update(
+                                'Current image: <img src="'+imageUrl(records[i].data.path, records[i].data.type)+'" title="'+records[i].data.path+'" width="64" height="64" />'
+                                );
+                        }
                     }
                 }
             }
@@ -520,7 +523,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                     });
                 }
             },
-            allowBlank: false
+            allowBlank: assetData ? true : false
         }, {
             xtype: 'label',
             hidden: assetData === undefined,
@@ -581,6 +584,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             handler: function() {
 
                 var formData = this.up('form').getForm();
+
                 if (formData.isValid()) {
                     //disable the last file field, since is empty and with invalid data
                     var imgUploadForm;
@@ -595,8 +599,14 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                         }
                     }
 
+                    //disable the asset file if empty
+                    var uploadAssetField = assetDetailsForm.items.get('asset');
+                    if (!uploadAssetField.value) {
+                        uploadAssetField.disable();
+                    }
+
                     formData.submit({
-                        url: assetData ? '/json/asset/update' : '/json/asset/create',
+                        url: assetData ? '/json/asset/update/'+assetData.id : '/json/asset/create',
                         waitMsg: assetData ? 'Updating the asset...' : 'Creating the asset...',
                         //params: $.param({info: data}),
                         success: function(fp, opts) {
@@ -604,6 +614,10 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                             console.log(resp)
                             if (resp.success) {
                                 window.location.href = "/asset/list/incoming";
+                                if (assetDetailsWindow) {
+                                    assetDetailsWindow.hide();
+                                    assetDetailsWindow.destroy();
+                                }
                             } else {
                                 Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
                             }
