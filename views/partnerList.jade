@@ -7,6 +7,7 @@ block head
 
   include partnerContacts.js
   include partnerPeople.js
+  include partnerBanking.js
   include partnerRequest.js
   include partnerCreationForm.js
 
@@ -42,29 +43,7 @@ block head
                             store.load();
                         }
                     });
-                },
-                /*add: function(store, records, index, eOpts) {
-                    console.log(records)
-                    var record;
-                    for (var i in records) {
-                        record = records[i];
-                        record.raw.name = record.data.name;
-                        record.raw.email = record.data.email;
-                        record.raw.publisher = record.data.publisher;
-                        record.raw.distributor = record.data.distributor;
-                        record.raw.points = record.data.points;
-                        record.raw.links = record.data.links;
-
-                        Ext.Ajax.request({
-                            url: '/json/partner/create',
-                            method: 'POST',
-                            params: $.param(record.raw),
-                            callback: function(response) {
-                                store.load();
-                            }
-                        });
-                    }
-                }*/
+                }
             }
         });
 
@@ -122,6 +101,12 @@ block head
                         tooltip: 'Edit partner people',
                         handler: function(grid, rowIndex, colIndex) {
                             loadPartnerPeople(store.getAt(rowIndex).data);
+                        }
+                    }, {
+                        icon: '/css/bank-account.png',
+                        tooltip: 'Edit banking details people',
+                        handler: function(grid, rowIndex, colIndex) {
+                            loadPartnerBanking(store.getAt(rowIndex).data);
                         }
                     }]
                 }
