@@ -8,7 +8,6 @@ block head
 
   include collectionList.js
   include tagList.js
-  include assetDetailsEdit.js
   include assetTags.js
   include assetforms/createAssetForm.js
 
@@ -168,7 +167,7 @@ block head
                         icon: '/css/edit.png',
                         tooltip: 'Edit Asset',
                         handler: function(grid, rowIndex, colIndex) {
-                            //loadAssetDetails(store.getAt(rowIndex).data, '#{remoteUrl}');
+
                             var assetType;
                             var assetInfo = store.getAt(rowIndex).data;
                             for (var i = 0; i < assetInfo.tags.length; ++i) {
