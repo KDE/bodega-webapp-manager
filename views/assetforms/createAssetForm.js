@@ -47,9 +47,9 @@ function createAssetWindow(extraFields, assetType, assetData, remoteUrl) {
         height: '80%',
         layout: 'fit',
         bodyStyle: 'padding: 0;',
-        items: [createAssetForm(extraFields, assetType, assetData, remoteUrl)]
+        items: []
     });
-    //assetDetailsWindow.items.add()
+    assetDetailsWindow.items.add(createAssetForm(extraFields, assetType, assetData, remoteUrl))
 
     assetDetailsWindow.show();
     assetDetailsWindow.restore();
@@ -613,10 +613,11 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                             var resp = JSON.parse(opts.response.responseText);
                             console.log(resp)
                             if (resp.success) {
-                                window.location.href = "/asset/list/incoming";
                                 if (assetDetailsWindow) {
                                     assetDetailsWindow.hide();
                                     assetDetailsWindow.destroy();
+                                } else {
+                                    window.location.href = "/asset/list/incoming";
                                 }
                             } else {
                                 Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
@@ -637,7 +638,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             }
         }, {
             text: 'Cancel',
-            hidden: assetDetailsWindow === null,
+            hidden: assetDetailsWindow == null,
             handler: function() {
                 assetDetailsWindow.hide();
             }
