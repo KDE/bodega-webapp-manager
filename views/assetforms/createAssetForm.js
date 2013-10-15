@@ -131,24 +131,24 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         }
     });
 
-    function imageUrl(path, type) {
+    function imageUrl(path, type, subtype) {
 
         if (assetData.status != 'published') {
             return '/json/incomingassetpreview/' + assetData.id + '/' +  encodeURIComponent(path);
         } else {
             if (type == 'icon') {
                 var size;
-                if (data.subtype == 'huge') {
+                if (subtype == 'huge') {
                     size = '512';
-                } else if (data.subtype == 'large') {
+                } else if (subtype == 'large') {
                     size = '256';
-                } else if (data.subtype == 'big') {
+                } else if (subtype == 'big') {
                     size = '128';
-                } else if (data.subtype == 'medium') {
+                } else if (subtype == 'medium') {
                     size = '64';
-                } else if (data.subtype == 'small') {
+                } else if (subtype == 'small') {
                     size = '32';
-                } else if (data.subtype == 'tiny') {
+                } else if (subtype == 'tiny') {
                     size = '22';
                 } 
                 return remoteUrl + '/icons/' + size + '/' + path;
@@ -177,10 +177,11 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                     if (imageFields.items.items.length > 0) {
                         imagesByType[records[i].data.type+'-'+records[i].data.subtype] = records[i].data.path;
                         var thumbnailElement =  imageFields.items.get('thumbnail-'+records[i].data.type+'-'+records[i].data.subtype);
+
                         if (thumbnailElement) {
                             thumbnailElement.update(
-                                'Current image: <img src="'+imageUrl(records[i].data.path, records[i].data.type)+'" title="'+records[i].data.path+'" width="64" height="64" />'
-                                );
+                                'Current image: <img src="'+imageUrl(records[i].data.path, records[i].data.type, records[i].data.subtype)+'" title="'+records[i].data.path+'" width="64" height="64" />'
+                             );
                         }
                     }
                 }
@@ -344,10 +345,18 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
 
         var fields = Ext.getCmp('imageSpecificFields');
 
+
         fields.add({
             xtype: 'label',
             html: '<hr/>'
         });
+
+        if (record.type == 'icon' && record.subtype == 'huge') {
+            fields.add({
+                xtype: 'label',
+                text: 'Smaller icons will be resized and generated from the "huge" one, you can always replace them in any moment.'
+            });
+        }
         fields.add(form);
         fields.add({
             xtype: 'hidden',
@@ -376,7 +385,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             id: 'thumbnail-'+record.type+'-'+record.subtype,
             xtype: 'label',
             html: imagesByType[record.type+'-'+record.subtype] !== undefined 
-             ? 'Current image: <img src="'+imageUrl(imagesByType[record.type+'-'+record.subtype], record.type)+'" title="'+imagesByType[record.type+'-'+record.subtype]+'" width="64" height="64" />'
+             ? 'Current image: <img src="'+imageUrl(imagesByType[record.type+'-'+record.subtype], record.type, record.subtype)+'" title="'+imagesByType[record.type+'-'+record.subtype]+'" width="64" height="64" />'
              : '',
         });
 
