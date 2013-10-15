@@ -111,8 +111,10 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         },
         listeners: {
             load: function ( store, records, successful, eOpts ) {
-                currentPartner = records[0].internalId;
-                partnerStore.combo.setValue(currentPartner);
+                if (!assetData || assetData.partner === undefined) {
+                    currentPartner = records[0].internalId;
+                    partnerStore.combo.setValue(currentPartner);
+                }
             }
         }
     });
@@ -395,7 +397,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
 
 
 
-
+ console.log(assetData)
 
     if (assetDetailsForm) {
         assetDetailsForm.destroy();
@@ -455,7 +457,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             displayField: 'name',
             valueField: 'id',
             width: 120,
-            //value: '#{listType}',
+            value: (assetData && assetData.partner !== undefined) ? assetData.partner : '',
             store: partnerStore,
             listeners: {
                 'select': function(combo, record, index) {
