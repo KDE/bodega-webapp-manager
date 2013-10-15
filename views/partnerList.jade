@@ -58,6 +58,17 @@ block head
             }
         });
 
+        var bankActionRenderer = function(value,meta,record,rowIx,ColIx, store) {
+            console.log(record)
+            var users = record.data.people;
+            for (var i in users) {
+                if (users[i].email == '#{userName}' && users[i].roles.indexOf('Account Manager') != -1) {
+                    return 'x-grid-center-icon';
+                }
+            }
+            return 'x-hide-display';
+        };
+
         var view = Ext.create('Ext.grid.Panel', {
             store: Ext.data.StoreManager.lookup('bodegaStore'),
             selType: 'checkboxmodel',
@@ -89,7 +100,7 @@ block head
                 { header: 'Points', dataIndex: 'points', field: {xtype: 'numberfield', allowBlank: false}},
                 {
                     xtype: 'actioncolumn',
-                    width: 50,
+                    width: 80,
                     items: [{
                         icon: '/css/contact.png',
                         tooltip: 'Edit contacts',
@@ -107,7 +118,8 @@ block head
                         tooltip: 'Edit banking details people',
                         handler: function(grid, rowIndex, colIndex) {
                             loadPartnerBanking(store.getAt(rowIndex).data);
-                        }
+                        },
+                        getClass: bankActionRenderer
                     }]
                 }
             ],
