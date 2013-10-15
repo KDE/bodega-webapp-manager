@@ -182,7 +182,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
 
                         if (thumbnailElement) {
                             thumbnailElement.update(
-                                'Current image: <img src="'+imageUrl(records[i].data.path, records[i].data.type, records[i].data.subtype)+'" title="'+records[i].data.path+'" width="64" height="64" />'
+                                'Current image: <a href="'+imageUrl(records[i].data.path, records[i].data.type, records[i].data.subtype)+'" target="_blank"><img src="'+imageUrl(records[i].data.path, records[i].data.type, records[i].data.subtype)+'" title="'+records[i].data.path+'" width="64" height="64" /></a>'
                              );
                         }
                     }
@@ -387,7 +387,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             id: 'thumbnail-'+record.type+'-'+record.subtype,
             xtype: 'label',
             html: imagesByType[record.type+'-'+record.subtype] !== undefined 
-             ? 'Current image: <img src="'+imageUrl(imagesByType[record.type+'-'+record.subtype], record.type, record.subtype)+'" title="'+imagesByType[record.type+'-'+record.subtype]+'" width="64" height="64" />'
+             ? 'Current image: <a href="'+imageUrl(imagesByType[record.type+'-'+record.subtype], record.type, record.subtype)+'" target="_blank"><img src="'+imageUrl(imagesByType[record.type+'-'+record.subtype], record.type, record.subtype)+'" title="'+imagesByType[record.type+'-'+record.subtype]+'" width="64" height="64" /></a>'
              : '',
         });
 
