@@ -577,6 +577,18 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             },
             items :[]
         }, {
+            id: 'extraFields',
+            xtype:'fieldset',
+            collapsible: false,
+            defaultType: 'textfield',
+            layout: 'anchor',
+            border: 0,
+            padding: 0,
+            defaults: {
+                anchor: '100%'
+            },
+            items :[]
+        }, {
             id: 'imageSpecificFields',
             xtype:'fieldset',
             collapsible: false,
@@ -667,7 +679,8 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         }
     }
 
-    assetDetailsForm.add(extraFields);
+    var extraFieldsParent = Ext.getCmp('extraFields');
+    extraFieldsParent.add(extraFields);
 
     return assetDetailsForm;
 }

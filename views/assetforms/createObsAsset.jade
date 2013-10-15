@@ -35,10 +35,13 @@ block head
 
         var beforeaction = function(extForm, action, eOpts) {
 
-            var pkgName = form.items.get('obsInfo[pkgName]').getValue();
+            var extraFieldsParent = Ext.getCmp('extraFields');
+            var imageSpecificFields = Ext.getCmp('imageSpecificFields');
+
+            var pkgName = extraFieldsParent.items.get('obsInfo[pkgName]').getValue();
             var version = form.items.get('version').getValue();
-            var arch = form.items.get('obsInfo[arch]').getValue();
-            var repoName = form.items.get('obsInfo[repoName]').getValue();
+            var arch = extraFieldsParent.items.get('obsInfo[arch]').getValue();
+            var repoName = extraFieldsParent.items.get('obsInfo[repoName]').getValue();
 
             var obsFileParts = [pkgName + ';' + version + ';' + arch + ';' + repoName];
             var obsFileBlob = new Blob(obsFileParts, { "type" : "text\/plain" });
@@ -46,11 +49,20 @@ block head
 
             formData = new FormData(),
             request = new XMLHttpRequest();
+
             for (var i in extForm.getFieldValues()) {
                 formData.append(i, extForm.getFieldValues()[i]);
             }
             formData.append('info[file]', pkgName + '.desc');
             formData.append('asset', obsFileBlob, pkgName + '.desc');
+
+            var imgUploadFields = imageSpecificFields.items.filterBy(function(f) {
+                return f.value && f.xtype == 'filefield';
+            });
+            for (var f in imgUploadFields.items) {
+                formData.append(imgUploadFields.items[f].name, imgUploadFields.items[f].fileInputEl.dom.files[0]);
+            }
+
             request.open(
                         "POST",
                         "/json/asset/create",
