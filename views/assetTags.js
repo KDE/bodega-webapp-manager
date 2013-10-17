@@ -69,7 +69,7 @@ function loadItemTags(itemData, itemType) {
                         var data = tagsStore.getAt(rowIndex).data;
 
                         var removedIndexes = new Array();
-                        for (var i = 0; i < itemData.tags.length; ++i) {
+                        for (var i = itemData.tags.length-1; i >= 0; --i) {
                             if (data.id === itemData.tags[i].id) {
                                 itemData.tags.splice(i, 1);
                                 removedIndexes.push(i);
