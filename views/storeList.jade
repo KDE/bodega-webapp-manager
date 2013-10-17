@@ -115,7 +115,7 @@ block head
                     scope: this,
                     handler: function(){
                         // Create a model instance
-                        Ext.MessageBox.prompt('Store ID', 'Enter an identifier name for this store below. Note that the name must be unique in the warehouse as this ID will be used to know which store to show when people authenticate using a Bodega client.',
+                        Ext.MessageBox.prompt('Store ID', 'Enter an identifier name for this store below. Note that the name must be unique in the warehouse as this name will be used to know which store to show when people authenticate using a Bodega client.',
                             function (btn, text) {
                                 if (btn == 'ok') {
                                     var rec = {
