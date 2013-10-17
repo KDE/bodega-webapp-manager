@@ -5,6 +5,8 @@ block head
   link(rel="stylesheet", href="/css/ext-all.css")
   script(src='/js/ext-all.js')
 
+  include termsOfService.js
+
   script.
     Ext.onReady(function() {
 
@@ -82,6 +84,7 @@ block head
                     html +=  records[0].data.warehouse.name + '</a></h4>';
                     html += '<p>' + records[0].data.warehouse.description + '</p>';
                     html += '<p>Contact: <a href="' + records[0].data.warehouse.contact + '">' + records[0].data.warehouse.contact + '</a></p>';
+                    html += '<p><a href="javascript:showTermsOfService()">Terms of service</a></p>';
 
                     if (records[0].data.store.contact) {
                         html += '<h4>Store ' + records[0].data.store.name + '</h4>';

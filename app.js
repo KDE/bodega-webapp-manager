@@ -43,6 +43,7 @@ app.use(express.logger('dev'));
 
 //app.use(express.methodOverride());
 app.use('/css', express.static(__dirname + '/public/css'));
+app.use('/html', express.static(__dirname + '/public/html'));
 app.use('/js', express.static(__dirname + '/public/js'));
 app.use('/js/validator', express.static(__dirname + '/node_modules/validator/'));
 
