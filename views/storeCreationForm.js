@@ -9,6 +9,27 @@ function showStoreCreationForm(dataStore) {
         creationFormWindow.destroy();
     }
 
+    var partnerStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId: 'typeStore',
+            fields:['id', 'name'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/partner/list',
+                reader: {
+                    type: 'json',
+                    root: 'partners'
+                }
+            },
+            listeners: {
+                load: function ( store, records, successful, eOpts ) {
+                    currentPartner = records[0].internalId;
+                    partnerStore.combo.setValue(currentPartner);
+                    refreshAssetsStore();
+                }
+            }
+        });
+
     creationFormForm = Ext.create('Ext.form.Panel', {
         bodyPadding: 5,
 
@@ -27,6 +48,21 @@ function showStoreCreationForm(dataStore) {
             name: 'id',
             fieldLabel: 'ID',
             allowBlank: false
+        }, {
+            xtype: 'combobox',
+            editable: false,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'id',
+            name: 'partner',
+            id: 'partner',
+            fieldLabel: 'Partner',
+            store: partnerStore,
+            listeners: {
+                afterrender: function (combo, eopts) {
+                    partnerStore.combo = combo;
+                }
+            }
         }, {
             id: 'name',
             xtype: 'textfield',
