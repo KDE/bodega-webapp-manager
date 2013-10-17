@@ -5,7 +5,7 @@ block head
 block body
   .title
     h1(align="center") Create a new #{network} account
-    script
+    script.
       function validateForm() {
         if ($('#password').val() !== $('#password2').val()) {
             $('#password').attr('placeholder', 'Your passwords does not match.');
