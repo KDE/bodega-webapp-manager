@@ -68,9 +68,11 @@ function loadItemTags(itemData, itemType) {
                     handler: function(grid, rowIndex, colIndex) {
                         var data = tagsStore.getAt(rowIndex).data;
 
+                        var removedIndexes = new Array();
                         for (var i = 0; i < itemData.tags.length; ++i) {
                             if (data.id === itemData.tags[i].id) {
                                 itemData.tags.splice(i, 1);
+                                removedIndexes.push(i);
                             }
                         }
 
@@ -80,11 +82,8 @@ function loadItemTags(itemData, itemType) {
                                 method: 'POST',
                                 params: $.param({info: itemData}),
                                 callback: function(response) {
-                                    tagsStore.removeAll();
-                                    //console.log(itemData.tags)
-                                    for (var i = 0; i < itemData.tags.length; ++i) {
-                                        tagsStore.insert(0, itemData.tags[i]);
-                                    }
+                                    tagsStore.remove(removedIndexes);
+                                    tagsStore.reload();
                                 }
                             });
                         } else {
@@ -97,11 +96,8 @@ function loadItemTags(itemData, itemType) {
                                 method: 'POST',
                                 params: $.param({'tags': tags}),
                                 callback: function(response) {
-                                    tagsStore.removeAll();
-                                    //console.log(itemData.tags)
-                                    for (var i = 0; i < itemData.tags.length; ++i) {
-                                        tagsStore.insert(0, itemData.tags[i]);
-                                    }
+                                    tagsStore.remove(removedIndexes);
+                                    tagsStore.reload();
                                 }
                             });
                         }
@@ -143,6 +139,7 @@ function loadItemTags(itemData, itemType) {
                             params: $.param({'tags': tags}),
                         });
                     }
+                    tagsStore.loadData(data.records, true);
                 }
             }
         },
@@ -156,14 +153,6 @@ function loadItemTags(itemData, itemType) {
             }]
         }],
         listeners: {
-            selectionchange: function() {
-                var s = itemTagsView.getSelectionModel().getSelection();
-                if (s.length > 0) {
-                    itemTagsView.dockedItems.get(1).items.get(0).show();
-                } else {
-                    itemTagsView.dockedItems.get(1).items.get(0).hide();
-                }
-            },
             itemremove: function(record, index, eOpts) {
                 for (var i = 0; i < data.records.length; ++i) {
                     for (var j = 0; j < itemData.tags.length; ++j) {
