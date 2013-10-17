@@ -30,7 +30,7 @@ function showStoreCreationForm(dataStore) {
         }, {
             id: 'name',
             xtype: 'textfield',
-            name: 'nme',
+            name: 'name',
             fieldLabel: 'Name',
             allowBlank: false
         }, {
@@ -40,21 +40,21 @@ function showStoreCreationForm(dataStore) {
             fieldLabel: 'Description',
             allowBlank: false
         }, {
-            id: 'markups[min]',
+            id: 'minMarkup',
             xtype: 'numberfield',
-            name: 'markups[min]',
+            name: 'minMarkup',
             fieldLabel: 'Min Markup',
             allowBlank: false
         }, {
-            id: 'markups[max]',
+            id: 'maxMarkup',
             xtype: 'numberfield',
-            name: 'markups[max]',
+            name: 'maxMarkup',
             fieldLabel: 'Max Markup',
             allowBlank: false
         }, {
-            id: 'markups[markup]',
+            id: 'markup',
             xtype: 'numberfield',
-            name: 'markups[markup]',
+            name: 'markup',
             fieldLabel: 'Markup',
             allowBlank: false
         }],
@@ -74,6 +74,7 @@ function showStoreCreationForm(dataStore) {
                             if (resp.success) {
                                 creationFormWindow.hide();
                                 Ext.MessageBox.alert('', 'Store created successfully.');
+                                dataStore.reload();
                                 dataStore.reload();
                             } else {
                                 console.log(resp);
