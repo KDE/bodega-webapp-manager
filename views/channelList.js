@@ -81,8 +81,8 @@
                             method: 'POST',
                             params: $.param(record.raw),
                             callback: function(response) {
-                                channelStore.getRootNode().removeAll();
-                                channelStore.load();
+                                channelStore.reload();
+                                channelStore.reload();
                             }
                         });
                     },
@@ -100,8 +100,8 @@
                             method: 'POST',
                             params: $.param(data),
                             callback: function(response) {
-                                channelStore.getRootNode().removeAll();
-                                channelStore.load();
+                                channelStore.reload();
+                                channelStore.reload();
                             }
                         });
                     }
@@ -166,7 +166,7 @@
                         scope: this,
                         handler: function() {
                             channelStore.getRootNode().removeAll();
-                            channelStore.load();
+                            channelStore.reload();
                         }
                     }, {
                         xtype: 'button',
