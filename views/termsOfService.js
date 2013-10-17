@@ -2,7 +2,7 @@
 var tosWindow;
 var tosView;
 
-function showTermsOfService() {
+function showTermsOfService(cb, partnerId, partnerName, type) {
     if (!tosWindow) {
         tosView = Ext.create('Ext.form.Panel', {
             bodyPadding: 5,
@@ -36,6 +36,7 @@ function showTermsOfService() {
                 disabled: true,
                 handler: function() {
                     tosWindow.hide();
+                    cb(partnerId, partnerName, type);
                 }
             }, {
                 id: 'rejectButton',

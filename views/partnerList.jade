@@ -10,6 +10,7 @@ block head
   include partnerBanking.js
   include partnerRequest.js
   include partnerCreationForm.js
+  include termsOfService.js
 
   script
     Ext.onReady(function() {
@@ -83,7 +84,7 @@ block head
                         if (value) {
                             return Ext.String.format('Yes');
                         } else {
-                            return Ext.String.format('<a onClick="loadPartnerRequest(\''+record.record.data.id+'\', \''+record.record.data.name+'\', \'publisher\')">Request</a>', value);
+                            return Ext.String.format('<a onClick="showTermsOfService(loadPartnerRequest, \''+record.record.data.id+'\', \''+record.record.data.name+'\', \'publisher\')">Request</a>', value);
                         }
                     }
                 }, {
@@ -93,7 +94,7 @@ block head
                         if (value) {
                             return Ext.String.format('Yes');
                         } else {
-                            return Ext.String.format('<a onClick="loadPartnerRequest(\''+record.record.data.id+'\', \''+record.record.data.name+'\', \'distributor\')">Request</a>', value);
+                            return Ext.String.format('<a onClick="showTermsOfService(loadPartnerRequest, \''+record.record.data.id+'\', \''+record.record.data.name+'\', \'distributor\')">Request</a>', value);
                         }
                     }
                 },
