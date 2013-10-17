@@ -6,7 +6,7 @@
         "port": 3000,
         "api": "/bodega/v1/json/",
         "store": "null",
-        "network": "Make Play Live"
+        "name": "Make Play Live"
     },
     "client": {
         "port": 3002,
