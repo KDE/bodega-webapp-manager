@@ -3,10 +3,10 @@ block head
     title Registration Confirm
 block body
     .page-header
-      h1(align="center") Bodega #{network} Addon Store
+      h1(align="center") A new #{network} account has been created for you!
       if (success === true)
         .alert.alert-success.information
-          | A verification code has been send to your email account
+          | A verification code has been sent to you by email. Please check your email and visit the link provided in it to activate your account.
       else
         .alert.alert-error
           | #{message}

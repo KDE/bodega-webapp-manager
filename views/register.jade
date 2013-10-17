@@ -1,10 +1,10 @@
 extends layout
 block head
-  title Create your own #{network} Account
+  title Create a new #{network} account
   script(src='/js/validator/validator-min.js');
 block body
   .title
-    h1(align="center") Create your own #{network} Account
+    h1(align="center") Create a new #{network} account
     script
       function validateForm() {
         if ($('#password').val() !== $('#password2').val()) {
@@ -24,8 +24,8 @@ block body
         }
 
         if ($('#password').val().length < 8 || $('#password2').val() < 8 ) {
-            $('#password').attr('placeholder', 'Your password must be at least 8 digits.');
-            $('#password2').attr('placeholder', 'Your password must be at least 8 digits.');
+            $('#password').attr('placeholder', 'Your password must be at least 8 characters long.');
+            $('#password2').attr('placeholder', 'Your password must be at least 8 characters long.');
             $('#field-control').addClass('error');
             $('#help-password').text('Your password must be at least 8 digits');
             return false;
