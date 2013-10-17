@@ -9,13 +9,14 @@ block head
   include tagList.js
   include assetTags.js
   include channelList.js
+  include storeCreationForm.js
 
   script.
     Ext.onReady(function() {
         var store = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId:'bodegaStore',
-            fields:['id', 'name', 'desc', 'markups.min', 'markups.max', 'markups.markup', 'markups.flat'],
+            fields:['id', 'name', 'desc', 'markups.min', 'markups.max', 'markups.markup'],
             proxy: {
                 type: 'ajax',
                 url: '/json/store/list',
@@ -40,7 +41,6 @@ block head
                 update: function(store, record, operation, eOpts ) {
                     record.raw.name = record.data.name;
                     record.raw.desc = record.data.desc;
-                    record.raw.flatmarkup = record.data['markups.flat'];
                     record.raw.markup = record.data['markups.markup'];
                     record.raw.maxmarkup = record.data['markups.max'];
                     record.raw.minmarkup = record.data['markups.min'];
@@ -53,28 +53,6 @@ block head
                             store.load();
                         }
                     });
-                },
-                add: function(store, records, index, eOpts) {
-                    //console.log(records)
-                    var record;
-                    for (var i in records) {
-                        record = records[i];
-                        record.raw.name = record.data.name;
-                        record.raw.desc = record.data.desc;
-                        record.raw.flatmarkup = record.data['markups.flat'];
-                        record.raw.markup = record.data['markups.markup'];
-                        record.raw.maxmarkup = record.data['markups.max'];
-                        record.raw.minmarkup = record.data['markups.min'];
-
-                        Ext.Ajax.request({
-                            url: '/json/store/create',
-                            method: 'POST',
-                            params: $.param(record.raw),
-                            callback: function(response) {
-                                store.load();
-                            }
-                        });
-                    }
                 }
             }
             
@@ -94,7 +72,6 @@ block head
                 { header: 'Min markup', dataIndex: 'markups.min', field: {allowBlank: false}},
                 { header: 'Max markup', dataIndex: 'markups.max', field: {xtype: 'numberfield', allowBlank: false}},
                 { header: 'Markup', dataIndex: 'markups.markup', field: {xtype: 'numberfield', allowBlank: false}},
-                { header: 'Flat', dataIndex: 'markups.flat', xtype: 'checkcolumn'},
                 {
                     xtype: 'actioncolumn',
                     width: 50,
@@ -114,27 +91,7 @@ block head
                     text: 'New Store',
                     scope: this,
                     handler: function(){
-                        // Create a model instance
-                        Ext.MessageBox.prompt('Store ID', 'Enter an identifier name for this store below. Note that the name must be unique in the warehouse as this name will be used to know which store to show when people authenticate using a Bodega client.',
-                            function (btn, text) {
-                                if (btn == 'ok') {
-                                    var rec = {
-                                        id: text,
-                                        name: 'New Store',
-                                        desc: 'New Store',
-                                        'markups.min': 0,
-                                        'markups.max': 0,
-                                        'markups.markup': 0,
-                                        'markups.flat' : true
-                                    };
-
-                                    store.insert(0, rec);
-                                    cellEditing.startEditByPosition({
-                                        row: 0, 
-                                        column: 0
-                                    });
-                                }
-                            });
+                        showStoreCreationForm(store);
                     }
                 }, 'Search', {
                     xtype: 'textfield',

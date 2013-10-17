@@ -5,6 +5,7 @@ var creationFormForm;
 function showPartnerCreationForm(store) {
 
     if (creationFormWindow) {
+        creationFormForm.destroy();
         creationFormWindow.destroy();
     }
 
