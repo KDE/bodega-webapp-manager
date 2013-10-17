@@ -50,7 +50,8 @@ block head
                         method: 'POST',
                         params: $.param(record.raw),
                         callback: function(response) {
-                            store.load();
+                            store.reload();
+                            store.reload();
                         }
                     });
                 }
