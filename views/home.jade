@@ -11,7 +11,7 @@ block head
         var partnerStore = Ext.create('Ext.data.Store', {
             autoLoad: true,
             storeId: 'partnerStore',
-            fields: ['id', 'name', 'email', 'publisher', 'distributor', 'points', 'people', 'links', 'assets', 'downloads', 'purchases', 'stores'],
+            fields: ['id', 'name', 'email', 'publisher', 'distributor', 'points', 'people', 'links', 'assets', 'downloads', 'purchases', 'stores', 'storeassets'],
             proxy: {
                 type: 'ajax',
                 url: '/json/partner/list',
@@ -34,8 +34,8 @@ block head
                         '<div class="thumb-wrap" id="{name:stripTags}">',
                         '<h4>{name:htmlEncode}</h4>',
                         '<table>',
-                            '<tr><th>Stores:</th><td>{stores:htmlEncode}</td></tr>',
-                            '<tr><th>Total assets:</th><td>{assets:htmlEncode}</td></tr>',
+                            '<tr><th>Assets:</th><td>{assets:htmlEncode}</td></tr>',
+                            '<tr><th>Stores:</th><td>{stores:htmlEncode} ({storeassets:htmlEncode} assets)</td></tr>',
                             '<tr><th>Points earned:</th><td>{points:htmlEncode}</td></tr>',
                             '<tr><th>Downloads:</th><td>{downloads:htmlEncode}</td></tr>',
                             '<tr><th>Purchases:</th><td>{purchases:htmlEncode}</td></tr>',
