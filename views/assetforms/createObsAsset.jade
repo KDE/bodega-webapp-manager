@@ -28,6 +28,14 @@ block head
                 name: 'obsInfo[repoName]',
                 fieldLabel: 'Repository name',
                 allowBlank: false
+            }, {
+                xtype: 'hidden',
+                name: 'info[tags][100][type]',
+                value: 'mimetype'
+            }, {
+                xtype: 'hidden',
+                name: 'info[tags][100][title]',
+                value: 'application/x-rpm'
             }];
 
 
@@ -43,7 +51,7 @@ block head
             var arch = extraFieldsParent.items.get('obsInfo[arch]').getValue();
             var repoName = extraFieldsParent.items.get('obsInfo[repoName]').getValue();
 
-            var obsFileParts = [pkgName + ';' + version + ';' + arch + ';' + repoName];
+            var obsFileParts = ['packageId="' + pkgName + ';' + version + ';' + arch + ';' + repoName + '"'];
             var obsFileBlob = new Blob(obsFileParts, { "type" : "text\/plain" });
 
 

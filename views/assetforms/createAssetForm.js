@@ -330,12 +330,23 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
 
                         document.getElementById('file-'+el.numericalId+'-button-fileInputEl').name = file.name;
 
+                        //get rid of info of old files
+                        var previewFileField = Ext.getCmp('preview'+el.numericalId+'FileField');
+                        var previewMimeField = Ext.getCmp('preview'+el.numericalId+'MimeField');
+                        if (previewFileField) {
+                            previewFileField.destroy();
+                        }
+                        if (previewMimeField) {
+                            previewMimeField.destroy();
+                        }
                         fields.add({
+                            id: 'preview'+el.numericalId+'FileField',
                             xtype: 'hidden',
                             name: 'info[previews][' + el.numericalId + '][file]',
                             value: file.name
                         });
                         fields.add({
+                            id: 'preview'+el.numericalId+'MimeField',
                             xtype: 'hidden',
                             name: 'info[previews][' + el.numericalId + '][mimetype]',
                             value: file.type
@@ -439,7 +450,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                         imageFields.items.items[i].destroy();
                     }
                     lastImageField = 1;
-                    lastTagIndex = 0;
+                    lastTagIndex = 1;
 
                     relatedStore.proxy.url = '/json/tag/list/forAssetType/' + records[0].data.title;
                     relatedStore.reload();
@@ -521,16 +532,54 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                             return;
                         }
 
+                        //get rid of info of old files
+                        var assetFileName = Ext.getCmp('assetFileName');
+                        var assetFileSize = Ext.getCmp('assetFileSize');
+                        if (assetFileName) {
+                            assetFileName.destroy();
+                        }
+                        if (assetFileSize) {
+                            assetFileSize.destroy();
+                        }
                         assetDetailsForm.add({
+                            id: 'assetFileName',
                             xtype: 'hidden',
                             name: 'info[file]',
                             value: file.name
                         });
                         assetDetailsForm.add({
+                            id: 'assetFileSize',
                             xtype: 'hidden',
                             name: 'info[size]',
                             value: file.size
                         });
+
+                        //get rid of tag type of old files
+                        var tagTypeField = Ext.getCmp('assetFileMimeTypeTagType');
+                        var tagTitleField = Ext.getCmp('assetFileMimeTypeTagTitle');
+                        if (tagTypeField) {
+                            tagTypeField.destroy();
+                        }
+                        if (tagTitleField) {
+                            tagTitleField.destroy();
+                        }
+
+                        if (file.type == 'image/png' || file.type == 'image/jpeg') {
+                            assetDetailsForm.add({
+                                id: 'assetFileMimeTypeTagType',
+                                xtype: 'hidden',
+                                name: 'info[tags][' + lastTagIndex + '][type]',
+                                value: 'mimetype'
+                            });
+                            ++lastTagIndex;
+                            assetDetailsForm.add({
+                                id: 'assetFileMimeTypeTagTitle',
+                                xtype: 'hidden',
+                                name: 'info[tags][' + lastTagIndex + '][title]',
+                                value: file.type
+                            });
+                            ++lastTagIndex;
+                        }
                     });
                 }
             },
