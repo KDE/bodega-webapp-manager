@@ -27,7 +27,7 @@ block head
         query: '',
         run: function () {
             if (assetSearchTask.query && assetSearchTask.query.length > 3) {
-                store.proxy.url = '/json/asset/search/' + currentPartner + '/' + assetSearchTask.query + '/' + currentType;
+                store.proxy.url = '/json/asset/list/' + currentPartner + '/' + currentType + '?query=*' + assetSearchTask.query + '*';
                 store.reload();
             } else {
                 refreshAssetsStore();
