@@ -3,11 +3,12 @@ block head
     title Registration Confirm
 block body
     .page-header
-      h1(align="center") A new #{network} account has been created for you!
       if (success === true)
+        h1(align="center") A new #{network} account has been created for you!
         .alert.alert-success.information
           | A verification code has been sent to you by email. Please check your email and visit the link provided in it to activate your account.
       else
+        h1(align="center") An error occurred!
         .alert.alert-error
           | #{message}
 
