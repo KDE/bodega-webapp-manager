@@ -16,7 +16,7 @@ function showTermsOfService(cb, partnerId, partnerName, type) {
 
             items: [ {
                 xtype: 'label',
-                
+
                 loader: {
                     url: '/html/TermsOfService.html',
                     autoLoad: true
@@ -25,6 +25,7 @@ function showTermsOfService(cb, partnerId, partnerName, type) {
 
             buttons: [{
                 id: 'acceptBox',
+                hidden: !cb,
                 xtype: 'checkbox',
                 boxLabel: 'I agree to the terms of service',
                 handler: function () {
@@ -32,6 +33,7 @@ function showTermsOfService(cb, partnerId, partnerName, type) {
                 }
             }, {
                 id: 'acceptButton',
+                hidden: !cb,
                 text: 'Accept',
                 disabled: true,
                 handler: function() {
@@ -40,6 +42,7 @@ function showTermsOfService(cb, partnerId, partnerName, type) {
                 }
             }, {
                 id: 'rejectButton',
+                hidden: !cb,
                 text: 'Reject',
                 handler: function() {
                     tosWindow.hide();
@@ -49,7 +52,7 @@ function showTermsOfService(cb, partnerId, partnerName, type) {
 
         tosWindow = Ext.create('widget.window', {
             title: 'Terms of service',
-            closable: false,
+            closable: !cb,
             modal: true,
             //animateTarget: this,
             width: '80%',

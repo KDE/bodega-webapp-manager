@@ -4,6 +4,7 @@ block head
   title Your assets
   link(rel="stylesheet", href="/css/ext-all.css")
   script(src='/js/ext-all.js')
+  include termsOfService.js
 
   script.
     Ext.onReady(function() {
@@ -89,6 +90,7 @@ block head
                         html += '<p>Contact: <a href="' + records[0].data.store.contact + '">' + records[0].data.store.contact + '</a></p>';
                     }
 
+                    html += '<p><a href="javascript:return false;" onClick="showTermsOfService()">Terms of Service</a></p>';
                     contactInfo.update(html);
                 }
             }
