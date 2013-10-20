@@ -17,6 +17,10 @@ function showTermsOfService(cb, partnerId, partnerName, type) {
             items: [ {
                 xtype: 'label',
 
+                style: {
+                    cursor: 'auto'
+                },
+
                 loader: {
                     url: '/html/TermsOfService.html',
                     autoLoad: true
