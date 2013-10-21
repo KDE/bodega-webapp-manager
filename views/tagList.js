@@ -76,18 +76,21 @@ function createTagList(config) {
     var tagSearchTask = runner.newTask({
         query: '',
         run: function () {
-            if (tagSearchTask.query && tagSearchTask.query.length > 3) {
-                tagStore.proxy.url = '/json/tag/list?query='+tagSearchTask.query;
-                tagStore.reload();
-            } else {
-                tagStore.proxy.url = '/json/tag/list';
+            var newUrl = '/json/tag/list';
+
+            if (tagSearchTask.query && tagSearchTask.query.length > 2) {
+                newUrl += '?query=' + encodeURIComponent(tagSearchTask.query);
+            }
+
+            if (newUrl !== tagStore.proxy.url) {
+                tagStore.proxy.url = newUrl;
                 tagStore.reload();
             }
         },
         interval: 600,
         repeat: 1
     });
-    
+
     var tagView = Ext.create('Ext.grid.Panel', {
         store: tagStore,
         //selType: 'checkboxmodel',
