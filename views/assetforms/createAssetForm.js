@@ -441,7 +441,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         ++lastImageField;
     }
 
-    //console.log(assetData)
+    console.log(assetData)
 
     if (assetDetailsForm) {
         assetDetailsForm.destroy();
@@ -531,7 +531,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             queryMode: 'local',
             displayField: 'name',
             valueField: 'id',
-            value: assetData ? String(assetData.license) : '',
+            value: assetData ? assetData.license : '',
             store: licenseStore,
             allowBlank: false
         }, {
@@ -708,7 +708,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                         //params: $.param({info: data}),
                         success: function(fp, opts) {
                             var resp = JSON.parse(opts.response.responseText);
-                            console.log(resp)
+                            //console.log(resp)
                             if (resp.success) {
                                 if (assetDetailsWindow) {
                                     assetDetailsWindow.hide();
