@@ -197,7 +197,6 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         fields:['name', 'multi', 'required', 'tags', 'type'],
         proxy: {
             type: 'ajax',
-            url: '/json/tag/list/forAssetType/',
             reader: {
                 type: 'json',
                 //root: 'tags'
@@ -287,7 +286,6 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         fields:['type', 'subtype', 'name', 'props'],
         proxy: {
             type: 'ajax',
-            //url: '/json/images/forAssetType/',
             reader: {
                 type: 'json',
                 root: 'images'
@@ -452,10 +450,10 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                     lastImageField = 1;
                     lastTagIndex = 1;
 
-                    relatedStore.proxy.url = '/json/tag/list/forAssetType/' + records[0].data.title;
+                    relatedStore.proxy.url = '/json/asset/types/' + records[0].data.title + '/tags';
                     relatedStore.reload();
 
-                    imagesForAssetStore.proxy.url = '/json/images/forAssetType/' + records[0].data.title;
+                    imagesForAssetStore.proxy.url = '/json/asset/types/' + records[0].data.title + '/images';
                     imagesForAssetStore.reload();
                 }
             }
@@ -722,9 +720,8 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         if (assetTypeCombo) {
             assetTypeCombo.select(assetType);
             assetTypeCombo.hidden = true;
-            relatedStore.proxy.url = '/json/tag/list/forAssetType/' + assetType;
-
-            imagesForAssetStore.proxy.url = '/json/images/forAssetType/' + assetType;
+            relatedStore.proxy.url = '/json/asset/types/' + assetType + '/tags';
+            imagesForAssetStore.proxy.url = '/json/asset/types/' + assetType + '/images';
         }
     }
 
