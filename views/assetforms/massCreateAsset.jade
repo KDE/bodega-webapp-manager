@@ -14,6 +14,29 @@ block head
 
   script
     Ext.onReady(function() {
+
+        var partnerStore = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            storeId: 'typeStore',
+            fields:['id', 'name'],
+            proxy: {
+                type: 'ajax',
+                url: '/json/partner/list',
+                reader: {
+                    type: 'json',
+                    root: 'partners'
+                }
+            },
+            listeners: {
+                load: function ( store, records, successful, eOpts ) {
+                    var combo = document.getElementById('info[partner]');
+                    for (var i in records) {
+                        combo.options[combo.options.length] = new Option(records[i].data.name, records[i].data.id);
+                    }
+                }
+            }
+        });
+
         Ext.create('Ext.Panel', {
             collapsible: false,
             renderTo: Ext.getBody(),
@@ -24,6 +47,27 @@ block head
             floating: true,
             title: "#{readableAssetType}",
             dockedItems: [createToolBar()],
+        });
+
+        Ext.create('Ext.form.field.ComboBox', {
+            xtype: 'combobox',
+            fieldLabel: 'Partner',
+            name: 'info[partner]',
+            editable: false,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'id',
+            value: (assetData && assetData.partner !== undefined) ? assetData.partner : '',
+            store: partnerStore,
+            listeners: {
+                'select': function(combo, record, index) {
+                    currentPartner = combo.getValue();
+                },
+                afterrender: function (combo, eopts) {
+                    partnerStore.combo = combo;
+                }
+            },
+            renderTo: document.getElementById('upload')
         });
     });
 
@@ -42,6 +86,8 @@ block body
           <input type="hidden"  name="info[tags][0][type]" value="contentrating" />
           <input type="hidden"  name="info[tags][0][title]" value="Everyone" />
           <legend>Upload the files of your assets</legend>
+          <label for="info[partner]" >Partner:</label>
+          <select id="info[partner]" name="info[partner]" ></select><br/><br/>
           <div id="drop"> Drop Here <br/>
           <a>Browse</a>
           <input type="file" name="asset" multiple />
