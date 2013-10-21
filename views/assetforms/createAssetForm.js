@@ -211,6 +211,9 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
 
                 var record;
 
+                //tags we'll have to add, all current tags - those in the form fields
+                var extraTags = assetData.tags;
+
                 var fieldsData = records[0].data.tags;
                 for (var i in fieldsData) {
                     record = fieldsData[i];
@@ -275,6 +278,23 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                     ]);
                     var tagFields = Ext.getCmp(record.type + 'TagFields');
                     tagFields.addItem(true);
+
+                    extraTags = extraTags.filter(function(el) { return el.type != record.type});
+                }
+
+                //Now, add hidden fields for all extra tags added by hand
+                for (var i in extraTags) {
+                    var fields = Ext.getCmp(record.type + 'TagFields');
+                    fields.add([{
+                            xtype: 'hidden',
+                            name: 'info[tags][' + lastTagIndex + '][type]',
+                            value: extraTags[i].type
+                        }, {
+                            xtype: 'hidden',
+                            name: 'info[tags][' + lastTagIndex + '][title]',
+                            value: extraTags[i].title
+                        }]);
+                    ++lastTagIndex;
                 }
             }
         }
