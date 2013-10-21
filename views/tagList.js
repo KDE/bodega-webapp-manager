@@ -77,7 +77,7 @@ function createTagList(config) {
         query: '',
         run: function () {
             if (tagSearchTask.query && tagSearchTask.query.length > 3) {
-                tagStore.proxy.url = '/json/tag/search/'+tagSearchTask.query;
+                tagStore.proxy.url = '/json/tag/list?query='+tagSearchTask.query;
                 tagStore.reload();
             } else {
                 tagStore.proxy.url = '/json/tag/list';
