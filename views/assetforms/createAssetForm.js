@@ -212,7 +212,10 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                 var record;
 
                 //tags we'll have to add, all current tags - those in the form fields
-                var extraTags = assetData.tags;
+                var extraTags;
+                if (assetData) {
+                    extraTags= assetData.tags;
+                }
 
                 var fieldsData = records[0].data.tags;
                 for (var i in fieldsData) {
