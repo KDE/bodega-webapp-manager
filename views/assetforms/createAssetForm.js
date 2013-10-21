@@ -83,6 +83,20 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
 
     var imagesByType = {};
 
+    var licenseStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        storeId: 'licenseStore',
+        fields: ['id', 'name'],
+        proxy: {
+            type: 'ajax',
+            url: '/json/asset/types/application/licenses',
+            reader: {
+                type: 'json',
+                root: 'licenses'
+            }
+        }
+    });
+
     var ratingStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
         storeId: 'ratingStore',
@@ -427,13 +441,12 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         ++lastImageField;
     }
 
-
-
- console.log(assetData)
+    //console.log(assetData)
 
     if (assetDetailsForm) {
         assetDetailsForm.destroy();
     }
+
     assetDetailsForm = Ext.create('Ext.form.Panel', {
         //frame: true,
         bodyPadding: 5,
@@ -476,6 +489,9 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                     relatedStore.proxy.url = '/json/asset/types/' + records[0].data.title + '/tags';
                     relatedStore.reload();
 
+                    licenseStore.proxy.url =  '/json/asset/types/' + records[0].data.title + '/licenses';
+                    licenseStore.reload();
+
                     imagesForAssetStore.proxy.url = '/json/asset/types/' + records[0].data.title + '/images';
                     imagesForAssetStore.reload();
                 }
@@ -514,21 +530,9 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             editable: false,
             queryMode: 'local',
             displayField: 'name',
-            valueField: 'value',
-            value: assetData ? String(assetData.license) : '4',
-            store: Ext.create('Ext.data.Store', {
-                fields: ['name', 'value'],
-                data: [{'name': 'GPL', 'value': '1'},
-                    {'name': 'LGPL', 'value': '2'},
-                    {'name': 'BSD', 'value': '3'},
-                    {'name': 'Creative Commons Attribution', 'value': '4'},
-                    {'name': 'Creative Commons Attribution-ShareAlike', 'value': '5'},
-                    {'name': 'Creative Commons Attribution-NoDerivs', 'value': '6'},
-                    {'name': 'Creative Commons Attribution-NonCommercial', 'value': '7'},
-                    {'name': 'Creative Commons Attribution-NonCommercial-ShareAlike', 'value': '8'},
-                    {'name': 'Creative Commons Attribution-NonCommercial-NoDerivs', 'value': '9'},
-                    {'name': 'Proprietary', 'value': '10'}],
-            }),
+            valueField: 'id',
+            value: assetData ? String(assetData.license) : '',
+            store: licenseStore,
             allowBlank: false
         }, {
             id: 'version',
@@ -745,6 +749,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             assetTypeCombo.hidden = true;
             relatedStore.proxy.url = '/json/asset/types/' + assetType + '/tags';
             imagesForAssetStore.proxy.url = '/json/asset/types/' + assetType + '/images';
+            licenseStore.proxy.url =  '/json/asset/types/' + assetType + '/licenses';
         }
     }
 
