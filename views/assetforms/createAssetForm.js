@@ -612,7 +612,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         }, {
             xtype: 'label',
             hidden: assetData === undefined,
-            html: assetData ? '<p style="margin-left:8em">Current file: <a href="/json/asset/download/' + assetData.id + (assetData.status === 'published' ? '' + '?incoming=1) + '">' + assetData.file + '</a></p>' : ''
+            html: assetData ? '<p style="margin-left:8em">Current file: <a href="/json/asset/download/' + assetData.id + ((assetData.status === 'published') ? '">' : '?incoming=1">') + assetData.file + '</a></p>' : ''
         }, {
             id: 'description',
             xtype: 'textareafield',
@@ -703,7 +703,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                     }
 
                     formData.submit({
-                        url: assetData ? '/json/asset/update/'+assetData.id : '/json/asset/create',
+                        url: assetData ? '/json/asset/update/' + assetData.id : '/json/asset/create',
                         waitMsg: assetData ? 'Updating the asset...' : 'Creating the asset...',
                         //params: $.param({info: data}),
                         success: function(fp, opts) {
