@@ -52,6 +52,7 @@ app.use(express.session({ secret: app.config.cookieSecret ? app.config.cookieSec
                           store: new RedisStore(app.config.redis) }));
 
 app.use(app.router);
+app.use('/static', express.static(__dirname + '/public'));
 app.use(function(req, res, next) {
     res.render('404.jade', {});
 });
