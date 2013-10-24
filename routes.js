@@ -182,7 +182,3 @@ app.get('/logout', express.bodyParser(), function(req, res) {
     res.redirect('/');
 });
 
-// app.get('/static/*', function(req, res) {
-//     res.sendfile(__dirname + '/public' + req.url);
-// });
-
