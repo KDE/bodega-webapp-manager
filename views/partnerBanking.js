@@ -224,7 +224,7 @@
 
                             success: function(fp, opts) {
                                 var resp = JSON.parse(opts.response.responseText);
-                                console.log(resp)
+                                //console.log(resp)
                                 if (resp.success) {
                                     bankingStore.removeAll();
                                     bankingStore.load();

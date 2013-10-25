@@ -28,7 +28,7 @@ block head
             },
             listeners: {
                 update: function(store, record, operation, eOpts ) {
-                    console.log(record.raw)
+                    //console.log(record.raw)
                     record.raw.name = record.data.name;
                     record.raw.email = record.data.email;
                     record.raw.publisher = record.data.publisher;
@@ -60,7 +60,7 @@ block head
         });
 
         var bankActionRenderer = function(value,meta,record,rowIx,ColIx, store) {
-            console.log(record)
+            //console.log(record)
             var users = record.data.people;
             for (var i in users) {
                 if (users[i].email == '#{userName}' && users[i].roles.indexOf('Account Manager') != -1) {

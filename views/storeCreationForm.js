@@ -113,8 +113,8 @@ function showStoreCreationForm(dataStore) {
                                 dataStore.reload();
                                 dataStore.reload();
                             } else {
-                                console.log(resp);
-                                console.log(opts)
+                                //console.log(resp);
+                                //console.log(opts)
                                 Ext.MessageBox.alert('Error', 'Error during store creation.<br/>' + (resp.message ? resp.message : resp.error.type));
                             }
                         },

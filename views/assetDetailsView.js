@@ -5,7 +5,7 @@ var currentAsset;
 
 function loadAssetDetails(assetData, remoteUrl) {
     currentAsset = assetData.id;
-    console.log(assetData)
+    //console.log(assetData)
     if (assetDetailsForm) {
         assetDetailsForm.destroy();
         assetDetailsWindow.destroy();
@@ -52,7 +52,7 @@ function loadAssetDetails(assetData, remoteUrl) {
             emptyText: 'No images to display',
 
             prepareData: function(data) {
-                console.log(data)
+                //console.log(data)
                 if (assetData.status != 'published') {
                     data.url = '/json/incomingassetpreview/' + assetData.id + '/' +  encodeURIComponent(data.path);
                 } else {

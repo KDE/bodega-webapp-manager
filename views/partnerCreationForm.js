@@ -50,8 +50,8 @@ function showPartnerCreationForm(store) {
                             Ext.MessageBox.alert('', 'Partner created successfully.');
                             store.reload();
                         } else {
-                            console.log(resp);
-                            console.log(opts)
+                            //console.log(resp);
+                            //console.log(opts)
                             Ext.MessageBox.alert('Error', 'Error during partner creation.<br/>' + (resp.message ? resp.message : resp.error.type));
                         }
                     },

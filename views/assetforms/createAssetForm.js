@@ -441,7 +441,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
         ++lastImageField;
     }
 
-    console.log(assetData)
+    //console.log(assetData)
 
     if (assetDetailsForm) {
         assetDetailsForm.destroy();
