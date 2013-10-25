@@ -97,8 +97,8 @@ app.post('/register', express.bodyParser(), function(req, res) {
 app.get('/register/confirm', express.bodyParser(), function(req, res) {
     res.render('registerconfirm', {
         network: app.config.server.name,
-        success: app.operationStatus,
-        message: app.operationMessage
+        success: utils.parseBool(req.query.success),
+        error: req.query.error
     });
 });
 
@@ -117,7 +117,7 @@ app.get('/account/changePassword', isAuthorized, function(req, res) {
 
 app.get('/account/modify/confirm', express.bodyParser(), isAuthorized, function(req, res) {
      res.render('accountmodifyconfirm', {
-         result: req.query.success,
+         result: utils.parseBool(req.query.success),
          error: req.query.error,
          network: app.config.server.name
     });
@@ -140,8 +140,8 @@ app.post('/account/resetPassword', express.bodyParser(), function(req, res){
 
 app.get('/account/resetPassword/confirm', express.bodyParser(), function(req, res){
     res.render('resetpasswordconfirm', {
-        message: app.operationMessage,
-        result: app.operationStatus,
+        success: utils.parseBool(req.query.success),
+        error: req.query.error,
         network: app.config.server.name
     });
 });
