@@ -57,9 +57,13 @@ app.all('/json/*', function(request, response) {
 });
 
 app.get('/', express.bodyParser(), function(req, res) {
-    res.render('login', {
-        network: app.config.server.name
-    });
+    if (req.session.manager_authorized) {
+        app.BodegaManager.index(req, res);
+    } else {
+        res.render('login', {
+            network: app.config.server.name
+        });
+    }
     //res.render('index');
 });
 
