@@ -4,7 +4,7 @@ block head
 block body
   .title
     br
-    script
+    script.
       function validateForm() {
 
         if ($('#newPassword').val() !== $('#newPassword2').val()) {
@@ -14,10 +14,10 @@ block body
             $('#help-password').text('Your passwords does not match');
             return false;
         } else if ($('#newPassword').val().length < 8 || $('#newPassword2').val() < 8 ) {
-            $('#newPassword').attr('placeholder', 'Your password must be at least 8 digits.');
-            $('#newPassword2').attr('placeholder', 'Your password must be at least 8 digits.');
+            $('#newPassword').attr('placeholder', 'Your password must be at least 8 characters long.');
+            $('#newPassword2').attr('placeholder', 'Your password must be at least 8 characters long.');
             $('#field-control2').addClass('error');
-            $('#help-password').text('Your password must be at least 8 digits');
+            $('#help-password').text('Your password must be at least 8 characters long');
             return false;
        }
       }
