@@ -117,7 +117,8 @@ app.get('/account/changePassword', isAuthorized, function(req, res) {
 
 app.get('/account/modify/confirm', express.bodyParser(), isAuthorized, function(req, res) {
      res.render('accountmodifyconfirm', {
-         result: app.operationStatus,
+         result: req.query.success,
+         error: req.query.error,
          network: app.config.server.name
     });
 });

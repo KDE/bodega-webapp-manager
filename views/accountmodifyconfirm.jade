@@ -1,7 +1,7 @@
 extend layout
 block head
     title Login confirmation
-    script
+    script.
       $(document).ready(function() {
         window.setTimeout(function() {
           window.location = '/account/modify';
@@ -15,4 +15,4 @@ block body
         | Your account has been updated successfully.
     else
       .alert.alert-error.error
-        | Some error occured, please contact the administrator
+        | Your account could not be updated due to an error: #{ error }. Please try again.
