@@ -730,6 +730,8 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                             }
                         }
                     });
+                } else {
+                    Ext.MessageBox.alert('Error', 'One or more required fields in this form are empty or invalid.');
                 }
             }
         }, {
