@@ -118,8 +118,17 @@ block head
                         url: '/json/asset/update/' + record.raw.id,
                         method: 'POST',
                         params: $.param({info: record.raw}),
-                        callback: function(response) {
-                            store.load();
+                        success: function(response, opts) {
+                            var resp = JSON.parse(response.responseText);
+                            if (resp.success) {
+                                //Ext.MessageBox.alert('', 'Publish request sent successfully.');
+                            } else {
+                                Ext.MessageBox.alert('Error', 'Error in modifying the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
+                            }
+                        },
+                        failure: function(response, opts) {
+                            console.log('server-side failure with status code ' + response.status);
+                            Ext.MessageBox.alert('Error', 'Error in modifying the asset.');
                         }
                     });
                 }
