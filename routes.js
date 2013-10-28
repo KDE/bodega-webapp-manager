@@ -38,16 +38,21 @@ app.all('/json/*', function(request, response) {
 
     //console.log(JSON.stringify(request.headers.cookie));
     options.headers['Content-Type'] = request.headers['content-type'];
+    options.headers['Connection'] = 'close';
     if (request.headers['content-length']) {
         options.headers['content-length'] = request.headers['content-length']
     }
 
-    var proxyRequest = http.request(options);
-
-    proxyRequest.addListener('response', function (proxy_response) {
+    var proxyRequest = http.request(options, function (proxy_response) {
         response.writeHead(proxy_response.statusCode, proxy_response.headers);
+        console.log(proxy_response.headers)
         proxy_response.pipe(response);
     });
+
+    /*proxyRequest.addListener('response', function (proxy_response) {
+        response.writeHead(proxy_response.statusCode, proxy_response.headers);
+        proxy_response.pipe(response);
+    });*/
 
     proxyRequest.on('error', function(e) {
         console.log('problem with request: ' + e.message);

@@ -121,8 +121,8 @@ block head
                         params: $.param({info: record.raw}),
                         success: function(response, opts) {
                             var resp = JSON.parse(response.responseText);
-                            if (!resp.success) {
-                                store.reload();
+                            if (resp.success) {
+                                window.location.href = "/asset/list/incoming";
                             } else {
                                 Ext.MessageBox.alert('Error', 'Error in modifying the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
                             }

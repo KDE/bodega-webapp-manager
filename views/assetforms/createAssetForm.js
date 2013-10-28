@@ -713,9 +713,8 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                                 if (assetDetailsWindow) {
                                     assetDetailsWindow.hide();
                                     assetDetailsWindow.destroy();
-                                } else {
-                                    window.location.href = "/asset/list/incoming";
                                 }
+                                window.location.href = "/asset/list/incoming";
                             } else {
                                 Ext.MessageBox.alert('Error', 'Error in uploading the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
                             }
