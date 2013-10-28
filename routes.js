@@ -45,14 +45,8 @@ app.all('/json/*', function(request, response) {
 
     var proxyRequest = http.request(options, function (proxy_response) {
         response.writeHead(proxy_response.statusCode, proxy_response.headers);
-        console.log(proxy_response.headers)
         proxy_response.pipe(response);
     });
-
-    /*proxyRequest.addListener('response', function (proxy_response) {
-        response.writeHead(proxy_response.statusCode, proxy_response.headers);
-        proxy_response.pipe(response);
-    });*/
 
     proxyRequest.on('error', function(e) {
         console.log('problem with request: ' + e.message);
