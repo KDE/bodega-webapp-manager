@@ -6,7 +6,9 @@ block head
   script(src='/js/ext-all.js')
   include termsOfService.js
 
-  script.
+  script
+    Ext.tip.QuickTipManager.init();
+
     Ext.onReady(function() {
 
         var partnerStore = Ext.create('Ext.data.Store', {

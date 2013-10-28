@@ -13,6 +13,8 @@ block head
   include createAssetForm.js
 
   script
+    Ext.tip.QuickTipManager.init();
+
     Ext.onReady(function() {
 
         var partnerStore = Ext.create('Ext.data.Store', {

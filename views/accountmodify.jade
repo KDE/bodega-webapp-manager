@@ -4,7 +4,9 @@ block head
 block body
   .title
     br
-    script.
+    script
+      Ext.tip.QuickTipManager.init();
+
       function validateForm() {
 
         if ($('#newPassword').val() !== $('#newPassword2').val()) {

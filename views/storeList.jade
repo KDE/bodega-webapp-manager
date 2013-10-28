@@ -11,7 +11,9 @@ block head
   include channelList.js
   include storeCreationForm.js
 
-  script.
+  script
+    Ext.tip.QuickTipManager.init();
+
     Ext.onReady(function() {
         var store = Ext.create('Ext.data.Store', {
             autoLoad: true,

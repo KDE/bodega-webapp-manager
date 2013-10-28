@@ -12,6 +12,8 @@ block head
   include assetforms/createAssetForm.js
 
   script
+    Ext.tip.QuickTipManager.init();
+
     var store;
     var currentType = '#{listType}';
     var currentPartner;
