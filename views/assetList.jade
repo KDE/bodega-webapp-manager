@@ -120,9 +120,7 @@ block head
                         params: $.param({info: record.raw}),
                         success: function(response, opts) {
                             var resp = JSON.parse(response.responseText);
-                            if (resp.success) {
-                                //Ext.MessageBox.alert('', 'Publish request sent successfully.');
-                            } else {
+                            if (!resp.success) {
                                 Ext.MessageBox.alert('Error', 'Error in modifying the asset.<br/>' + (resp.message ? resp.message : resp.error.type));
                             }
                         },
