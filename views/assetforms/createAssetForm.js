@@ -346,6 +346,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             name: 'file-' + lastImageField,
             numericalId: lastImageField,
             fieldLabel: record.name+':',
+            clearOnSubmit: false,
             listeners: {
                 afterrender: function(el) {
                     var element = el.fileInputEl;
@@ -546,6 +547,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             xtype: 'filefield',
             name: 'asset',
             fieldLabel: 'File',
+            clearOnSubmit: false,
             listeners: {
                 afterrender: function(el) {
                     //It doesn't work if el.fileInputEl is used
