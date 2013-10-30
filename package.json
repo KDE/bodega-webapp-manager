@@ -5,7 +5,7 @@
     "dependencies": {
         "express": "> 2.4.6",
         "connect-redis" : "latest",
-        "jade" : "latest",
+        "jade" : "latest"
     },
     "devDependencies": {
     },
