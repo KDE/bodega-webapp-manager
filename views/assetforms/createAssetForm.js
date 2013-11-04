@@ -524,6 +524,13 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             value: assetData ? assetData.name : '',
             allowBlank: false
         }, {
+            id: 'version',
+            xtype: 'textfield',
+            name: 'info[version]',
+            fieldLabel: 'Version',
+            value: assetData ? String(assetData.version) : '1.0',
+            allowBlank: false
+        }, {
             id: 'license',
             xtype: 'combobox',
             name: 'info[license]',
@@ -534,13 +541,6 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             valueField: 'id',
             value: assetData ? assetData.license : '',
             store: licenseStore,
-            allowBlank: false
-        }, {
-            id: 'version',
-            xtype: 'textfield',
-            name: 'info[version]',
-            fieldLabel: 'Version',
-            value: assetData ? String(assetData.version) : '1.0',
             allowBlank: false
         }, {
             id: 'asset',
