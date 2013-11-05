@@ -85,12 +85,12 @@ block head
                     html +=  records[0].data.warehouse.name + '</a></h4>';
                     html += '<p>' + records[0].data.warehouse.description + '</p>';
                     html += '<p>Contact: <a href="' + records[0].data.warehouse.contact + '">' + records[0].data.warehouse.contact + '</a></p>';
+                    html += '<p><a href="/static/Bodega%20Participants%20Manual.pdf">Documentation (PDF)</a></p>';
 
                     if (records[0].data.store.contact) {
                         html += '<h4>Store ' + records[0].data.store.name + '</h4>';
                         html += '<p>' + records[0].data.store.description + '</p>';
                         html += '<p>Contact: <a href="' + records[0].data.store.contact + '">' + records[0].data.store.contact + '</a></p>';
-                         html += '<p><a href="/static/Bodega%20Participants%20Manual.pdf">Documentation (PDF)</a></p>';
                     }
 
                     html += '<p><a href="javascript:return false;" onClick="showTermsOfService(\'#{remoteUrl}\');">Terms of Service</a></p>';
