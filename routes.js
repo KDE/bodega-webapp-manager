@@ -19,7 +19,7 @@
 var utils = require('./lib/utils');
 
 var express = require('express');
-var http = require('http');
+var serverHttp = app.config.server.secureConnection ? require('https') : require('http');
 
 function isAuthorized(req, res, next)
 {
@@ -43,7 +43,7 @@ app.all('/json/*', function(request, response) {
         options.headers['content-length'] = request.headers['content-length']
     }
 
-    var proxyRequest = http.request(options, function (proxy_response) {
+    var proxyRequest = serverHttp.request(options, function (proxy_response) {
         response.writeHead(proxy_response.statusCode, proxy_response.headers);
         proxy_response.pipe(response);
     });

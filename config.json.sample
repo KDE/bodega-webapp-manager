@@ -1,6 +1,7 @@
 {
     "cookieSecret": "love cookies",
     "server": {
+        "secureConnection": false,
         "publicUrl": "http://localhost:3000/",
         "hostname": "localhost",
         "port": 3000,
