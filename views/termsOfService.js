@@ -2,7 +2,7 @@
 var tosWindow;
 var tosView;
 
-function showTermsOfService(cb, partnerId, partnerName, type) {
+function showTermsOfService(remoteUrl, partnerId, partnerName, type, cb) {
     if (!tosWindow) {
         tosView = Ext.create('Ext.form.Panel', {
             bodyPadding: 5,
@@ -22,7 +22,8 @@ function showTermsOfService(cb, partnerId, partnerName, type) {
                 },
 
                 loader: {
-                    url: '/html/TermsOfService.html',
+                    type: 'jsonp',
+                    url: remoteUrl + '/TOS/participant.html',
                     autoLoad: true
                 }
             }],
