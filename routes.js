@@ -85,7 +85,8 @@ app.get('/login/confirm', express.bodyParser(), function(req, res){
 //register
 app.get('/register', express.bodyParser(), function(req, res) {
     res.render('register', {
-        network: app.config.server.name
+        network: app.config.server.name,
+        terms: app.config.server.publicUrl + "/TOS/participant.html"
     });
 });
 

@@ -58,5 +58,10 @@ block body
               input.xlarge(type='password', placeholder='Enter your Password', name='password', id='password' , required)
             .input
               input.xlarge(type='password', placeholder='Reenter your Password', name='password2', id='password2' , required)
+            .input
+              input(type='checkbox', style='width: 25px', checked=false, name='tos', id='tos', required)
+              |I have read and agree to the&nbsp;
+              a(href='#{terms}') Terms of Service
+            br
             .action
               input.btn-primary(type='submit',id='loginButton', value='Create My New Account!')
