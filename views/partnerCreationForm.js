@@ -9,6 +9,15 @@ function showPartnerCreationForm(store) {
         creationFormWindow.destroy();
     }
 
+    function checkCreateButton() {
+        Ext.getCmp('createButton').setDisabled(
+                !(Ext.getCmp('confirmation').getValue() &&
+                  Ext.getCmp('name').getValue().length > 0 &&
+                  Ext.getCmp('email').getValue().length > 0
+                 )
+                );
+    }
+
     creationFormForm = Ext.create('Ext.form.Panel', {
         bodyPadding: 5,
 
@@ -22,16 +31,34 @@ function showPartnerCreationForm(store) {
             id: 'name',
             xtype: 'textfield',
             name: 'name',
-            fieldLabel: 'Name'
+            fieldLabel: 'Name',
+            listeners: {
+                change: checkCreateButton
+            }
+        }, {
+            id: 'confirmation',
+            xtype: 'checkbox',
+            name: 'confirmation',
+            fieldLabel: ' ',
+            labelSeparator: '',
+            boxLabel: 'I confirm that I represent the above person or organization.',
+            handler: function () {
+                checkCreateButton();
+            }
         }, {
             id: 'email',
             xtype: 'textfield',
             name: 'email',
-            fieldLabel: 'Email'
+            fieldLabel: 'Email',
+            listeners: {
+                change: checkCreateButton
+            }
         }],
 
         buttons: [{
+            id: 'createButton',
             text: 'Create Partner',
+            disabled: true,
             handler: function() {
 
                 /*record.raw.name = record.data.name;
