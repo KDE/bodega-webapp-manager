@@ -175,7 +175,10 @@ block head
                                                 Ext.MessageBox.alert('', 'Partner deleted successfully.');
                                                 store.reload();
                                             } else {
-                                                Ext.MessageBox.alert('Error', 'Error in deleting the partnert.<br/>' + (resp.message ? resp.message : resp.error.type));
+                                                Ext.MessageBox.alert('Error',
+                                                                     resp.message ?
+                                                                     resp.message.replace(/\n/g, '<br>') :
+                                                                     'Error in deleting the partner. (' + resp.error.type + ')');
                                             }
                                         },
                                         failure: function(response, opts) {
