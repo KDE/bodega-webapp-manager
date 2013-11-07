@@ -179,7 +179,7 @@ function createCollectionList() {
                     text: 'Delete Collections',
                     hidden: true,
                     handler: function() {
-                        Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected items?', function(btn){
+                        Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected collections? This action can not be undone!', function(btn){
                             if(btn === 'yes'){
                                 var s = collectionView.getSelectionModel().getSelection();
                                 selected = [];

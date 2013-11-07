@@ -162,7 +162,7 @@ block head
                     text: 'Delete Partners',
                     hidden: true,
                     handler: function() {
-                        Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected items?', function(btn){
+                        Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected partners? This action can not be undone!', function(btn){
                             if(btn === 'yes'){
                                 var s = view.getSelectionModel().getSelection();
                                 selected = [];

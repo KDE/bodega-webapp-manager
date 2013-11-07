@@ -173,7 +173,7 @@
                         text: 'Delete channels',
                         hidden: true,
                         handler: function() {
-                            Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected items?', function(btn){
+                            Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected channels?', function(btn){
                                 if(btn === 'yes') {
                                     var s = channelView.getSelectionModel().getSelection();
                                     selected = [];

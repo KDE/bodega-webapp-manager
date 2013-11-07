@@ -155,7 +155,7 @@ function createTagList(config) {
                 text: 'Delete Tags',
                 hidden: true,
                 handler: function() {
-                    Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected items?', function(btn){
+                    Ext.MessageBox.confirm('Delete', 'Are you sure you want to delete the selected tags? This action can not be undone!', function(btn){
                         if(btn === 'yes'){
                             var s = tagView.getSelectionModel().getSelection();
                             selected = [];
