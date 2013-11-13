@@ -53,7 +53,7 @@ block head
             var arch = extraFieldsParent.items.get('obsInfo[arch]').getValue();
             var repoName = extraFieldsParent.items.get('obsInfo[repoName]').getValue();
 
-            var obsFileParts = ['packageId="' + pkgName + ';' + version + ';' + arch + ';' + repoName + '"'];
+            var obsFileParts = ['{"package": "' + pkgName + '", "architecture": "' + arch + '", "repository": "' + repoName + '"}'];
             var obsFileBlob = new Blob(obsFileParts, { "type" : "text\/plain" });
 
 

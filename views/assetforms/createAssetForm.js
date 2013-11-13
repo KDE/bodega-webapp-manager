@@ -543,6 +543,53 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             store: licenseStore,
             allowBlank: false
         }, {
+            id: 'assetSource',
+            xtype: 'combobox',
+            editable: false,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'value',
+            fieldLabel: 'Asset Source',
+            width: 120,
+            value: 'file',
+            store: Ext.create('Ext.data.Store', {
+                fields: ['name', 'value'],
+                data: [
+                    {'name': 'File upload', 'value': 'file'},
+                    {'name': 'Package from OBS', 'value': 'obs'}],
+            }),
+            listeners: {
+                'select': function(combo, record, index) {
+                    var type = combo.getValue();
+                    if (type === 'obs') {
+                        assetDetailsForm.items.get('asset').disable();
+                        assetDetailsForm.items.get('asset').hide();
+
+                        assetDetailsForm.items.get('obsProject').enable();
+                        assetDetailsForm.items.get('obsProject').show();
+                        assetDetailsForm.items.get('obsRepository').enable();
+                        assetDetailsForm.items.get('obsRepository').show();
+                        assetDetailsForm.items.get('obsArchitecture').enable();
+                        assetDetailsForm.items.get('obsArchitecture').show();
+                        assetDetailsForm.items.get('obsPackageName').enable();
+                        assetDetailsForm.items.get('obsPackageName').show();
+                    //assume file
+                    } else {
+                        assetDetailsForm.items.get('asset').enable();
+                        assetDetailsForm.items.get('asset').show();
+
+                        assetDetailsForm.items.get('obsProject').disable();
+                        assetDetailsForm.items.get('obsProject').hide();
+                        assetDetailsForm.items.get('obsRepository').disable();
+                        assetDetailsForm.items.get('obsRepository').hide();
+                        assetDetailsForm.items.get('obsArchitecture').disable();
+                        assetDetailsForm.items.get('obsArchitecture').hide();
+                        assetDetailsForm.items.get('obsPackageName').disable();
+                        assetDetailsForm.items.get('obsPackageName').hide();
+                    }
+                }
+            }
+        }, {
             id: 'asset',
             xtype: 'filefield',
             name: 'asset',
@@ -568,12 +615,8 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                         if (assetFileSize) {
                             assetFileSize.destroy();
                         }
-                        assetDetailsForm.add({
-                            id: 'assetFileName',
-                            xtype: 'hidden',
-                            name: 'info[file]',
-                            value: file.name
-                        });
+
+                        assetDetailsForm.items.get('assetFileName').setValue(file.name);
                         assetDetailsForm.add({
                             id: 'assetFileSize',
                             xtype: 'hidden',
@@ -610,11 +653,56 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                     });
                 }
             },
-            allowBlank: assetData ? true : false
+            allowBlank: true//assetData ? true : false
         }, {
             xtype: 'label',
             hidden: assetData === undefined,
             html: assetData ? '<p style="margin-left:8em">Current file: <a href="/json/asset/download/' + assetData.id + ((assetData.status === 'published') ? '">' : '?incoming=1">') + assetData.file + '</a></p>' : ''
+        }, {
+            id: 'assetFileName',
+            xtype: 'hidden',
+            name: 'info[file]'
+        }, {
+            id: 'dummyAsset',
+            xtype: 'hidden',
+            name: 'info[asset]',
+            value: 'obs',
+            disabled: true
+        }, {
+            id: 'externpath',
+            xtype: 'textfield',
+            name: 'info[externpath]',
+            value: assetData ? assetData.externpath : '',
+            fieldLabel: 'externpath',
+            allowBlank: true
+        }, {
+            id: 'obsPackageName',
+            xtype: 'textfield',
+            fieldLabel: 'Package name',
+            allowBlank: false,
+            disabled: true,
+            hidden: true
+        }, {
+            id: 'obsProject',
+            xtype: 'textfield',
+            fieldLabel: 'Project',
+            allowBlank: false,
+            disabled: true,
+            hidden: true
+        }, {
+            id: 'obsRepository',
+            xtype: 'textfield',
+            fieldLabel: 'Repository',
+            allowBlank: false,
+            disabled: true,
+            hidden: true
+        }, {
+            id: 'obsArchitecture',
+            xtype: 'textfield',
+            fieldLabel: 'Architecture',
+            allowBlank: false,
+            disabled: true,
+            hidden: true
         }, {
             id: 'description',
             xtype: 'textareafield',
@@ -698,10 +786,12 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                         }
                     }
 
-                    //disable the asset file if empty
-                    var uploadAssetField = assetDetailsForm.items.get('asset');
-                    if (!uploadAssetField.value) {
-                        uploadAssetField.disable();
+                    var assetSourceField = assetDetailsForm.items.get('assetSource');
+                 console.log(assetSource)
+                    if (assetSourceField.value == 'obs') {
+                        assetDetailsForm.items.get('dummyAsset').enable();
+                        assetDetailsForm.items.get('assetFileName').setValue(assetDetailsForm.items.get('obsPackageName').value);
+                        assetDetailsForm.items.get('externpath').setValue('obs://build.merproject.org/' + assetDetailsForm.items.get('obsProject').value + '/' + assetDetailsForm.items.get('obsRepository').value + '/' + assetDetailsForm.items.get('obsArchitecture').value + '/' + assetDetailsForm.items.get('obsPackageName').value);
                     }
 
                     formData.submit({
