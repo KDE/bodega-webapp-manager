@@ -80,9 +80,13 @@
                                         var s = peopleView.getSelectionModel().getSelection();
                                         selected = [];
                                         Ext.each(s, function (item) {
+                                            console.log(item)
                                             Ext.Ajax.request({
                                                 url: '/json/partner/roles/update/' + currentPartner,
                                                 params: $.param({person: item.data.email}),
+                                                success: function(response) {
+                                                    peopleStore.removeAt(item.index);
+                                                }
                                             });
                                         });
                                     }
@@ -170,11 +174,16 @@
                                         return;
                                     }
 
+                                    var found = false;
                                     for (var i in partnerData.people) {
                                         if (partnerData.people[i].email === rec.person) {
+                                            found = true;
                                             partnerData.people[i].roles = roles;
                                             break;
                                         }
+                                    }
+                                    if (!found) {
+                                        partnerData.people.push(rec);
                                     }
                                     loadPartnerPeople(partnerData);
                                 }
