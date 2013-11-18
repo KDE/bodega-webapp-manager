@@ -82,7 +82,7 @@
                                         Ext.each(s, function (item) {
                                             Ext.Ajax.request({
                                                 url: '/json/partner/roles/update/' + currentPartner,
-                                                params: $.param({person: item.email}),
+                                                params: $.param({person: item.data.email}),
                                             });
                                         });
                                     }
