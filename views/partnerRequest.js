@@ -46,6 +46,7 @@ function loadPartnerRequest(partnerId, partnerName, type) {
                                 } else {
                                     Ext.MessageBox.alert('Error', 'Error in sending your request.');
                                 }
+                                location.reload();
                             },
                             failure: function(form, action) {
                                 partnerDetailsWindow.hide();
@@ -64,6 +65,7 @@ function loadPartnerRequest(partnerId, partnerName, type) {
                                 } else {
                                     Ext.MessageBox.alert('Error', 'Error in sending your request.');
                                 }
+                                location.reload();
                             },
                             failure: function(form, action) {
                                 partnerDetailsWindow.hide();
