@@ -83,7 +83,9 @@ block head
                     header: 'Publisher',
                     dataIndex: 'publisher',
                     renderer: function(value, record) {
-                        if (value) {
+                        if (value == 'requested') {
+                            return Ext.String.format('Pending');
+                        } else if (value == true) {
                             return Ext.String.format('Yes');
                         } else {
                             return Ext.String.format('<a onClick="showTermsOfService(\'#{remoteUrl}\', \''+record.record.data.id+'\', \''+record.record.data.name+'\', \'publisher\', loadPartnerRequest)">Request</a>', value);
@@ -93,7 +95,9 @@ block head
                     header: 'Distributor',
                     dataIndex: 'distributor',
                     renderer: function(value, record) {
-                        if (value) {
+                        if (value == 'requested') {
+                            return Ext.String.format('Pending');
+                        } else if (value == true) {
                             return Ext.String.format('Yes');
                         } else {
                             return Ext.String.format('<a onClick="showTermsOfService(\'#{remoteUrl}\', \''+record.record.data.id+'\', \''+record.record.data.name+'\', \'distributor\', loadPartnerRequest)">Request</a>', value);
