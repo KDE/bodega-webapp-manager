@@ -18,14 +18,14 @@
 
         peopleStore = Ext.create('Ext.data.Store', {
             autoLoad: true,
-            storeId: 'peopleStore',
+            storeId:'peopleStore',
             fields:['name', 'email', 'roles'],
-            clearOnLoad: true,
-            data: partnerData ? partnerData.people : null,
             proxy: {
-                type: 'memory',
+                type: 'ajax',
+                url: '/json/partner/' + partnerData.id + '/info',
                 reader: {
-                    type: 'json'
+                    type: 'json',
+                    root: 'partner.people'
                 }
             }
         });
@@ -85,7 +85,7 @@
                                                 url: '/json/partner/roles/update/' + currentPartner,
                                                 params: $.param({person: item.data.email}),
                                                 success: function(response) {
-                                                    peopleStore.removeAt(item.index);
+                                                    loadPartnerPeople(partnerData);
                                                 }
                                             });
                                         });
@@ -174,17 +174,6 @@
                                         return;
                                     }
 
-                                    var found = false;
-                                    for (var i in partnerData.people) {
-                                        if (partnerData.people[i].email === rec.person) {
-                                            found = true;
-                                            partnerData.people[i].roles = roles;
-                                            break;
-                                        }
-                                    }
-                                    if (!found) {
-                                        partnerData.people.push(rec);
-                                    }
                                     loadPartnerPeople(partnerData);
                                 }
                             });
