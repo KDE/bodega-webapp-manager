@@ -83,20 +83,6 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
 
     var imagesByType = {};
 
-    var licenseStore = Ext.create('Ext.data.Store', {
-        autoLoad: true,
-        storeId: 'licenseStore',
-        fields: ['id', 'name'],
-        proxy: {
-            type: 'ajax',
-            url: '/json/asset/types/application/licenses',
-            reader: {
-                type: 'json',
-                root: 'licenses'
-            }
-        }
-    });
-
     var ratingStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
         storeId: 'ratingStore',
@@ -490,9 +476,6 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                     relatedStore.proxy.url = '/json/asset/types/' + records[0].data.title + '/tags';
                     relatedStore.reload();
 
-                    licenseStore.proxy.url =  '/json/asset/types/' + records[0].data.title + '/licenses';
-                    licenseStore.reload();
-
                     imagesForAssetStore.proxy.url = '/json/asset/types/' + records[0].data.title + '/images';
                     imagesForAssetStore.reload();
                 }
@@ -531,18 +514,6 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             value: assetData ? String(assetData.version) : '1.0',
             allowBlank: false
         }, {
-            id: 'license',
-            xtype: 'combobox',
-            name: 'info[license]',
-            fieldLabel: 'License',
-            editable: false,
-            queryMode: 'local',
-            displayField: 'name',
-            valueField: 'id',
-            value: assetData ? assetData.license : '',
-            store: licenseStore,
-            allowBlank: false
-        }, {
             id: 'assetSource',
             xtype: 'combobox',
             editable: false,
@@ -573,6 +544,19 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
                         assetDetailsForm.items.get('obsArchitecture').show();
                         assetDetailsForm.items.get('obsPackageName').enable();
                         assetDetailsForm.items.get('obsPackageName').show();
+
+                        var externpath = assetDetailsForm.items.get('externpath').value;
+                        externpath = externpath.substring(String('obs://build.merproject.org/').length);
+                        var parts = externpath.split('/');
+                        var project = parts[0];
+                        var repo = parts[1];
+                        var arch = parts[2];
+                        var packageName = parts[3];
+                        assetDetailsForm.items.get('obsProject').setValue(project);
+                        assetDetailsForm.items.get('obsRepository').setValue(repo);
+                        assetDetailsForm.items.get('obsArchitecture').setValue(arch);
+                        assetDetailsForm.items.get('obsPackageName').setValue(packageName);
+
                     //assume file
                     } else {
                         assetDetailsForm.items.get('asset').enable();
@@ -670,7 +654,7 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             disabled: true
         }, {
             id: 'externpath',
-            xtype: 'textfield',
+            xtype: 'hidden',
             name: 'info[externpath]',
             value: assetData ? assetData.externpath : '',
             fieldLabel: 'externpath',
@@ -842,7 +826,6 @@ function createAssetForm(extraFields, assetType, assetData, remoteUrl) {
             assetTypeCombo.hidden = true;
             relatedStore.proxy.url = '/json/asset/types/' + assetType + '/tags';
             imagesForAssetStore.proxy.url = '/json/asset/types/' + assetType + '/images';
-            licenseStore.proxy.url =  '/json/asset/types/' + assetType + '/licenses';
         }
     }
 
