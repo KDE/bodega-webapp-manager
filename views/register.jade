@@ -8,10 +8,11 @@ block body
     script.
       function validateForm() {
         if ($('#password').val() !== $('#password2').val()) {
-            $('#password').attr('placeholder', 'Your passwords does not match.');
-            $('#password2').attr('placeholder', 'Your passwords does not match.');
+            $('#password').attr('placeholder', 'Your passwords do not match.');
+            $('#password2').attr('placeholder', 'Your passwords do not match.');
             $('#field-control').addClass('error');
-            $('#help-password').text('Your passwords does not match');
+            $('#help-message').addClass('help-block');
+            $('#help-message').text('Your passwords do not match');
             return false;
         }
 
@@ -19,7 +20,8 @@ block body
             $('#email').attr('placeholder', 'Your email addresses does not match.');
             $('#email2').attr('placeholder', 'Your email addresses does not match.');
             $('#field-control').addClass('error');
-            $('#help-password').text('Your email addresses does not match');
+            $('#help-message').addClass('help-block');
+            $('#help-message').text('Your email addresses does not match');
             return false;
         }
 
@@ -27,7 +29,8 @@ block body
             $('#password').attr('placeholder', 'Your password must be at least 8 characters long.');
             $('#password2').attr('placeholder', 'Your password must be at least 8 characters long.');
             $('#field-control').addClass('error');
-            $('#help-password').text('Your password must be at least 8 characters long');
+            $('#help-message').addClass('help-block');
+            $('#help-message').text('Your password must be at least 8 characters long');
             return false;
         }
 
@@ -36,7 +39,7 @@ block body
         } catch (e) {
             $('#email').attr('placeholder', 'Your email address is not valid.');
             $('#field-control').addClass('error');
-            $('#help-email').text('Your Email Address is not valid');
+            $('#help-message').text('Your Email Address is not valid');
             return false;
         }
       }
@@ -44,8 +47,7 @@ block body
       .span6.offset3
         form.well(method='POST', id='login', align='center', onsubmit='return validateForm();')
           fieldset.control-group(id='field-control')
-            span.help-block(id='help-password')
-            span.help-block(id='help-email')
+            span(id='help-message')
             .input
               input.xlarge(type='text', placeholder='Enter your Firstname', name='firstname', required)
             .input
@@ -60,7 +62,7 @@ block body
               input.xlarge(type='password', placeholder='Reenter your Password', name='password2', id='password2' , required)
             .input
               input(type='checkbox', style='width: 25px', checked=false, name='tos', id='tos', required)
-              |I have read and agree to the&nbsp;
+              |&nbsp;I have read and agree to the&nbsp;
               a(href='#{terms}') Terms of Service
             br
             .action
