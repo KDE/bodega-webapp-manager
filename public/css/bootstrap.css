@@ -1850,6 +1850,7 @@ input.search-query {
 
 .control-group {
   margin-bottom: 10px;
+  margin-right: 10px;
 }
 
 legend + .control-group {
